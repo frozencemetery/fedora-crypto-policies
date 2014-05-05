@@ -3,6 +3,7 @@ all: update-crypto-policies.8
 install: update-crypto-policies.8
 	install -p -m 644 update-crypto-policies.8 /usr/share/man/man8
 	install -p -m 755 update-crypto-policies /usr/bin
+	mkdir -p /usr/lib/crypto-profiles/profiles
 	for i in profiles/*;do install -p -m 755 $$i /usr/lib/crypto-profiles/profiles;done
 
 clean:
