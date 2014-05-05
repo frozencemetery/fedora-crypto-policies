@@ -2,8 +2,8 @@
 
 umask 022
 
-config_dir=/usr/lib/crypto-profiles/profiles
-base_dir=/etc/crypto-profiles
+profile_dir=/usr/lib/crypto-policies/profiles
+base_dir=/etc/crypto-policies
 backend_config_dir=$base_dir/back-ends
 errcode=0
 
@@ -13,11 +13,11 @@ gnutls_config_file=$backend_config_dir/gnutls.config
 openssl_config_file=$backend_config_dir/openssl.config
 nss_config_file=$backend_config_dir/nss.config
 
-profile=`cat /etc/crypto-profiles/config`
+profile=`cat $base_dir/config|grep -v ^#`
 
 if test -z "$profile";then
 	#try the OS-installed profile
-	profile=`cat /usr/lib/crypto-profiles/default-config`
+	profile=`cat /usr/lib/crypto-policies/default-config|grep -v ^#`
 	if test -z "$profile";then
 		echo "Couldn't read current profile"
 		exit 1
@@ -34,12 +34,12 @@ fi
 # preferred, but for compatibility reasons, the TLS RSA is prioritized
 # over DHE-RSA.
 
-if ! test -f $config_dir/$profile.settings;then
+if ! test -f $profile_dir/$profile.settings;then
 	echo "Unknown profile: $profile"
 	exit 1
 fi
 
-. $config_dir/$profile.settings
+. $profile_dir/$profile.settings
 
 # Generate policy for GnuTLS
 touch $gnutls_config_file.tmp >/dev/null 2>&1
@@ -52,8 +52,8 @@ echo $CONFIG_GNUTLS > $gnutls_config_file.tmp
 # Test policies
 gnutls-cli -l --priority `cat $gnutls_config_file.tmp|sed 's/SYSTEM=//g'` >/dev/null 2>&1
 if test $? != 0;then
+	echo "There is an error in $gnutls_config_file.tmp"
 	echo "Couldn't update policy for GnuTLS"
-	echo "There is an error in $gnutls_config_file"
 else
 	mv $gnutls_config_file.tmp $gnutls_config_file
 	errcode=1
