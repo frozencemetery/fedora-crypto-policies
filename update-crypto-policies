@@ -1,0 +1,56 @@
+#!/bin/sh
+
+config_dir=/usr/lib/crypto-profiles/profiles
+base_dir=/etc/crypto-profiles
+backend_config_dir=$base_dir/back-ends
+
+mkdir -p $backend_config_dir
+
+gnutls_config_file=$backend_config_dir/gnutls.config
+openssl_config_file=$backend_config_dir/openssl.config
+nss_config_file=$backend_config_dir/nss.config
+
+profile=`cat /etc/crypto-profiles/config`
+
+if test -z "$profile";then
+	#try the OS-installed profile
+	profile=`cat /usr/lib/crypto-profiles/default-config`
+	if test -z "$profile";then
+		echo "Couldn't read current profile"
+		exit 1
+	fi
+fi
+
+# Note that as default policies are updated to reflect advances
+# in crypto, the old policies should be renamed to NAME-F?? to
+# allow new systems to interoperate with old ones, by using a
+# profile that is acceptable in the old system (F?? is the fedora
+# release that used that same profile as default).
+
+# Overall, key exchange methods that offer forward secrecy are 
+# preferred, but for compatibility reasons, the TLS RSA is prioritized
+# over DHE-RSA.
+
+if ! test -f $config_dir/profiles/$profile;then
+	echo "Unknown profile: $profile"
+	exit 1
+fi
+
+. $config_dir/profiles/$profile
+
+
+echo $CONFIG_GNUTLS > $gnutls_config_file.tmp
+if ! test -f $gnutls_config_file.tmp;then
+	echo "Cannot write to $backend_config_dir"
+	exit 1
+fi
+
+# Test policies
+/usr/local/bin/gnutls-cli -l --priority `cat $gnutls_config_file` >/dev/null
+if test $? != 0;then
+	echo "There is an error in $gnutls_config_file"
+	exit 2
+fi
+mv $gnutls_config_file.tmp $gnutls_config_file
+
+exit 0
