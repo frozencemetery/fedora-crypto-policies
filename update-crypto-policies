@@ -3,6 +3,7 @@
 config_dir=/usr/lib/crypto-profiles/profiles
 base_dir=/etc/crypto-profiles
 backend_config_dir=$base_dir/back-ends
+errcode=0
 
 mkdir -p $backend_config_dir
 
@@ -31,14 +32,14 @@ fi
 # preferred, but for compatibility reasons, the TLS RSA is prioritized
 # over DHE-RSA.
 
-if ! test -f $config_dir/profiles/$profile;then
+if ! test -f $config_dir/$profile;then
 	echo "Unknown profile: $profile"
 	exit 1
 fi
 
-. $config_dir/profiles/$profile
+. $config_dir/$profile
 
-
+# Generate policy for GnuTLS
 echo $CONFIG_GNUTLS > $gnutls_config_file.tmp
 if ! test -f $gnutls_config_file.tmp;then
 	echo "Cannot write to $backend_config_dir"
@@ -46,11 +47,31 @@ if ! test -f $gnutls_config_file.tmp;then
 fi
 
 # Test policies
-/usr/local/bin/gnutls-cli -l --priority `cat $gnutls_config_file` >/dev/null
+gnutls-cli -l --priority `cat $gnutls_config_file.tmp` >/dev/null
 if test $? != 0;then
+	echo "Couldn't update policy for GnuTLS"
 	echo "There is an error in $gnutls_config_file"
-	exit 2
+else
+	mv $gnutls_config_file.tmp $gnutls_config_file
+	errcode=1
 fi
-mv $gnutls_config_file.tmp $gnutls_config_file
 
-exit 0
+
+# Generate policy for openssl
+echo $CONFIG_OPENSSL > $openssl_config_file.tmp
+if ! test -f $openssl_config_file.tmp;then
+	echo "Cannot write to $backend_config_dir"
+	exit 1
+fi
+
+# Test policies
+openssl ciphers `cat $openssl_config_file.tmp` >/dev/null
+if test $? != 0;then
+	echo "Couldn't update policy for OpenSSL"
+	echo "There is an error in $openssl_config_file.tmp"
+else
+	mv $openssl_config_file.tmp $openssl_config_file
+	errcode=1
+fi
+
+exit $errcode
