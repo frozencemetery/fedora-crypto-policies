@@ -50,15 +50,18 @@ fi
 echo $CONFIG_GNUTLS > $gnutls_config_file.tmp
 
 # Test policies
-gnutls-cli -l --priority `cat $gnutls_config_file.tmp|sed 's/SYSTEM=//g'` >/dev/null 2>&1
-if test $? != 0;then
-	echo "There is an error in $gnutls_config_file.tmp"
-	echo "Couldn't update policy for GnuTLS"
+if test -x /usr/bin/gnutls-cli;then
+	gnutls-cli -l --priority `cat $gnutls_config_file.tmp|sed 's/SYSTEM=//g'` >/dev/null 2>&1
+	if test $? != 0;then
+		echo "There is an error in $gnutls_config_file.tmp"
+		echo "Couldn't update policy for GnuTLS"
+		errcode=1
+	else
+		mv $gnutls_config_file.tmp $gnutls_config_file
+	fi
 else
 	mv $gnutls_config_file.tmp $gnutls_config_file
-	errcode=1
 fi
-
 
 # Generate policy for openssl
 touch $openssl_config_file.tmp >/dev/null 2>&1
@@ -69,13 +72,17 @@ fi
 echo $CONFIG_OPENSSL > $openssl_config_file.tmp 2>&1
 
 # Test policies
-openssl ciphers `cat $openssl_config_file.tmp` >/dev/null 2>&1
-if test $? != 0;then
-	echo "Couldn't update policy for OpenSSL"
-	echo "There is an error in $openssl_config_file.tmp"
+if test -x /usr/bin/openssl;then
+	openssl ciphers `cat $openssl_config_file.tmp` >/dev/null 2>&1
+	if test $? != 0;then
+		echo "Couldn't update policy for OpenSSL"
+		echo "There is an error in $openssl_config_file.tmp"
+		errcode=1
+	else
+		mv $openssl_config_file.tmp $openssl_config_file
+	fi
 else
 	mv $openssl_config_file.tmp $openssl_config_file
-	errcode=1
 fi
 
 exit $errcode
