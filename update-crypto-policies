@@ -2,7 +2,7 @@
 
 umask 022
 
-profile_dir=/usr/lib/crypto-policies/profiles
+profile_dir=/usr/share/crypto-policies/profiles
 base_dir=/etc/crypto-policies
 backend_config_dir=$base_dir/back-ends
 errcode=0
@@ -17,7 +17,7 @@ profile=`cat $base_dir/config|grep -v ^#`
 
 if test -z "$profile";then
 	#try the OS-installed profile
-	profile=`cat /usr/lib/crypto-policies/default-config|grep -v ^#`
+	profile=`cat /usr/share/crypto-policies/default-config|grep -v ^#`
 	if test -z "$profile";then
 		echo "Couldn't read current profile"
 		exit 1
