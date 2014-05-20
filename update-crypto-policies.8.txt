@@ -91,7 +91,7 @@ In case of a parsing error no policies will be updated.
 FILES
 -----
 /etc/crypto-profiles/config::
-	The file contains the current system policy.
+	The file contains the current system policy. It should contain a string of one of the profiles listed above (e.g., DEFAULT).
 
 /etc/crypto-profiles/back-ends::
 	Contains the generated policies in separated files, and in a format readable by the supported back-ends.
