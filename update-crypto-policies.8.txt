@@ -72,7 +72,6 @@ example the LEGACY policy in Fedora 21 will also be available as LEGACY-F21.
 [[appsupport]]
 APPLICATION SUPPORT
 -------------------
->>>>>>> Initial commit.
 Applications shipped by Fedora that provide a default configuration file
 that includes a cryptographic policy string will be modified gradually to
 support these policies. For example GnuTLS applications should be modified
