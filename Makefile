@@ -7,7 +7,7 @@ install: update-crypto-policies.8
 	for i in profiles/*;do install -p -m 755 $$i /usr/share/crypto-policies/profiles;done
 
 clean:
-	rm -f update-crypto-policies.8
+	rm -f update-crypto-policies.8 update-crypto-policies.8.xml
 
 update-crypto-policies.8: update-crypto-policies.8.txt
 	asciidoc.py -v -d manpage -b docbook update-crypto-policies.8.txt
