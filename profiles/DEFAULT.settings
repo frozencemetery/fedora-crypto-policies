@@ -1,5 +1,6 @@
 # A reasonable default for today's standards. For F21 it should provide
-# 80-bit security and no broken ciphers like RC4.
+# 80-bit security and will include for compatibility and as fallback the RC4
+# cipher which is known to be broken.
 
 # MACs: SHA1+
 # Curves: All supported
@@ -16,12 +17,12 @@ CONFIG_GNUTLS="SYSTEM=NONE:+VERS-TLS-ALL:"\
 "+ECDHE-RSA:+ECDHE-ECDSA:+RSA:+DHE-RSA:+DHE-DSS:"\
 "+AES-128-GCM:+AES-128-CBC:+CAMELLIA-128-GCM:+CAMELLIA-128-CBC:"\
 "+AES-256-GCM:+AES-256-CBC:+CAMELLIA-256-GCM:+CAMELLIA-256-CBC:"\
-"+3DES-CBC:"\
+"+3DES-CBC:+ARCFOUR-128:"\
 "+SIGN-ALL:-SIGN-RSA-MD5:"\
 "+CURVE-ALL:+COMP-NULL:%PROFILE_LOW"
 
 CONFIG_OPENSSL=\
 "kEECDH:kRSA:kEDH:"\
-"+CAMELLIA128:+AES256:+CAMELLIA256:+3DES:"\
+"+CAMELLIA128:+AES256:+CAMELLIA256:+3DES:+RC4:"\
 "!aNULL:!eNULL:!MD5:!EXP:!PSK:!RC4:!SEED:!IDEA:!DES"
 
