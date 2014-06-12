@@ -21,8 +21,10 @@ CONFIG_GNUTLS="SYSTEM=NONE:+VERS-TLS-ALL:"\
 "+SIGN-ALL:-SIGN-RSA-MD5:"\
 "+CURVE-ALL:+COMP-NULL:%PROFILE_LOW"
 
+# we explicitly allow the PSK ciphersuites in openssl as OpenSSL
+# enables them by default.
 CONFIG_OPENSSL=\
-"kEECDH:kRSA:kEDH:"\
+"kEECDH:kRSA:kEDH:kPSK:"\
 "+CAMELLIA128:+AES256:+CAMELLIA256:+3DES:+RC4:"\
-"!aNULL:!eNULL:!MD5:!EXP:!PSK:!RC4:!SEED:!IDEA:!DES"
+"!aNULL:!eNULL:!MD5:!EXP:!RC4:!SEED:!IDEA:!DES"
 
