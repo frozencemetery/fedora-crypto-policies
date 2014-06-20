@@ -1,3 +1,5 @@
+VERSION=$(shell git log -1|grep commit|cut -f 2 -d ' '|head -c 7)
+
 all: update-crypto-policies.8
 
 install: update-crypto-policies.8
@@ -13,3 +15,5 @@ update-crypto-policies.8: update-crypto-policies.8.txt
 	asciidoc.py -v -d manpage -b docbook update-crypto-policies.8.txt
 	xsltproc --nonet -o update-crypto-policies.8 /usr/share/asciidoc/docbook-xsl/manpage.xsl update-crypto-policies.8.xml
 
+dist:
+	rm -rf crypto-policies && git clone . crypto-policies && rm -rf crypto-policies/.git/ && tar -czf crypto-policies-git${VERSION}.tar.gz crypto-policies
