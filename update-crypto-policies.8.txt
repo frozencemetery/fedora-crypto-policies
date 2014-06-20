@@ -13,8 +13,8 @@ GNU General Public License for more details.
 ////
 
 
-update-ca-trust(8)
-==================
+update-crypto-policies(8)
+=========================
 :doctype: manpage
 :man source: update-crypto-policies
 
@@ -74,9 +74,19 @@ APPLICATION SUPPORT
 -------------------
 Applications shipped by Fedora that provide a default configuration file
 that includes a cryptographic policy string will be modified gradually to
-support these policies. For example GnuTLS applications should be modified
-to use the "@SYSTEM" priority string, and applications using openssl the
-"PROFILE=SYSTEM" cipher string.
+support these policies.
+
+When an application provides a configuration file, the changes needed to
+utilize the system-wide policy are the following.
+
+* Applications using GnuTLS: The special priority string "@SYSTEM" should replace any other priority string.
+
+* Applications using OpenSSL: The special cipher string "PROFILE=SYSTEM" should replace any other cipher string.
+
+In all cases if the application isn't using a particular setting, e.g.,
+using gnutls_priority_set_default() in GnuTLS, or no specific cipher string setting in
+OpenSSL, no other changes are required. The system-wide string will be used
+automatically.
 
 
 [[policyconfig]]
