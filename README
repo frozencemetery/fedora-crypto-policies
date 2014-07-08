@@ -1,0 +1,35 @@
+This repository contains the crypto-policies data and scripts used in
+Fedora.
+
+=== Purpose ===
+
+The purpose is to unify the crypto policies used by different applications
+and libraries. That is allow setting a consistent security level for crypto
+on all applications in a Fedora system, irrespective of the crypto library
+in use.
+
+=== Description ===
+
+The idea is to have few predefined security policies such as LEGACY, DEFAULT
+and FUTURE which are set system-wide by the administrator. Then applications
+that have no special needs will follow these policies by default. That
+way the management of the various crypto applications and libraries used in a
+system simplifies significantly.
+
+The current implementations works by setting the desired policy in
+/etc/crypto-policies/config. After this file is changed the script
+'update-crypto-policies' should be executed, and the new policies
+will activate.
+
+The supported back ends in Fedora are:
+ * GnuTLS
+ * OpenSSL
+
+
+Currently OpenSSL is made to support system policies using a custom modification,
+and we have proposed that method upstream at:
+http://rt.openssl.org/Ticket/Display.html?id=3266&user=guest&pass=guest
+http://rt.openssl.org/Ticket/Display.html?id=3299&user=guest&pass=guest
+
+NSS does not support fine-grained control of options, but patches are on
+the way: https://bugzilla.mozilla.org/show_bug.cgi?id=1009429
