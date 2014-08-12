@@ -45,7 +45,7 @@ The available policies are restricted to the following three profiles.
 * DEFAULT: A reasonable default for today's standards (80-bit security).
 
 * FUTURE: A level that will provide security on a conservative level that is
-  believed to withstand any near-term future attacks (128-bit security).
+  believed to withstand any near-term future attacks (112-bit security).
 
 The desired system policy is selected in /etc/crypto-profiles/config
 and this tool will generate the individual policy requirements for
