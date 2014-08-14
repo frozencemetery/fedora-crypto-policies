@@ -6,22 +6,28 @@ profile_dir=/usr/share/crypto-policies/profiles
 base_dir=/etc/crypto-policies
 backend_config_dir=$base_dir/back-ends
 errcode=0
+nocheck=0
 
 if test $# -ge 1;then
 	case "$1" in
+		--no-check)
+			nocheck=1
+			;;
 		--show)
 			if test -f $base_dir/current;then
 				cat $base_dir/current
 			else
 				cat $base_dir/config|grep -v "^#"|sed '/^$/d'
 			fi
+			exit 0
 			;;
 		*)
 			echo "usage: $0 --show"
+			echo "usage: $0 --no-check"
 			echo "usage: $0"
+			exit 0
 			;;
 	esac
-	exit 0
 fi
 
 mkdir -p $backend_config_dir >/dev/null 2>&1
@@ -67,7 +73,7 @@ fi
 echo $CONFIG_GNUTLS > $gnutls_config_file.tmp
 
 # Test policies
-if test -x /usr/bin/gnutls-cli;then
+if test nocheck = 0 && test -x /usr/bin/gnutls-cli;then
 	gnutls-cli -l --priority `cat $gnutls_config_file.tmp|sed 's/SYSTEM=//g'` >/dev/null 2>&1
 	if test $? != 0;then
 		echo "There is an error in $gnutls_config_file.tmp"
@@ -85,7 +91,7 @@ fi
 echo $CONFIG_OPENSSL > $openssl_config_file.tmp 2>&1
 
 # Test policies
-if test -x /usr/bin/openssl;then
+if test nocheck = 0 && test -x /usr/bin/openssl;then
 	openssl ciphers `cat $openssl_config_file.tmp` >/dev/null 2>&1
 	if test $? != 0;then
 		echo "Couldn't update policy for OpenSSL"
