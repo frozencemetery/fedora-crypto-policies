@@ -1,5 +1,5 @@
 # A level that will ensure maximum compatibility with legacy systems.
-# It should provide at least 64-bit security and include RC4 and MD5 (for signatures).
+# It should provide at least 64-bit security and include RC4 and MD5 (for HMAC).
 
 # MACs: MD5, SHA1+
 # Curves: All supported
