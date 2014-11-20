@@ -21,12 +21,10 @@ CONFIG_GNUTLS="SYSTEM=NONE:+VERS-TLS-ALL:-VERS-SSL3.0:"\
 "+SIGN-ALL:-SIGN-RSA-MD5:"\
 "+CURVE-ALL:+COMP-NULL:%PROFILE_LOW"
 
-# By using "!SSLv2:!SSLv3" we get the TLS 1.2-only ciphersuites;
-# that is not ideal, but it is better than nothing.
-# we explicitly allow the PSK ciphersuites in openssl as OpenSSL
-# enables them by default.
+# We cannot limit the TLS version number in openssl, thus we cannot disable
+# SSL 3.0, nor specify minimum sizes for DH or RSA parameters.
 CONFIG_OPENSSL=\
-"!SSLv2:!SSLv3:kEECDH:kRSA:kEDH:kPSK:"\
+"!SSLv2:kEECDH:kRSA:kEDH:kPSK:"\
 "+CAMELLIA128:+AES256:+CAMELLIA256:+3DES:+RC4:"\
 "!aNULL:!eNULL:!MD5:!EXP:!SEED:!IDEA:!DES"
 
