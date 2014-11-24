@@ -10,9 +10,9 @@
 # Key exchange: ECDHE, RSA, DHE
 # DH params size: 1023+
 # RSA params size: 1023+
-# Protocols: All supported (TLS1.0+)
+# Protocols: All supported (SSL3.0+)
 
-CONFIG_GNUTLS="SYSTEM=NONE:+VERS-TLS-ALL:-VERS-SSL3.0:"\
+CONFIG_GNUTLS="SYSTEM=NONE:+VERS-TLS-ALL:"\
 "+SHA1:+SHA256:+SHA384:"\
 "+ECDHE-RSA:+ECDHE-ECDSA:+RSA:+DHE-RSA:+DHE-DSS:"\
 "+AES-128-GCM:+AES-128-CBC:+CAMELLIA-128-GCM:+CAMELLIA-128-CBC:"\
