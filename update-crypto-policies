@@ -14,11 +14,7 @@ if test $# -ge 1;then
 			nocheck=1
 			;;
 		--show)
-			if test -f $base_dir/current;then
-				cat $base_dir/current
-			else
-				cat $base_dir/config|grep -v "^#"|sed '/^$/d'
-			fi
+			cat $base_dir/config|grep -v "^#"|sed '/^$/d'
 			exit 0
 			;;
 		*)
@@ -104,7 +100,9 @@ fi
 if test $errcode = 0;then
 	mv $openssl_config_file.tmp $openssl_config_file
 	mv $gnutls_config_file.tmp $gnutls_config_file
-	echo $profile > $base_dir/current
 fi
+
+# Old versions seemed to install that file. We no longer use it
+rm -f $base_dir/current
 
 exit $errcode
