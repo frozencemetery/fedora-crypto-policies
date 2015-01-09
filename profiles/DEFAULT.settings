@@ -28,3 +28,11 @@ CONFIG_OPENSSL=\
 "+CAMELLIA128:+AES256:+CAMELLIA256:+3DES:+RC4:"\
 "!aNULL:!eNULL:!MD5:!EXP:!SEED:!IDEA:!DES"
 
+
+# Configuration for Bind
+CONFIG_BIND=\
+"disable-algorithms \".\"  {\n"\
+"RSAMD5;\n"\
+"};\n" \
+
+

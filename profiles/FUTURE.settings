@@ -33,3 +33,15 @@ CONFIG_OPENSSL=\
 "+CAMELLIA128:+AES256:+CAMELLIA256:"\
 "!aNULL:!eNULL:!3DES:!MD5:!EXP:!RC4:!SEED:!IDEA:!DES"
 
+
+# Configuration for Bind
+CONFIG_BIND=\
+"disable-algorithms \".\"  {\n"\
+"RSAMD5;\n"\
+"DSA;\n"\
+"NSECRSASHA1;\n"\
+"RSASHA1;\n"\
+"};\n"\
+"disable-ds-digests \".\"  {\n"\
+"SHA1;\n"\
+"};\n"
