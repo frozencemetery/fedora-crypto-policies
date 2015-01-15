@@ -87,6 +87,16 @@ if ! test -f $openssl_config_file.tmp;then
 fi
 echo -e $CONFIG_OPENSSL > $openssl_config_file.tmp 2>&1
 
+# Test policies
+if test nocheck = 0 && test -x /usr/bin/openssl;then
+	openssl ciphers `cat $openssl_config_file.tmp` >/dev/null 2>&1
+	if test $? != 0;then
+		echo "Couldn't update policy for OpenSSL"
+		echo "There is an error in $openssl_config_file.tmp"
+		errcode=1
+	fi
+fi
+
 # Generate policy for bind
 touch $bind_config_file.tmp >/dev/null 2>&1
 if ! test -f $bind_config_file.tmp;then
@@ -96,11 +106,11 @@ fi
 echo -e $CONFIG_BIND > $bind_config_file.tmp 2>&1
 
 # Test policies
-if test nocheck = 0 && test -x /usr/bin/openssl;then
-	openssl ciphers `cat $openssl_config_file.tmp` >/dev/null 2>&1
+if test nocheck = 0 && test -x /usr/sbin/named-checkconf;then
+	/usr/sbin/named-checkconf >/dev/null 2>&1
 	if test $? != 0;then
-		echo "Couldn't update policy for OpenSSL"
-		echo "There is an error in $openssl_config_file.tmp"
+		echo "Couldn't update policy for BIND"
+		echo "There is an error in $bind_config_file.tmp"
 		errcode=1
 	fi
 fi
