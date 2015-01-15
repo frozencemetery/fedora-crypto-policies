@@ -60,6 +60,8 @@ Currently the supported back-ends are:
 
 * OpenSSL library
 
+* BIND
+
 
 [[compatibility]]
 COMPATIBILITY
