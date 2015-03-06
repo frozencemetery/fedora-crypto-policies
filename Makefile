@@ -8,6 +8,10 @@ install: update-crypto-policies.8
 	mkdir -p /usr/share/crypto-policies/profiles
 	for i in profiles/*;do install -p -m 755 $$i /usr/share/crypto-policies/profiles;done
 
+check:
+	tests/openssl.sh
+	tests/gnutls.sh
+
 clean:
 	rm -f update-crypto-policies.8 update-crypto-policies.8.xml
 
