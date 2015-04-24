@@ -37,7 +37,7 @@ various cryptographic back-ends, such as SSL/TLS libraries. That will
 be the default policy used by these back-ends unless the application user
 configures them otherwise.
 
-The available policies are restricted to the following three profiles.
+The available policies are restricted to the following profiles.
 
 * LEGACY: ensures maximum compatibility with legacy systems (64-bit
   security)
@@ -46,6 +46,8 @@ The available policies are restricted to the following three profiles.
 
 * FUTURE: A level that will provide security on a conservative level that is
   believed to withstand any near-term future attacks (112-bit security).
+
+* EMPTY: All cryptographic algorithms are disabled (used for debugging only)
 
 The desired system policy is selected in /etc/crypto-profiles/config
 and this tool will generate the individual policy requirements for
