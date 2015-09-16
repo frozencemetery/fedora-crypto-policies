@@ -80,7 +80,7 @@ if ! test -f $gnutls_config_file.tmp;then
 	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
 	exit 1
 fi
-echo -e $CONFIG_GNUTLS > $gnutls_config_file.tmp
+echo -e "$CONFIG_GNUTLS" > $gnutls_config_file.tmp
 
 # Test policies
 if test nocheck = 0 && test -x /usr/bin/gnutls-cli;then
@@ -98,7 +98,7 @@ if ! test -f $openssl_config_file.tmp;then
 	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
 	exit 1
 fi
-echo -e $CONFIG_OPENSSL > $openssl_config_file.tmp 2>&1
+echo -e "$CONFIG_OPENSSL" > $openssl_config_file.tmp 2>&1
 
 # Test policies
 if test nocheck = 0 && test -x /usr/bin/openssl;then
@@ -116,7 +116,7 @@ if ! test -f $bind_config_file.tmp;then
 	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
 	exit 1
 fi
-echo -e $CONFIG_BIND > $bind_config_file.tmp 2>&1
+echo -e "$CONFIG_BIND" > $bind_config_file.tmp 2>&1
 
 # Test policies
 if test nocheck = 0 && test -x /usr/sbin/named-checkconf;then
@@ -130,6 +130,7 @@ fi
 
 # update all the files
 if test $errcode = 0;then
+	echo "Setting system policy to $profile"
 	mv $openssl_config_file.tmp $openssl_config_file
 	mv $gnutls_config_file.tmp $gnutls_config_file
 	mv $bind_config_file.tmp $bind_config_file
