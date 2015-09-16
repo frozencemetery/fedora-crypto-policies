@@ -33,11 +33,14 @@ openssl_config_file=$backend_config_dir/openssl.config
 nss_config_file=$backend_config_dir/nss.config
 bind_config_file=$backend_config_dir/bind.config
 
-profile=`cat $base_dir/config|grep -v ^#`
+profile=$(cat $base_dir/config|grep -v ^#)
+
+# convert old style compat profiles to new-style: FUTURE-F21 -> FUTURE@F21
+profile=$(echo -n $profile|sed -e 's/FUTURE-/FUTURE@/' -e 's/DEFAULT-/DEFAULT@/' -e 's/LEGACY-/LEGACY@/')
 
 if test -z "$profile";then
 	#try the OS-installed profile
-	profile=`cat /usr/share/crypto-policies/default-config|grep -v ^#`
+	profile=$(cat /usr/share/crypto-policies/default-config|grep -v ^#)
 	if test -z "$profile";then
 		echo "Couldn't read current profile"
 		exit 1
@@ -45,21 +48,31 @@ if test -z "$profile";then
 fi
 
 # Note that as default policies are updated to reflect advances
-# in crypto, the old policies should be renamed to NAME-F?? to
+# in crypto, the old policies should be renamed to NAME@F?? to
 # allow new systems to interoperate with old ones, by using a
 # profile that is acceptable in the old system (F?? is the fedora
 # release that used that same profile as default).
 
-# Overall, key exchange methods that offer forward secrecy are 
-# preferred, but for compatibility reasons, the TLS RSA is prioritized
-# over DHE-RSA.
-
-if ! test -f $profile_dir/$profile.settings;then
+if ! test -f "$profile_dir/$profile";then
 	echo "Unknown profile: $profile"
 	exit 1
 fi
 
-. $profile_dir/$profile.settings
+# If we are using a compatibility profile with an old (Fedora) version
+# ensure that we first apply the current profile of the same level. That
+# is to ensure that programs that were not handled by the old profile have
+# some reasonable default options.
+is_compat=$(echo $profile|grep '@')
+if test -n "$is_compat";then
+	orig=$(echo $profile|cut -d '@' -f 1)
+	update-crypto-policies "$orig"
+	if test $? != 0;then
+		echo "Error applying \"$orig\";needed to apply \"$profile\""
+		exit 1
+	fi
+fi
+
+. "$profile_dir/$profile"
 
 # Generate policy for GnuTLS
 touch $gnutls_config_file.tmp >/dev/null 2>&1
