@@ -38,3 +38,17 @@ CONFIG_BIND=\
 "GOST;\n"\
 "SHA-384;\n"\
 "};\n"
+
+# Configuration for Java
+CONFIG_JAVA="$(cat <<EOF
+jdk.certpath.disabledAlgorithms=MD2, MD5, SHA1, DSA, RSA, ECDSA
+jdk.tls.disabledAlgorithms=SSLv2, SSLv3, TLSv1, TLSv1.1, TLSv1.2, DH, \
+ HmacMD5, HmacSHA1, K_NULL, C_NULL, M_NULL, \
+ RSA, DH_DSA, DH_RSA, EC_EC, EC_RSA, EC,
+ DHE_DSS_EXPORT, DHE_RSA_EXPORT, DH_anon_EXPORT, DH_DSS_EXPORT, \
+ DH_RSA_EXPORT, RSA_EXPORT, DH_anon, ECDH_anon, RC4_128, RC4_40, DES_CBC, \
+ DES40_CBC, RC2
+jdk.tls.legacyAlgorithms=
+EOF
+)"
+
