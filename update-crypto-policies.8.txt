@@ -62,6 +62,10 @@ Currently the supported back-ends are:
 
 * OpenSSL library
 
+* OpenJDK
+
+* Libkrb5
+
 * BIND
 
 [[options]]
