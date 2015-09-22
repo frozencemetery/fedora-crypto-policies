@@ -65,3 +65,8 @@ jdk.tls.legacyAlgorithms=
 EOF
 )"
 
+# Configuration for libkrb5
+CONFIG_KRB5="$(cat <<EOF
+permitted_enctypes = aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha1-96 camellia256-cts-cmac camellia128-cts-cmac
+EOF
+)"

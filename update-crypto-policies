@@ -50,6 +50,8 @@ openssl_config_file=$backend_config_dir/openssl.config
 nss_config_file=$backend_config_dir/nss.config
 bind_config_file=$backend_config_dir/bind.config
 java_config_file=$backend_config_dir/java.config
+tmp_krb5_config_file=$backend_config_dir/krb5.config
+krb5_config_file=/etc/krb5.conf.d/crypto-policy
 
 profile=$(cat $base_dir/config|grep -v ^#)
 
@@ -118,6 +120,14 @@ if ! test -f $openssl_config_file.tmp;then
 fi
 echo -e "$CONFIG_OPENSSL" > $openssl_config_file.tmp 2>&1
 
+# Generate policy for krb5
+touch $tmp_krb5_config_file >/dev/null 2>&1
+if ! test -f $tmp_krb5_config_file;then
+	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
+	exit 1
+fi
+echo -e "$CONFIG_KRB5" > $tmp_krb5_config_file 2>&1
+
 # Test policies
 if test nocheck = 0 && test -x /usr/bin/openssl;then
 	openssl ciphers `cat $openssl_config_file.tmp` >/dev/null 2>&1
@@ -160,6 +170,7 @@ if test $errcode = 0;then
 	mv $gnutls_config_file.tmp $gnutls_config_file
 	mv $bind_config_file.tmp $bind_config_file
 	mv $java_config_file.tmp $java_config_file
+	mv $tmp_krb5_config_file.tmp $krb5_config_file
 	echo $profile > $state_dir/current
 fi
 
