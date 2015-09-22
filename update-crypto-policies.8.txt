@@ -87,8 +87,8 @@ The following options are available in update-crypto-policies tool.
 COMPATIBILITY
 -------------
 Policies that were present in previously released Fedora systems will
-be available using the -FXX suffix, where XX is the Fedora version. For
-example the LEGACY policy in Fedora 21 will also be available as LEGACY-F21.
+be available using the @FXX suffix, where XX is the Fedora version. For
+example the LEGACY policy in Fedora 21 will also be available as LEGACY@F21.
 
 
 [[appsupport]]
