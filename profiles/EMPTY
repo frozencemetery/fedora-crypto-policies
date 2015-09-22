@@ -47,7 +47,7 @@ jdk.tls.disabledAlgorithms=SSLv2, SSLv3, TLSv1, TLSv1.1, TLSv1.2, DH, \
  RSA, DH_DSA, DH_RSA, EC_EC, EC_RSA, EC,
  DHE_DSS_EXPORT, DHE_RSA_EXPORT, DH_anon_EXPORT, DH_DSS_EXPORT, \
  DH_RSA_EXPORT, RSA_EXPORT, DH_anon, ECDH_anon, RC4_128, RC4_40, DES_CBC, \
- DES40_CBC, RC2
+ DES40_CBC, RC2, 3DES_EDE_CBC
 jdk.tls.legacyAlgorithms=
 EOF
 )"
