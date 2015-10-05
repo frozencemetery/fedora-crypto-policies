@@ -49,13 +49,13 @@ The available policies are restricted to the following profiles.
 
 * EMPTY: All cryptographic algorithms are disabled (used for debugging only)
 
-The desired system policy is selected in /etc/crypto-profiles/config
+The desired system policy is selected in /etc/crypto-policies/config
 and this tool will generate the individual policy requirements for
 all back-ends that support such configuration. After this tool is called
 the administrator is assured that any application that utilizes the
 supported back-ends will policy that adheres to the configured profile.
 
-The generated back-end policies will be placed in /etc/crypto-profiles/back-ends.
+The generated back-end policies will be placed in /etc/crypto-policies/back-ends.
 Currently the supported back-ends are:
 
 * GnuTLS library
@@ -114,17 +114,17 @@ automatically.
 [[policyconfig]]
 POLICY CONFIGURATION
 --------------------
-One of the supported profiles should be set in /etc/crypto-profiles/config
+One of the supported profiles should be set in /etc/crypto-policies/config
 and this script should be run afterwards.
 
 In case of a parsing error no policies will be updated.
 
 FILES
 -----
-/etc/crypto-profiles/config::
+/etc/crypto-policies/config::
 	The file contains the current system policy. It should contain a string of one of the profiles listed above (e.g., DEFAULT).
 
-/etc/crypto-profiles/back-ends::
+/etc/crypto-policies/back-ends::
 	Contains the generated policies in separated files, and in a format readable by the supported back-ends.
 
 AUTHOR
