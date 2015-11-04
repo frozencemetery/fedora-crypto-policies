@@ -11,6 +11,8 @@
 
 CONFIG_GNUTLS="SYSTEM=NONE"
 
+CONFIG_GNUTLS28="SYSTEM=NONE"
+
 # We cannot limit the TLS version number in openssl, thus we cannot disable
 # SSL 3.0, nor specify minimum sizes for DH or RSA parameters.
 CONFIG_OPENSSL=\

@@ -46,6 +46,7 @@ mkdir -p $backend_config_dir >/dev/null 2>&1
 mkdir -p $state_dir >/dev/null 2>&1
 
 gnutls_config_file=$backend_config_dir/gnutls.config
+gnutls28_config_file=$backend_config_dir/gnutls28.config
 openssl_config_file=$backend_config_dir/openssl.config
 nss_config_file=$backend_config_dir/nss.config
 bind_config_file=$backend_config_dir/bind.config
@@ -101,7 +102,7 @@ if ! test -f $gnutls_config_file.tmp;then
 fi
 echo -e "$CONFIG_GNUTLS" > $gnutls_config_file.tmp
 
-# Test policies
+# Test policy
 if test nocheck = 0 && test -x /usr/bin/gnutls-cli;then
 	gnutls-cli -l --priority `cat $gnutls_config_file.tmp|sed 's/SYSTEM=//g'` >/dev/null 2>&1
 	if test $? != 0;then
@@ -110,6 +111,14 @@ if test nocheck = 0 && test -x /usr/bin/gnutls-cli;then
 		errcode=1
 	fi
 fi
+
+# Generate policy for compat-gnutls28
+touch $gnutls28_config_file.tmp >/dev/null 2>&1
+if ! test -f $gnutls28_config_file.tmp;then
+	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
+	exit 1
+fi
+echo -e "$CONFIG_GNUTLS28" > $gnutls28_config_file.tmp
 
 # Generate policy for openssl
 touch $openssl_config_file.tmp >/dev/null 2>&1
@@ -166,6 +175,7 @@ if test $errcode = 0;then
 	echo "Setting system policy to $profile"
 	mv $openssl_config_file.tmp $openssl_config_file
 	mv $gnutls_config_file.tmp $gnutls_config_file
+	mv $gnutls28_config_file.tmp $gnutls28_config_file
 	mv $bind_config_file.tmp $bind_config_file
 	mv $java_config_file.tmp $java_config_file
 	mv $krb5_config_file.tmp $krb5_config_file
