@@ -62,6 +62,8 @@ Currently the supported back-ends are:
 
 * OpenSSL library
 
+* NSS library
+
 * OpenJDK
 
 * Libkrb5
@@ -104,6 +106,10 @@ utilize the system-wide policy are the following.
 * Applications using GnuTLS: The special priority string "@SYSTEM" should replace any other priority string.
 
 * Applications using OpenSSL: The special cipher string "PROFILE=SYSTEM" should replace any other cipher string.
+
+* Applications using NSS: No special treatment is required. Applications using NSS will load the crypto policies by default.
+
+* Applications using Java: No special treatment is required. Applications using Java will load the crypto policies by default.
 
 In all cases if the application isn't using a particular setting, e.g.,
 using gnutls_priority_set_default() in GnuTLS, or no specific cipher string setting in

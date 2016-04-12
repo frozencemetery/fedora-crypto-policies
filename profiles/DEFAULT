@@ -62,3 +62,26 @@ CONFIG_KRB5="$(cat <<EOF
 permitted_enctypes = aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha1-96 des3-cbc-sha1 camellia256-cts-cmac camellia128-cts-cmac
 EOF
 )"
+
+# Configuration for NSS
+# Options documented at: https://dxr.mozilla.org/mozilla-central/source/security/nss/tests/ssl/sslpolicy.txt
+
+CONFIG_NSS="$(cat <<EOF
+#
+# To change configuration change only the config= line. The rest
+# allows NSS to handle this stanza as a strictly policy config stanza
+# and not try to load any additional parameters.
+#
+library=
+name=Policy
+NSS=flags=policyOnly,moduleDB
+config="disallow=ALL
+allow=tls-version-min=tls1.0:tls-version-max=tls1.2:dtls-version-min=dtls1.0:dtls-version-max=dtls1.2:\
+aes256-gcm:aes128-gcm:aes256-cbc:aes128-cbc:camellia128-cbc:camellia256-cbc:\
+des-ede3-cbc:ECDHE-RSA:ECDHE-ECDSA:RSA:DHE-RSA:DHE-DSS:RSA-MIN=1023:DH-MIN=1023:DSA-MIN=1023:HMAC-SHA1:HMAC-SHA224:HMAC-SHA256:\
+HMAC-SHA384:HMAC-SHA512:SECP256R1:SECP384R1:SECP521R1:SHA512:SHA384:SHA224:SHA1"
+
+# The space above is critical and must be there.
+#
+EOF
+)"

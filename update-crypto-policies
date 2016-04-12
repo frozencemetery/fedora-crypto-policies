@@ -128,6 +128,13 @@ if ! test -f $openssl_config_file.tmp;then
 fi
 echo -e "$CONFIG_OPENSSL" > $openssl_config_file.tmp 2>&1
 
+# Generate policy for NSS
+echo -e "$CONFIG_NSS" > $nss_config_file.tmp 2>&1
+if ! test -f $nss_config_file.tmp;then
+	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
+	exit 1
+fi
+
 # Generate policy for krb5
 echo -e "$CONFIG_KRB5" > $krb5_config_file.tmp 2>&1
 if ! test -f $krb5_config_file.tmp;then
@@ -173,6 +180,7 @@ fi
 # update all the files
 if test $errcode = 0;then
 	echo "Setting system policy to $profile"
+	mv $nss_config_file.tmp $nss_config_file
 	mv $openssl_config_file.tmp $openssl_config_file
 	mv $gnutls_config_file.tmp $gnutls_config_file
 	mv $gnutls28_config_file.tmp $gnutls28_config_file
