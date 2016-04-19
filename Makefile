@@ -9,8 +9,10 @@ install: update-crypto-policies.8
 	for i in profiles/*;do install -p -m 755 $$i /usr/share/crypto-policies/profiles;done
 
 check:
-	tests/openssl.sh
-	tests/gnutls.sh
+	@-rm -f test-suite.log
+	tests/openssl.sh >test-suite.log
+	tests/gnutls.sh >>test-suite.log
+	tests/java.sh >>test-suite.log
 
 clean:
 	rm -f update-crypto-policies.8 update-crypto-policies.8.xml
