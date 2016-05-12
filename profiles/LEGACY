@@ -63,11 +63,11 @@ CONFIG_NSS="$(cat <<EOF
 library=
 name=Policy
 NSS=flags=policyOnly,moduleDB
-config="disallow=ALL
-allow=tls-version-min=ssl3.0:tls-version-max=tls1.2:dtls-version-min=dtls1.0:dtls-version-max=dtls1.2:\
+config="disallow=ALL \
+allow=tls-version-min=ssl3.0:dtls-version-min=dtls1.0:\
 aes256-gcm:aes128-gcm:aes256-cbc:aes128-cbc:camellia128-cbc:camellia256-cbc:\
 des-ede3-cbc:RC4:ECDHE-RSA:ECDHE-ECDSA:RSA:DHE-RSA:DHE-DSS:RSA-MIN=767:DH-MIN=767:DSA-MIN=767:HMAC-SHA1:HMAC-SHA224:HMAC-SHA256:\
-HMAC-SHA384:HMAC-SHA512:SECP256R1:SECP384R1:SECP521R1:SHA512:SHA384:SHA224:SHA1"
+HMAC-SHA384:HMAC-SHA512:SECP256R1:SECP384R1:SECP521R1:SHA512:SHA384:SHA224:SHA256:SHA1"
 
 # The space above is critical and must be there.
 #
