@@ -1,206 +1,123 @@
-#!/bin/sh
+#!/usr/bin/perl
 
-umask 022
+use strict;
+use warnings;
 
-profile_dir=/usr/share/crypto-policies/profiles
-base_dir=/etc/crypto-policies
-backend_config_dir=$base_dir/back-ends
-state_dir=$base_dir/state
-errcode=0
-nocheck=0
+use Getopt::Long;
+use File::Path qw(make_path);
 
-if test $# -ge 1;then
-	case "$1" in
-		--no-check)
-			nocheck=1
-			;;
-		--show)
-			cat $base_dir/config|grep -v "^#"|sed '/^$/d'
-			exit 0
-			;;
-		--is-applied)
-			time1=$(stat -c %Y $state_dir/current)
-			time2=$(stat -c %Y $base_dir/config)
-			if test -z "$time1" || test -z "$time2";then
-				exit 77
-			fi
-			if test $time1 -ge $time2;then
-				echo "The configured policy is applied"
-				exit 0
-			else
-				echo "The configured policy is NOT applied"
-				exit 1
-			fi
-			;;
-		*)
-			echo "usage: $0 --show"
-			echo "usage: $0 --no-check"
-			echo "usage: $0 --is-applied"
-			echo "usage: $0"
-			exit 0
-			;;
-	esac
-fi
+use File::Basename qw(dirname);
+use Cwd  qw(abs_path);
+#use lib dirname(dirname abs_path $0);
+my $libdir = "/usr/libexec/crypto-policies";
+use lib "/usr/libexec/crypto-policies";
 
-mkdir -p $backend_config_dir >/dev/null 2>&1
-mkdir -p $state_dir >/dev/null 2>&1
+umask 022;
 
-gnutls_config_file=$backend_config_dir/gnutls.config
-gnutls28_config_file=$backend_config_dir/gnutls28.config
-openssl_config_file=$backend_config_dir/openssl.config
-nss_config_file=$backend_config_dir/nss.config
-bind_config_file=$backend_config_dir/bind.config
-java_config_file=$backend_config_dir/java.config
-krb5_config_file=$backend_config_dir/krb5.config
+sub usage() {
+	print "usage: $0 --show\n";
+	print "usage: $0 --no-check\n";
+	print "usage: $0 --is-applied\n";
+	print "usage: $0 --set [POLICY]\n";
+	print "usage: $0\n";
+	exit 0;
+}
 
-profile=$(cat $base_dir/config|grep -v ^#)
+my $base_dir="/etc/crypto-policies";
+my $backend_config_dir="$base_dir/back-ends";
+my $state_dir="$base_dir/state";
+my $errcode=0;
+my $nocheck='';
+my $show = '';
+my $is_applied = '';
+my $profile = '';
+my $write_profile = 0;
 
-# convert old style compat profiles to new-style: FUTURE-F21 -> FUTURE@F21
-profile=$(echo -n $profile|sed -e 's/FUTURE-/FUTURE@/' -e 's/DEFAULT-/DEFAULT@/' -e 's/LEGACY-/LEGACY@/')
+GetOptions ('no-check' => \$nocheck, 'show' => \$show, 'is-applied' => \$is_applied, 'set=s' => \$profile)
+or usage();
 
-if test -z "$profile";then
-	#try the OS-installed profile
-	profile=$(cat /usr/share/crypto-policies/default-config|grep -v ^#)
-	if test -z "$profile";then
-		echo "Couldn't read current profile"
-		exit 1
-	fi
-fi
+if ($show ne '') {
+	system("cat ${base_dir}/config|grep -v \"^#\"|sed '/^\$/d'");
+	exit(0);
+} elsif ($is_applied ne '') {
+	my $time1 = (stat("$state_dir/current"))[9];
+	my $time2 = (stat("$state_dir/config"))[9];
+	if ($time1 >= $time2) {
+		print "The configured policy is applied";
+		exit 0;
+	} else {
+		print "The configured policy is NOT applied";
+		exit 1;
+	}
+}
 
-# Note that as default policies are updated to reflect advances
-# in crypto, the old policies should be renamed to NAME@F?? to
-# allow new systems to interoperate with old ones, by using a
-# profile that is acceptable in the old system (F?? is the fedora
-# release that used that same profile as default).
+make_path("$backend_config_dir", "$state_dir", {
+      chmod => 0755,
+});
 
-if ! test -f "$profile_dir/$profile";then
-	echo "Unknown profile: $profile"
-	exit 1
-fi
+if ($profile eq '') {
+	$profile=`cat $base_dir/config|grep -v ^#`;
+	$write_profile=0;
+	chomp($profile);
+} else {
+	$write_profile=1;
+}
 
-# If we are using a compatibility profile with an old (Fedora) version
-# ensure that we first apply the current profile of the same level. That
-# is to ensure that programs that were not handled by the old profile have
-# some reasonable default options.
-is_compat=$(echo $profile|grep '@')
-if test -n "$is_compat";then
-	orig=$(echo $profile|cut -d '@' -f 1)
-	update-crypto-policies "$orig"
-	if test $? != 0;then
-		echo "Error applying \"$orig\";needed to apply \"$profile\""
-		exit 1
-	fi
-fi
+my @modules = ("gnutls", "gnutls28", "openssl", "bind", "java", "krb5", "nss");
+my %modtmp = ();
+my $mod;
+my @reloadcmds = ();
 
-. "$profile_dir/$profile"
+foreach $mod (@modules) {
+	require "$libdir/$mod.pl";
+	my $tmp = '';
 
-# Generate policy for GnuTLS
-touch $gnutls_config_file.tmp >/dev/null 2>&1
-if ! test -f $gnutls_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
-echo -e "$CONFIG_GNUTLS" > $gnutls_config_file.tmp
+	$tmp = generate_temp_policy($profile, $backend_config_dir, $libdir, \@reloadcmds);
+	$modtmp{"$mod"} = $tmp;
 
-# Test policy
-if test nocheck = 0 && test -x /usr/bin/gnutls-cli;then
-	gnutls-cli -l --priority `cat $gnutls_config_file.tmp|sed 's/SYSTEM=//g'` >/dev/null 2>&1
-	if test $? != 0;then
-		echo "There is an error in $gnutls_config_file.tmp"
-		echo "Couldn't update policy for GnuTLS"
-		errcode=1
-	fi
-fi
+	if ($nocheck eq '') {
+		test_temp_policy($profile, $backend_config_dir, $tmp);
+	}
+}
 
-# Generate policy for compat-gnutls28
-touch $gnutls28_config_file.tmp >/dev/null 2>&1
-if ! test -f $gnutls28_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
-echo -e "$CONFIG_GNUTLS28" > $gnutls28_config_file.tmp
+foreach $mod (@modules) {
+	my $tmp = $modtmp{"$mod"};
 
-# Generate policy for openssl
-touch $openssl_config_file.tmp >/dev/null 2>&1
-if ! test -f $openssl_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
-echo -e "$CONFIG_OPENSSL" > $openssl_config_file.tmp 2>&1
+#	unlink("$backend_config_dir/$mod.config");
 
-# Generate policy for NSS
-echo -e "$CONFIG_NSS" > $nss_config_file.tmp 2>&1
-if ! test -f $nss_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
+	my ( $fh, $filename ) = tempfile();
+	print $fh $tmp;
+	close $fh;
+	move( $filename, "$backend_config_dir/$mod.config" ) or die "The move operation failed for $mod: $!";
+}
 
-# Generate policy for krb5
-echo -e "$CONFIG_KRB5" > $krb5_config_file.tmp 2>&1
-if ! test -f $krb5_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
+foreach my $cmd (@reloadcmds) {
+	print "executing: $cmd\n";
+	system($cmd);
+}
 
-# Test policies
-if test nocheck = 0 && test -x /usr/bin/openssl;then
-	openssl ciphers `cat $openssl_config_file.tmp` >/dev/null 2>&1
-	if test $? != 0;then
-		echo "Couldn't update policy for OpenSSL"
-		echo "There is an error in $openssl_config_file.tmp"
-		errcode=1
-	fi
-fi
+print "Setting system wide crypto policy to $profile\n";
+open (my $fh, '>', "$state_dir/current") or die "Could not open file '$state_dir/current' $!";
+print $fh "$profile\n";
+close $fh;
 
-# Generate policy for bind
-touch $bind_config_file.tmp >/dev/null 2>&1
-if ! test -f $bind_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
-echo -e "$CONFIG_BIND" > $bind_config_file.tmp 2>&1
+if ($write_profile == 1) {
+	open (my $fh, '>', "$base_dir/config") or die "Could not open file '$base_dir/config' $!";
+	print $fh "# This file should contain a single keyword, the crypto policy to\n";
+	print $fh "# be applied by default to applications. The available policies are\n";
+	print $fh "# restricted to the following profiles.\n";
+	print $fh "#\n";
+	print $fh "# * LEGACY: ensures maximum compatibility with legacy systems (64-bit\n";
+	print $fh "#   security)\n";
+	print $fh "# * DEFAULT: A reasonable default for today's standards (80-bit security).\n";
+	print $fh "#\n";
+	print $fh "# * FUTURE: A level that will provide security on a conservative level that is\n";
+	print $fh "#   believed to withstand any near-term future attacks (128-bit security).\n";
+	print $fh "#\n";
+	print $fh "# After modifying this file, you need to run update-crypto-policies\n";
+	print $fh "# for the changes to propagate.\n";
+	print $fh "$profile\n";
+	close $fh;
+}
 
-touch $java_config_file.tmp >/dev/null 2>&1
-if ! test -f $java_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
-echo -e "$CONFIG_JAVA" > $java_config_file.tmp 2>&1
-
-# Test policies
-if test nocheck = 0 && test -x /usr/sbin/named-checkconf;then
-	/usr/sbin/named-checkconf >/dev/null 2>&1
-	if test $? != 0;then
-		echo "Couldn't update policy for BIND"
-		echo "There is an error in $bind_config_file.tmp"
-		errcode=1
-	fi
-fi
-
-# update all the files
-if test $errcode = 0;then
-	echo "Setting system policy to $profile"
-	mv $nss_config_file.tmp $nss_config_file
-	mv $openssl_config_file.tmp $openssl_config_file
-	mv $gnutls_config_file.tmp $gnutls_config_file
-	mv $gnutls28_config_file.tmp $gnutls28_config_file
-	mv $bind_config_file.tmp $bind_config_file
-	mv $java_config_file.tmp $java_config_file
-	mv $krb5_config_file.tmp $krb5_config_file
-	echo $profile > $state_dir/current
-else
-	# ensure we don't disrupt services which include these
-	# config files by ensuring there is at least an empty one.
-	touch $krb5_config_file
-	touch $bind_config_file
-	touch $java_config_file
-fi
-
-if test -e /usr/lib/systemd/system/bind.service;then
-	systemctl reload bind
-fi
-
-# Old versions seemed to install that file. We no longer use it
-rm -f $base_dir/current
-
-exit $errcode
+exit 0;
