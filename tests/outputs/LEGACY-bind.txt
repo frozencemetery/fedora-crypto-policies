@@ -1,0 +1,5 @@
+disable-algorithms "." {
+RSAMD5;
+};
+disable-ds-digests "." {
+};

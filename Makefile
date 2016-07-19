@@ -19,6 +19,7 @@ check:
 	tests/openssl.pl >test-suite.log
 	tests/gnutls.pl >>test-suite.log
 	tests/java.pl >>test-suite.log
+	tests/verify-output.pl >>test-suite.log
 
 clean:
 	rm -f update-crypto-policies.8 update-crypto-policies.8.xml
