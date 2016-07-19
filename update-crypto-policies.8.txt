@@ -105,7 +105,12 @@ utilize the system-wide policy are the following.
   default. To prevent that, the NSS_IGNORE_SYSTEM_POLICY environment variable must be set to 1
   prior to executing the application.
 
-* Applications using Java: No special treatment is required. Applications using Java will load the crypto policies by default.
+* Applications using Java: No special treatment is required. Applications using
+  Java will load the crypto policies by default.
+
+* Applications using libkrb5: No special treatment is required. Applications
+  will follow the crypto policies by default. A system-wide opt-out is
+  available by deleting the /etc/krb5.conf.d/crypto-policies link.
 
 In all cases if the application isn't using a particular setting, e.g.,
 using gnutls_priority_set_default() in GnuTLS, or no specific cipher string setting in
