@@ -143,7 +143,7 @@ sub generate_temp_policy() {
 	append("DH-MIN=$min_dh_size");
 	append("DSA-MIN=$min_dsa_size");
 	append("RSA-MIN=$min_rsa_size");
-	$string .= "\"\n\n";
+	$string .= "\"\n\n\n";
 
 	return $string;
 }

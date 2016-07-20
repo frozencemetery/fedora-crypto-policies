@@ -35,6 +35,8 @@ foreach $mod (@modules) {
 	    print "Error in the contents of $profile-$mod.txt\n";
 	    exit 1;
 	}
+
+	test_temp_policy($profile, 0, $tmp);
     }
 }
 

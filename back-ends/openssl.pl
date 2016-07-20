@@ -23,6 +23,9 @@ sub append {
 }
 
 my %cipher_not_map = (
+	'AES-256-GCM'  => '!AES-256-GCM',
+	'AES-128-GCM'  => '!AES-128-GCM',
+	'CHACHA20-POLY1305'  => '!CHACHA20-POLY1305',
 	'SEED-CBC'  => '!SEED',
 	'IDEA-CBC'  => '!IDEA',
 	'DES-CBC'   => '!DES',
@@ -48,10 +51,17 @@ my %key_exchange_not_map = (
 	'DH'         => '',
 	'ECDH'       => '',
 	'EXPORT' => '!EXP',
-	'DHE'        => 'kEDH'
+	'RSA'       => '!kRSA',
+	'ECDHE'     => '!kEECDH',
+	'DHE'       => '!kEDH',
+	'PSK'       => '!kPSK',
+	'DHE-PSK'   => '!kDHEPSK',
+	'ECDHE-PSK' => '!kECDHEPSK'
 );
 
-my %mac_not_map = ( 'HMAC-MD5' => '!MD5' );
+my %mac_not_map = ( 'HMAC-MD5' => '!MD5',
+	'HMAC-SHA1' => '!SHA1'
+);
 
 sub generate_temp_policy() {
 	my $profile = shift(@_);

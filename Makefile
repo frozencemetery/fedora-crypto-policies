@@ -1,5 +1,5 @@
 VERSION=$(shell git log -1|grep commit|cut -f 2 -d ' '|head -c 7)
-DIR?=/usr/libexec/crypto-policies
+DIR?=/usr/share/crypto-policies
 BINDIR?=/usr/bin
 MANDIR?=/usr/share/man/man8
 DESTDIR?=
@@ -7,12 +7,13 @@ DESTDIR?=
 all: update-crypto-policies.8
 
 install: update-crypto-policies.8
+	mkdir -p $(DESTDIR)/$(MANDIR)
+	mkdir -p $(DESTDIR)/$(BINDIR)
 	install -p -m 644 update-crypto-policies.8 $(DESTDIR)/$(MANDIR)
 	install -p -m 755 update-crypto-policies $(DESTDIR)/$(BINDIR)
-	mkdir -p $(DESTDIR)/$(DIR)/profiles
-	for i in back-ends/*pl;do install -p -m 755 $$i $(DESTDIR)/$(DIR);done
-	for i in back-ends/profiles/*;do install -p -m 755 $$i $(DESTDIR)/$(DIR)/profiles;done
-	sed -i 's|/usr/libexec/crypto-policies|'"$(DIR)"'|g' $(DESTDIR)/$(BINDIR)/update-crypto-policies
+	mkdir -p $(DESTDIR)/$(DIR)/
+	install -p -m 644 default-config $(DESTDIR)/$(DIR)
+	./generate-policies.pl $(DESTDIR)/$(DIR)
 
 check:
 	@-rm -f test-suite.log

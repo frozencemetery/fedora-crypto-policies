@@ -16,6 +16,7 @@ foreach my $policy (@policies) {
 	if ($? != 0) {
 		print "Error in openssl policy for $policy\n";
 		system("cat $TMPFILE");
+		print "ciphers: $tmp\n";
 		exit 1;
 	}
 	unlink($TMPFILE);

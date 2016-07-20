@@ -1,123 +1,95 @@
-#!/usr/bin/perl
+#!/bin/sh
 
-use strict;
-use warnings;
+umask 022
 
-use Getopt::Long;
-use File::Path qw(make_path);
+profile_dir=/usr/share/crypto-policies/
+base_dir=/etc/crypto-policies
+backend_config_dir=$base_dir/back-ends
+state_dir=$base_dir/state
+errcode=0
+nocheck=0
+profile=''
 
-use File::Basename qw(dirname);
-use Cwd  qw(abs_path);
-#use lib dirname(dirname abs_path $0);
-my $libdir = "/usr/libexec/crypto-policies";
-use lib "/usr/libexec/crypto-policies";
+if test $# -ge 1;then
+	case "$1" in
+		--set)
+			profile="$2"
+			;;
+		--no-check)
+			nocheck=1
+			;;
+		--show)
+			cat $base_dir/config|grep -v "^#"|sed '/^$/d'
+			exit 0
+			;;
+		--is-applied)
+			time1=$(stat -c %Y $state_dir/current)
+			time2=$(stat -c %Y $base_dir/config)
+			if test -z "$time1" || test -z "$time2";then
+				exit 77
+			fi
+			if test $time1 -ge $time2;then
+				echo "The configured policy is applied"
+				exit 0
+			else
+				echo "The configured policy is NOT applied"
+				exit 1
+			fi
+			;;
+		*)
+			echo "usage: $0 --set [POLICY]"
+			echo "usage: $0 --show"
+			echo "usage: $0 --no-check"
+			echo "usage: $0 --is-applied"
+			echo "usage: $0"
+			exit 0
+			;;
+	esac
+fi
 
-umask 022;
+mkdir -p $backend_config_dir >/dev/null 2>&1
+mkdir -p $state_dir >/dev/null 2>&1
 
-sub usage() {
-	print "usage: $0 --show\n";
-	print "usage: $0 --no-check\n";
-	print "usage: $0 --is-applied\n";
-	print "usage: $0 --set [POLICY]\n";
-	print "usage: $0\n";
-	exit 0;
-}
+set_config=0
+if test -z "$profile";then
+	profile=$(cat $base_dir/config|grep -v ^#)
+else
+	set_config=1
+fi
 
-my $base_dir="/etc/crypto-policies";
-my $backend_config_dir="$base_dir/back-ends";
-my $state_dir="$base_dir/state";
-my $errcode=0;
-my $nocheck='';
-my $show = '';
-my $is_applied = '';
-my $profile = '';
-my $write_profile = 0;
+# remove any legacy profile options
+profile=$(echo -n $profile|sed -e 's/@F..//')
 
-GetOptions ('no-check' => \$nocheck, 'show' => \$show, 'is-applied' => \$is_applied, 'set=s' => \$profile)
-or usage();
+if test -z "$profile";then
+	#try the OS-installed profile
+	profile=$(cat /usr/share/crypto-policies/default-config|grep -v ^#)
+	if test -z "$profile";then
+		echo "Couldn't read current profile"
+		exit 1
+	fi
+fi
 
-if ($show ne '') {
-	system("cat ${base_dir}/config|grep -v \"^#\"|sed '/^\$/d'");
-	exit(0);
-} elsif ($is_applied ne '') {
-	my $time1 = (stat("$state_dir/current"))[9];
-	my $time2 = (stat("$state_dir/config"))[9];
-	if ($time1 >= $time2) {
-		print "The configured policy is applied";
-		exit 0;
-	} else {
-		print "The configured policy is NOT applied";
-		exit 1;
-	}
-}
+if ! test -d "$profile_dir/$profile";then
+	echo "Unknown profile: $profile"
+	exit 1
+fi
 
-make_path("$backend_config_dir", "$state_dir", {
-      chmod => 0755,
-});
+echo "Setting system policy to $profile"
+for i in "$profile_dir/$profile/"*;do
+	file=$(basename "$i")
+	file=$(echo -n "$file"|sed 's/\.txt/\.config/')
+	ln -sf $i "$backend_config_dir/$file"
+done
 
-if ($profile eq '') {
-	$profile=`cat $base_dir/config|grep -v ^#`;
-	$write_profile=0;
-	chomp($profile);
-} else {
-	$write_profile=1;
-}
+echo $profile > $state_dir/current
 
-my @modules = ("gnutls", "gnutls28", "openssl", "bind", "java", "krb5", "nss");
-my %modtmp = ();
-my $mod;
-my @reloadcmds = ();
+if test $set_config = 1;then
+	echo $profile > $base_dir/config
+fi
 
-foreach $mod (@modules) {
-	require "$libdir/$mod.pl";
-	my $tmp = '';
+. $profile_dir/reload-cmds.sh
 
-	$tmp = generate_temp_policy($profile, $backend_config_dir, $libdir, \@reloadcmds);
-	$modtmp{"$mod"} = $tmp;
+# Old versions seemed to install that file. We no longer use it
+rm -f $base_dir/current
 
-	if ($nocheck eq '') {
-		test_temp_policy($profile, $backend_config_dir, $tmp);
-	}
-}
-
-foreach $mod (@modules) {
-	my $tmp = $modtmp{"$mod"};
-
-#	unlink("$backend_config_dir/$mod.config");
-
-	my ( $fh, $filename ) = tempfile();
-	print $fh $tmp;
-	close $fh;
-	move( $filename, "$backend_config_dir/$mod.config" ) or die "The move operation failed for $mod: $!";
-}
-
-foreach my $cmd (@reloadcmds) {
-	print "executing: $cmd\n";
-	system($cmd);
-}
-
-print "Setting system wide crypto policy to $profile\n";
-open (my $fh, '>', "$state_dir/current") or die "Could not open file '$state_dir/current' $!";
-print $fh "$profile\n";
-close $fh;
-
-if ($write_profile == 1) {
-	open (my $fh, '>', "$base_dir/config") or die "Could not open file '$base_dir/config' $!";
-	print $fh "# This file should contain a single keyword, the crypto policy to\n";
-	print $fh "# be applied by default to applications. The available policies are\n";
-	print $fh "# restricted to the following profiles.\n";
-	print $fh "#\n";
-	print $fh "# * LEGACY: ensures maximum compatibility with legacy systems (64-bit\n";
-	print $fh "#   security)\n";
-	print $fh "# * DEFAULT: A reasonable default for today's standards (80-bit security).\n";
-	print $fh "#\n";
-	print $fh "# * FUTURE: A level that will provide security on a conservative level that is\n";
-	print $fh "#   believed to withstand any near-term future attacks (128-bit security).\n";
-	print $fh "#\n";
-	print $fh "# After modifying this file, you need to run update-crypto-policies\n";
-	print $fh "# for the changes to propagate.\n";
-	print $fh "$profile\n";
-	close $fh;
-}
-
-exit 0;
+exit $errcode
