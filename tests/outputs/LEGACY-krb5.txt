@@ -1,0 +1,1 @@
+permitted_enctypes = aes256-cts-hmac-sha1-96 camellia256-cts-cmac aes128-cts-hmac-sha1-96 camellia128-cts-cmac des3-cbc-sha1 arcfour-hmac-md5

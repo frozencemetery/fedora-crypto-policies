@@ -1,0 +1,10 @@
+disable-algorithms "." {
+RSAMD5;
+RSASHA1;
+NSECRSASHA1;
+DSA;
+};
+disable-ds-digests "." {
+GOST;
+SHA1;
+};

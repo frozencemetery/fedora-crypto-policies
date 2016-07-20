@@ -1,0 +1,89 @@
+package profiles::common;
+
+use strict;
+use warnings;
+
+BEGIN {
+    require Exporter;
+    our $VERSION = 1.00;
+    our @ISA = qw(Exporter);
+    our @EXPORT = qw(@full_hash_list @full_protocol_list @full_mac_list @full_curve_list @full_sign_list @full_cipher_list @full_key_exchange_list $min_tls_version $min_dtls_version $min_dsa_size @hash_list @hash_not_list @protocol_list @protocol_not_list $min_dh_size $min_rsa_size @mac_list @mac_not_list @curve_list @curve_not_list @sign_list @sign_not_list @cipher_list @cipher_not_list @key_exchange_list @key_exchange_not_list update_rev_lists);
+}
+
+our @full_hash_list = ('MD5', 'GOST', 'SHA1', 'SHA2-256', 'SHA2-384', 'SHA2-512', 'SHA3-256', 'SHA3-384', 'SHA3-512');
+our @full_mac_list = ('AEAD', 'HMAC-MD5', 'HMAC-SHA1', 'HMAC-SHA2-256', 'HMAC-SHA2-384', 'HMAC-SHA2-512');
+
+# we disable curves <= 256 bits by default in Fedora
+our @full_curve_list = ('SECP256R1', 'SECP384R1', 'SECP521R1', 'X25519', 'X448');
+our @full_sign_list = ('RSA-MD5', 'RSA-SHA1', 'DSA-SHA1', 'ECDSA-SHA1',
+    'RSA-SHA2-224', 'DSA-SHA2-224', 'ECDSA-SHA2-224',
+    'RSA-SHA2-256', 'DSA-SHA2-256', 'ECDSA-SHA2-256',
+    'RSA-SHA2-384', 'DSA-SHA2-384', 'ECDSA-SHA2-384',
+    'RSA-SHA2-512', 'DSA-SHA2-512', 'ECDSA-SHA2-512',
+    'RSA-SHA3-256', 'DSA-SHA3-256', 'ECDSA-SHA3-256',
+    'RSA-SHA3-384', 'DSA-SHA3-384', 'ECDSA-SHA3-384',
+    'RSA-SHA3-512', 'DSA-SHA3-512', 'ECDSA-SHA3-512');
+
+our @full_cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'AES-128-GCM', 'AES-128-CCM',
+    'CHACHA20-POLY1305', 'CAMELLIA-256-GCM', 'CAMELLIA-128-GCM',
+    'AES-256-CBC', 'AES-128-CBC', 'CAMELLIA-256-CBC', 'CAMELLIA-128-CBC',
+    '3DES-CBC', 'DES-CBC', 'RC4-40', 'RC4-128', 'DES40-CBC', 'RC2-CBC',
+    'IDEA-CBC', 'SEED-CBC', 'NULL');
+
+our @full_key_exchange_list = ('PSK', 'DHE-PSK', 'ECDHE-PSK', 'ECDHE', 'RSA', 'DHE', 'EXPORT', 'ANON', 'DH', 'ECDH');
+our @full_protocol_list = ('SSL2.0', 'SSL3.0', 'TLS1.0', 'TLS1.1', 'TLS1.2', 'DTLS1.0', 'DTLS1.2');
+
+our @mac_list = ();
+our @mac_not_list = ();
+
+our @curve_list = ();
+our @curve_not_list = ();
+
+our @hash_list = ();
+our @hash_not_list = ();
+
+our @sign_list = ();
+our @sign_not_list = ();
+
+our @cipher_list = ();
+our @cipher_not_list = ();
+
+our @key_exchange_list = ();
+our @key_exchange_not_list = ();
+
+our @protocol_list = ();
+our @protocol_not_list = ();
+
+# minimum versions
+our $min_tls_version;
+our $min_dtls_version;
+
+# Parameter sizes
+our $min_dh_size;
+our $min_dsa_size;
+our $min_rsa_size;
+
+sub update_rev_lists {
+    my %mac_list=map{$_ => 1} @mac_list;
+    @mac_not_list = grep(!defined($mac_list{$_}), @full_mac_list);
+
+    my %curve_list=map{$_ => 1} @curve_list;
+    @curve_not_list = grep(!defined($curve_list{$_}), @full_curve_list);
+
+    my %hash_list=map{$_ => 1} @hash_list;
+    @hash_not_list = grep(!defined($hash_list{$_}), @full_hash_list);
+    
+    my %sign_list=map{$_ => 1} @sign_list;
+    @sign_not_list = grep(!defined($sign_list{$_}), @full_sign_list);
+
+    my %cipher_list=map{$_ => 1} @cipher_list;
+    @cipher_not_list = grep(!defined($cipher_list{$_}), @full_cipher_list);
+
+    my %key_exchange_list=map{$_ => 1} @key_exchange_list;
+    @key_exchange_not_list = grep(!defined($key_exchange_list{$_}), @full_key_exchange_list);
+
+    my %protocol_list=map{$_ => 1} @protocol_list;
+    our @protocol_not_list = grep(!defined($protocol_list{$_}), @full_protocol_list);
+}
+
+1;

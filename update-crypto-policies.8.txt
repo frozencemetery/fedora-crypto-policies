@@ -84,13 +84,7 @@ The following options are available in update-crypto-policies tool.
 * --no-check:   By default this tool does a sanity check on whether the configured policy
                 is accepted by the supported tools. This option disables those checks.
 
-
-[[compatibility]]
-COMPATIBILITY
--------------
-Policies that were present in previously released Fedora systems will
-be available using the @FXX suffix, where XX is the Fedora version. For
-example the LEGACY policy in Fedora 21 will also be available as LEGACY@F21.
+* --set:        Sets the current policy and overwrites the config file.
 
 
 [[appsupport]]
@@ -107,9 +101,16 @@ utilize the system-wide policy are the following.
 
 * Applications using OpenSSL: The special cipher string "PROFILE=SYSTEM" should replace any other cipher string.
 
-* Applications using NSS: No special treatment is required. Applications using NSS will load the crypto policies by default.
+* Applications using NSS: No special treatment is required. Applications using NSS will load the crypto policies by
+  default. To prevent that, the NSS_IGNORE_SYSTEM_POLICY environment variable must be set to 1
+  prior to executing the application.
 
-* Applications using Java: No special treatment is required. Applications using Java will load the crypto policies by default.
+* Applications using Java: No special treatment is required. Applications using
+  Java will load the crypto policies by default.
+
+* Applications using libkrb5: No special treatment is required. Applications
+  will follow the crypto policies by default. A system-wide opt-out is
+  available by deleting the /etc/krb5.conf.d/crypto-policies link.
 
 In all cases if the application isn't using a particular setting, e.g.,
 using gnutls_priority_set_default() in GnuTLS, or no specific cipher string setting in

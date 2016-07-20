@@ -2,15 +2,19 @@
 
 umask 022
 
-profile_dir=/usr/share/crypto-policies/profiles
+profile_dir=/usr/share/crypto-policies/
 base_dir=/etc/crypto-policies
 backend_config_dir=$base_dir/back-ends
 state_dir=$base_dir/state
 errcode=0
 nocheck=0
+profile=''
 
 if test $# -ge 1;then
 	case "$1" in
+		--set)
+			profile="$2"
+			;;
 		--no-check)
 			nocheck=1
 			;;
@@ -33,6 +37,7 @@ if test $# -ge 1;then
 			fi
 			;;
 		*)
+			echo "usage: $0 --set [POLICY]"
 			echo "usage: $0 --show"
 			echo "usage: $0 --no-check"
 			echo "usage: $0 --is-applied"
@@ -45,18 +50,15 @@ fi
 mkdir -p $backend_config_dir >/dev/null 2>&1
 mkdir -p $state_dir >/dev/null 2>&1
 
-gnutls_config_file=$backend_config_dir/gnutls.config
-gnutls28_config_file=$backend_config_dir/gnutls28.config
-openssl_config_file=$backend_config_dir/openssl.config
-nss_config_file=$backend_config_dir/nss.config
-bind_config_file=$backend_config_dir/bind.config
-java_config_file=$backend_config_dir/java.config
-krb5_config_file=$backend_config_dir/krb5.config
+set_config=0
+if test -z "$profile";then
+	profile=$(cat $base_dir/config|grep -v ^#)
+else
+	set_config=1
+fi
 
-profile=$(cat $base_dir/config|grep -v ^#)
-
-# convert old style compat profiles to new-style: FUTURE-F21 -> FUTURE@F21
-profile=$(echo -n $profile|sed -e 's/FUTURE-/FUTURE@/' -e 's/DEFAULT-/DEFAULT@/' -e 's/LEGACY-/LEGACY@/')
+# remove any legacy profile options
+profile=$(echo -n $profile|sed -e 's/@F..//')
 
 if test -z "$profile";then
 	#try the OS-installed profile
@@ -67,138 +69,25 @@ if test -z "$profile";then
 	fi
 fi
 
-# Note that as default policies are updated to reflect advances
-# in crypto, the old policies should be renamed to NAME@F?? to
-# allow new systems to interoperate with old ones, by using a
-# profile that is acceptable in the old system (F?? is the fedora
-# release that used that same profile as default).
-
-if ! test -f "$profile_dir/$profile";then
+if ! test -d "$profile_dir/$profile";then
 	echo "Unknown profile: $profile"
 	exit 1
 fi
 
-# If we are using a compatibility profile with an old (Fedora) version
-# ensure that we first apply the current profile of the same level. That
-# is to ensure that programs that were not handled by the old profile have
-# some reasonable default options.
-is_compat=$(echo $profile|grep '@')
-if test -n "$is_compat";then
-	orig=$(echo $profile|cut -d '@' -f 1)
-	update-crypto-policies "$orig"
-	if test $? != 0;then
-		echo "Error applying \"$orig\";needed to apply \"$profile\""
-		exit 1
-	fi
+echo "Setting system policy to $profile"
+for i in "$profile_dir/$profile/"*;do
+	file=$(basename "$i")
+	file=$(echo -n "$file"|sed 's/\.txt/\.config/')
+	ln -sf $i "$backend_config_dir/$file"
+done
+
+echo $profile > $state_dir/current
+
+if test $set_config = 1;then
+	echo $profile > $base_dir/config
 fi
 
-. "$profile_dir/$profile"
-
-# Generate policy for GnuTLS
-touch $gnutls_config_file.tmp >/dev/null 2>&1
-if ! test -f $gnutls_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
-echo -e "$CONFIG_GNUTLS" > $gnutls_config_file.tmp
-
-# Test policy
-if test nocheck = 0 && test -x /usr/bin/gnutls-cli;then
-	gnutls-cli -l --priority `cat $gnutls_config_file.tmp|sed 's/SYSTEM=//g'` >/dev/null 2>&1
-	if test $? != 0;then
-		echo "There is an error in $gnutls_config_file.tmp"
-		echo "Couldn't update policy for GnuTLS"
-		errcode=1
-	fi
-fi
-
-# Generate policy for compat-gnutls28
-touch $gnutls28_config_file.tmp >/dev/null 2>&1
-if ! test -f $gnutls28_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
-echo -e "$CONFIG_GNUTLS28" > $gnutls28_config_file.tmp
-
-# Generate policy for openssl
-touch $openssl_config_file.tmp >/dev/null 2>&1
-if ! test -f $openssl_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
-echo -e "$CONFIG_OPENSSL" > $openssl_config_file.tmp 2>&1
-
-# Generate policy for NSS
-echo -e "$CONFIG_NSS" > $nss_config_file.tmp 2>&1
-if ! test -f $nss_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
-
-# Generate policy for krb5
-echo -e "$CONFIG_KRB5" > $krb5_config_file.tmp 2>&1
-if ! test -f $krb5_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
-
-# Test policies
-if test nocheck = 0 && test -x /usr/bin/openssl;then
-	openssl ciphers `cat $openssl_config_file.tmp` >/dev/null 2>&1
-	if test $? != 0;then
-		echo "Couldn't update policy for OpenSSL"
-		echo "There is an error in $openssl_config_file.tmp"
-		errcode=1
-	fi
-fi
-
-# Generate policy for bind
-touch $bind_config_file.tmp >/dev/null 2>&1
-if ! test -f $bind_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
-echo -e "$CONFIG_BIND" > $bind_config_file.tmp 2>&1
-
-touch $java_config_file.tmp >/dev/null 2>&1
-if ! test -f $java_config_file.tmp;then
-	echo "Cannot write to $backend_config_dir. This program requires administrator permissions."
-	exit 1
-fi
-echo -e "$CONFIG_JAVA" > $java_config_file.tmp 2>&1
-
-# Test policies
-if test nocheck = 0 && test -x /usr/sbin/named-checkconf;then
-	/usr/sbin/named-checkconf >/dev/null 2>&1
-	if test $? != 0;then
-		echo "Couldn't update policy for BIND"
-		echo "There is an error in $bind_config_file.tmp"
-		errcode=1
-	fi
-fi
-
-# update all the files
-if test $errcode = 0;then
-	echo "Setting system policy to $profile"
-	mv $nss_config_file.tmp $nss_config_file
-	mv $openssl_config_file.tmp $openssl_config_file
-	mv $gnutls_config_file.tmp $gnutls_config_file
-	mv $gnutls28_config_file.tmp $gnutls28_config_file
-	mv $bind_config_file.tmp $bind_config_file
-	mv $java_config_file.tmp $java_config_file
-	mv $krb5_config_file.tmp $krb5_config_file
-	echo $profile > $state_dir/current
-else
-	# ensure we don't disrupt services which include these
-	# config files by ensuring there is at least an empty one.
-	touch $krb5_config_file
-	touch $bind_config_file
-	touch $java_config_file
-fi
-
-if test -e /usr/lib/systemd/system/bind.service;then
-	systemctl reload bind
-fi
+. $profile_dir/reload-cmds.sh
 
 # Old versions seemed to install that file. We no longer use it
 rm -f $base_dir/current
