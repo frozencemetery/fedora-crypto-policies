@@ -34,5 +34,3 @@ and we have proposed that method upstream at:
 http://rt.openssl.org/Ticket/Display.html?id=3266&user=guest&pass=guest
 http://rt.openssl.org/Ticket/Display.html?id=3299&user=guest&pass=guest
 
-NSS does not support fine-grained control of options, but patches are on
-the way: https://bugzilla.mozilla.org/show_bug.cgi?id=1009429
