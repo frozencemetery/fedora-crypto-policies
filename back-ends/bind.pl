@@ -72,9 +72,7 @@ sub generate_temp_policy() {
 
 	$string .= "};\n";
 
-	if (-e "/usr/lib/systemd/system/bind.service") {
-			push(@{$reloadcmd_ref}, "systemctl reload bind");
-	}
+	push(@{$reloadcmd_ref}, "test -e /usr/lib/systemd/system/bind.service && systemctl reload bind\n");
 
 	return $string;
 }
