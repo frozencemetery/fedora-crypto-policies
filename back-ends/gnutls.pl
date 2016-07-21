@@ -207,7 +207,7 @@ sub test_temp_policy() {
 		print $fh $gstr;
 		close $fh;
 		system(
-"/usr/bin/gnutls-cli -l --priority `cat $filename|sed 's/SYSTEM=//g'` >/dev/null"
+"/usr/bin/gnutls-cli -l --priority `cat $filename|sed 's/SYSTEM=//g'|tr --delete '\n'` >/dev/null"
 		);
 		my $ret = $?;
 		unlink($filename);

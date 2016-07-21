@@ -12,6 +12,7 @@ foreach my $policy (@policies) {
 
 	my $tmp = generate_temp_policy($policy, "", $libdir);
 	$tmp =~ s/SYSTEM=//g;
+	chomp $tmp;
 
 	system("gnutls-cli --priority '$tmp' -l >$TMPFILE 2>&1");
 	if ($? != 0) {
