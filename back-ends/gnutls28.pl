@@ -193,6 +193,7 @@ sub generate_temp_policy() {
 		exit 1;
 	}
 
+	$string .= "\n";
 	return $string;
 }
 
