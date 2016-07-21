@@ -1,5 +1,5 @@
 ////
-Copyright (C) 2014 Red Hat, Inc.
+Copyright (C) 2014-2016 Red Hat, Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -133,6 +133,14 @@ FILES
 
 /etc/crypto-policies/back-ends::
 	Contains the generated policies in separated files, and in a format readable by the supported back-ends.
+
+/etc/crypto-policies/local.d::
+	Contains additional files to be appended to the generated policy
+	files. The files present must adhere to $app-XXX.config file naming, where
+	XXX is any arbitrary identifier. For example, to append a line to
+	GnuTLS' generated policy, create a gnutls-extra-line.config file in
+	local.d. This will be appended to the generated gnutls.config during
+	update-crypto-policies.
 
 AUTHOR
 ------
