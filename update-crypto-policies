@@ -4,8 +4,9 @@ umask 022
 
 profile_dir=/usr/share/crypto-policies/
 base_dir=/etc/crypto-policies
-backend_config_dir=$base_dir/back-ends
-state_dir=$base_dir/state
+local_dir="$base_dir/local.d"
+backend_config_dir="$base_dir/back-ends"
+state_dir="$base_dir/state"
 errcode=0
 nocheck=0
 profile=''
@@ -76,9 +77,17 @@ fi
 
 echo "Setting system policy to $profile"
 for i in "$profile_dir/$profile/"*;do
-	file=$(basename "$i")
-	file=$(echo -n "$file"|sed 's/\.txt/\.config/')
-	ln -sf $i "$backend_config_dir/$file"
+	basefile=$(basename "$i")
+	file=$(echo -n "$basefile"|sed 's/\.txt/\.config/')
+	basefile=$(echo -n "$basefile"|sed 's/\.txt//')
+
+	if test -z $(ls $local_dir/$basefile*.config 2>/dev/null);then
+		ln -sf $i "$backend_config_dir/$file"
+	else
+		rm -f "$backend_config_dir/$file"
+		cat $i > "$backend_config_dir/$file"
+		cat $local_dir/$basefile-*.config >> "$backend_config_dir/$file"
+	fi
 done
 
 echo $profile > $state_dir/current
