@@ -33,7 +33,11 @@ my %hash_map = (
 	'MD5'      => 'MD5',
 	'SHA2-256' => 'SHA256',
 	'SHA2-384' => 'SHA384',
-	'SHA2-512' => 'SHA512'
+	'SHA2-512' => 'SHA512',
+	'SHA3-256' => '',
+	'SHA3-384' => '',
+	'SHA3-512' => '',
+	'GOST' => ''
 );
 
 my %curve_map = (
@@ -120,6 +124,15 @@ sub generate_temp_policy() {
 	}
 	foreach (@cipher_list) {
 		my $val = $cipher_map{$_};
+		if ( defined($val) ) {
+			append($val);
+		}
+		else {
+			print STDERR "nss: unknown: $_\n";
+		}
+	}
+	foreach (@hash_list) {
+		my $val = $hash_map{$_};
 		if ( defined($val) ) {
 			append($val);
 		}
