@@ -65,6 +65,13 @@ sub generate_temp_policy() {
 	}
 
 	$string .= "\n";
+
+	# By default libkrb5 sets the min_bits to 2048, don't
+	# go lower than that.
+	if ($min_dh_size > 2048) {
+		$string .= "pkinit_dh_min_bits=$min_dh_size\n";
+	}
+
 	return $string;
 }
 
