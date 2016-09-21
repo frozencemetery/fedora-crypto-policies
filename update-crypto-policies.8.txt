@@ -53,7 +53,11 @@ The desired system policy is selected in /etc/crypto-policies/config
 and this tool will generate the individual policy requirements for
 all back-ends that support such configuration. After this tool is called
 the administrator is assured that any application that utilizes the
-supported back-ends will policy that adheres to the configured profile.
+supported back-ends will follow a policy that adheres to the configured profile.
+
+Note that the above assurance does apply to the extend that applications
+are configured to follow the default policy (the details vary on the back-end, see below
+for more information).
 
 The generated back-end policies will be placed in /etc/crypto-policies/back-ends.
 Currently the supported back-ends are:
@@ -101,17 +105,17 @@ utilize the system-wide policy are the following.
   cipher priotities via a string, the special priority string "@SYSTEM" should replace
   any other priority string. Applications which use the default library
   settings automatically adhere to the policy. 
-  Applications following the policy inherit the settings for cipher suites preference, TLS
+  Applications following the policy inherit the settings for cipher suite preference, TLS
   and DTLS protocol versions, allowed elliptic curves, and limits for
   cryptographic keys.
 
 * Applications using OpenSSL: If an application allows the configuration of
   ciphersuite string, the special cipher string "PROFILE=SYSTEM" should replace any other cipher string.
   Applications which use the default library settings automatically adhere to the policy.
-  Applications following the policy inherit the settings for cipher suites preference.
+  Applications following the policy inherit the settings for cipher suite preference.
 
 * Applications using NSS: Applications using NSS will load the crypto policies by
-  default. They inherit the settings for cipher suites preference, TLS
+  default. They inherit the settings for cipher suite preference, TLS
   and DTLS protocol versions, allowed elliptic curves, and limits for
   cryptographic keys. Note that unlike OpenSSL and GnuTLS, the NSS policy
   is enforced by default; to prevent applications from adhering
