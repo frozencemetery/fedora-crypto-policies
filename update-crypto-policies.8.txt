@@ -74,6 +74,8 @@ Currently the supported back-ends are:
 
 * BIND
 
+* OpenSSH (client)
+
 [[options]]
 OPTIONS
 -------
@@ -139,6 +141,11 @@ utilize the system-wide policy are the following.
  * BIND: This application inherits the set of blacklisted algorithms. To
    opt-out from the policy, remove the policy include directive in the
    named.conf file.
+
+ * OpenSSH: The client application inherits the cipher preferences, the key
+   exchange algorithms as well as the GSSAPI key exchange algorithms. To
+   opt-out from the policy, override the global ssh_config with a
+   user-specific one. See ssh_config(5) for more information.
 
 
 [[policyconfig]]
