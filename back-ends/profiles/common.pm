@@ -14,7 +14,7 @@ our @full_hash_list = ('SHA2-256', 'SHA2-384', 'SHA2-512', 'SHA3-256', 'SHA3-384
 our @full_mac_list = ('AEAD', 'UMAC-128', 'HMAC-SHA1', 'HMAC-SHA2-256', 'HMAC-SHA2-384', 'HMAC-SHA2-512', 'UMAC-64', 'HMAC-MD5');
 
 # we disable curves <= 256 bits by default in Fedora
-our @full_curve_list = ('SECP256R1', 'SECP384R1', 'SECP521R1', 'X25519', 'X448');
+our @full_curve_list = ('X25519', 'SECP256R1', 'SECP384R1', 'SECP521R1', 'X448');
 our @full_sign_list = ('RSA-MD5', 'RSA-SHA1', 'DSA-SHA1', 'ECDSA-SHA1',
     'RSA-SHA2-224', 'DSA-SHA2-224', 'ECDSA-SHA2-224',
     'RSA-SHA2-256', 'DSA-SHA2-256', 'ECDSA-SHA2-256',
