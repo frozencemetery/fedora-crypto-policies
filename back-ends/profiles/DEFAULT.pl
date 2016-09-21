@@ -4,7 +4,7 @@
 # MACs: SHA1+
 # Curves: All supported
 # Signature algorithms: must use SHA-1 hash or better
-# Ciphers: AES-GCM, AES-CCM, AES-CBC, CAMELLIA-GCM, CAMELLIA-CBC, 3DES-CBC
+# Ciphers: AES-GCM, AES-CCM, AES-CTR, AES-CBC, CAMELLIA-GCM, CAMELLIA-CBC, 3DES-CBC
 # Key exchange: ECDHE, RSA, DHE
 # DH params size: 1023+
 # RSA params size: 1023+
@@ -25,8 +25,8 @@ sub update_lists {
         'RSA-SHA3-512', 'DSA-SHA3-512', 'ECDSA-SHA3-512');
 
     @cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'CHACHA20-POLY1305', 'CAMELLIA-256-GCM',
-        'AES-256-CBC', 'CAMELLIA-256-CBC', 
-        'AES-128-GCM', 'AES-128-CCM', 'CAMELLIA-128-GCM', 'AES-128-CBC', 'CAMELLIA-128-CBC',
+        'AES-256-CTR', 'AES-256-CBC', 'CAMELLIA-256-CBC', 
+        'AES-128-GCM', 'AES-128-CCM', 'CAMELLIA-128-GCM', 'AES-128-CTR', 'AES-128-CBC', 'CAMELLIA-128-CBC',
         '3DES-CBC');
     @key_exchange_list = ('ECDHE', 'RSA', 'DHE', 'PSK', 'DHE-PSK', 'ECDHE-PSK');
     @protocol_list = ('TLS1.2', 'TLS1.1', 'TLS1.0', 'DTLS1.2', 'DTLS1.0');
