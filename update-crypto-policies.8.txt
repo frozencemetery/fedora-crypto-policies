@@ -97,25 +97,38 @@ support these policies.
 When an application provides a configuration file, the changes needed to
 utilize the system-wide policy are the following.
 
-* Applications using GnuTLS: The special priority string "@SYSTEM" should replace any other priority string.
+* Applications using GnuTLS: If an application allows the configuration of
+  cipher priotities via a string, the special priority string "@SYSTEM" should replace
+  any other priority string. Applications which use the default library
+  settings automatically adhere to the policy. 
+  Applications following the policy inherit the settings for cipher suites preference, TLS
+  and DTLS protocol versions, allowed elliptic curves, and limits for
+  cryptographic keys.
 
-* Applications using OpenSSL: The special cipher string "PROFILE=SYSTEM" should replace any other cipher string.
+* Applications using OpenSSL: If an application allows the configuration of
+  ciphersuite string, the special cipher string "PROFILE=SYSTEM" should replace any other cipher string.
+  Applications which use the default library settings automatically adhere to the policy.
+  Applications following the policy inherit the settings for cipher suites preference.
 
-* Applications using NSS: No special treatment is required. Applications using NSS will load the crypto policies by
-  default. To prevent that, the NSS_IGNORE_SYSTEM_POLICY environment variable must be set to 1
-  prior to executing the application.
+* Applications using NSS: Applications using NSS will load the crypto policies by
+  default. They inherit the settings for cipher suites preference, TLS
+  and DTLS protocol versions, allowed elliptic curves, and limits for
+  cryptographic keys. Note that unlike OpenSSL and GnuTLS, the NSS policy
+  is enforced by default; to prevent applications from adhering
+  to the policy the NSS_IGNORE_SYSTEM_POLICY environment variable must be set to 1
+  prior to executing that application.
 
 * Applications using Java: No special treatment is required. Applications using
   Java will load the crypto policies by default.
+  These applications will then inherit the settings for allowed cipher suites,
+  allowed TLS and DTLS protocol versions, allowed elliptic curves, and limits for
+  cryptographic keys.
 
 * Applications using libkrb5: No special treatment is required. Applications
-  will follow the crypto policies by default. A system-wide opt-out is
+  will follow the crypto policies by default. These applications inherit the
+  settings for the permitted encryption types for tickets as well as the
+  cryptographic key limits for the PKINIT protocol. A system-wide opt-out is
   available by deleting the /etc/krb5.conf.d/crypto-policies link.
-
-In all cases if the application isn't using a particular setting, e.g.,
-using gnutls_priority_set_default() in GnuTLS, or no specific cipher string setting in
-OpenSSL, no other changes are required. The system-wide string will be used
-automatically.
 
 
 [[policyconfig]]
