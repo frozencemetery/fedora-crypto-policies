@@ -132,6 +132,10 @@ utilize the system-wide policy are the following.
   cryptographic key limits for the PKINIT protocol. A system-wide opt-out is
   available by deleting the /etc/krb5.conf.d/crypto-policies link.
 
+ * BIND: This application inherits the set of blacklisted algorithms. To
+   opt-out from the policy, remove the policy include directive in the
+   named.conf file.
+
 
 [[policyconfig]]
 POLICY CONFIGURATION
