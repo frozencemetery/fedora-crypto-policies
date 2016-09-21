@@ -25,16 +25,17 @@ foreach $mod (@modules) {
     	    $contents = <$fh>;
     	    close $fh;
     	    $/ = "\n";
+
+	    if ($tmp ne $contents) {
+	        print "Error in the contents of $profile-$mod.txt\n";
+	        exit 1;
+	    }
         } else {
             open my $fh, '>', "tests/outputs/$profile-$mod.txt";
             print $fh $tmp;
             close $fh;
         }
 
-	if ($tmp ne $contents) {
-	    print "Error in the contents of $profile-$mod.txt\n";
-	    exit 1;
-	}
 
 	test_temp_policy($profile, 0, $tmp);
     }
