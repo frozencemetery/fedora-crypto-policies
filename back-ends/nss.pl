@@ -49,6 +49,8 @@ my %curve_map = (
 );
 
 my %cipher_map = (
+	'AES-256-CTR'       => '',
+	'AES-128-CTR'       => '',
 	'RC2-CBC'           => 'rc2',
 	'RC4-128'           => 'rc4',
 	'AES-256-GCM'       => 'aes256-gcm',

@@ -61,6 +61,8 @@ my %sign_not_map = (
 	);
 
 my %cipher_map = (
+	'AES-256-CTR'       => '',
+	'AES-128-CTR'       => '',
 	'AES-256-GCM'       => '+AES-256-GCM',
 	'AES-128-GCM'       => '+AES-128-GCM',
 	'AES-256-CCM'       => '+AES-256-CCM',
