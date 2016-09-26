@@ -26,6 +26,7 @@ The supported back ends in Fedora are:
  * OpenSSL
  * BIND
  * libkrb5
+ * OpenSSH (client)
  * Java via OpenJDK
 
 
