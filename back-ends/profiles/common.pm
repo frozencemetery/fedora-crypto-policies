@@ -10,11 +10,11 @@ BEGIN {
     our @EXPORT = qw(@full_hash_list @full_protocol_list @full_mac_list @full_curve_list @full_sign_list @full_cipher_list @full_key_exchange_list $min_tls_version $min_dtls_version $min_dsa_size @hash_list @hash_not_list @protocol_list @protocol_not_list $min_dh_size $min_rsa_size @mac_list @mac_not_list @curve_list @curve_not_list @sign_list @sign_not_list @cipher_list @cipher_not_list @key_exchange_list @key_exchange_not_list update_rev_lists);
 }
 
-our @full_hash_list = ('MD5', 'GOST', 'SHA1', 'SHA2-256', 'SHA2-384', 'SHA2-512', 'SHA3-256', 'SHA3-384', 'SHA3-512');
-our @full_mac_list = ('AEAD', 'HMAC-MD5', 'HMAC-SHA1', 'HMAC-SHA2-256', 'HMAC-SHA2-384', 'HMAC-SHA2-512');
+our @full_hash_list = ('SHA2-256', 'SHA2-384', 'SHA2-512', 'SHA3-256', 'SHA3-384', 'SHA3-512', 'SHA1', 'MD5', 'GOST');
+our @full_mac_list = ('AEAD', 'UMAC-128', 'HMAC-SHA1', 'HMAC-SHA2-256', 'HMAC-SHA2-384', 'HMAC-SHA2-512', 'UMAC-64', 'HMAC-MD5');
 
 # we disable curves <= 256 bits by default in Fedora
-our @full_curve_list = ('SECP256R1', 'SECP384R1', 'SECP521R1', 'X25519', 'X448');
+our @full_curve_list = ('X25519', 'SECP256R1', 'SECP384R1', 'SECP521R1', 'X448');
 our @full_sign_list = ('RSA-MD5', 'RSA-SHA1', 'DSA-SHA1', 'ECDSA-SHA1',
     'RSA-SHA2-224', 'DSA-SHA2-224', 'ECDSA-SHA2-224',
     'RSA-SHA2-256', 'DSA-SHA2-256', 'ECDSA-SHA2-256',
@@ -26,7 +26,7 @@ our @full_sign_list = ('RSA-MD5', 'RSA-SHA1', 'DSA-SHA1', 'ECDSA-SHA1',
 
 our @full_cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'AES-128-GCM', 'AES-128-CCM',
     'CHACHA20-POLY1305', 'CAMELLIA-256-GCM', 'CAMELLIA-128-GCM',
-    'AES-256-CBC', 'AES-128-CBC', 'CAMELLIA-256-CBC', 'CAMELLIA-128-CBC',
+    'AES-256-CTR', 'AES-256-CBC', 'AES-128-CTR', 'AES-128-CBC', 'CAMELLIA-256-CBC', 'CAMELLIA-128-CBC',
     '3DES-CBC', 'DES-CBC', 'RC4-40', 'RC4-128', 'DES40-CBC', 'RC2-CBC',
     'IDEA-CBC', 'SEED-CBC', 'NULL');
 

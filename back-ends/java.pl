@@ -39,6 +39,8 @@ my %hash_not_map = (
 );
 
 my %cipher_not_map = (
+	'AES-256-CTR'       => '',
+	'AES-128-CTR'       => '',
 	'CHACHA20-POLY1305' => '',
 	'CAMELLIA-256-GCM' => '',
 	'CAMELLIA-128-GCM' => '',

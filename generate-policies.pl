@@ -14,7 +14,7 @@ my $libdir = "back-ends/";
 use lib "back-ends/";
 
 my @profiles = ("EMPTY", "DEFAULT", "FUTURE", "LEGACY");
-my @modules = ("gnutls", "gnutls28", "openssl", "bind", "java", "krb5", "nss");
+my @modules = ("gnutls", "gnutls28", "openssl", "bind", "java", "krb5", "nss", "openssh");
 my ($mod, $contents, $profile);
 my @reloadcmds = ();
 my @tempcmds = ();

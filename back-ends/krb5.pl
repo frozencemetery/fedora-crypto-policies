@@ -21,6 +21,8 @@ sub append {
 
 #Note that CTS mode is simply CBC with ciphertext stealing
 my %cipher_map = (
+	'AES-256-CTR'       => '',
+	'AES-128-CTR'       => '',
 	'AES-256-GCM'	   => '',
 	'AES-256-CCM'	   => '',
 	'CHACHA20-POLY1305' => '',

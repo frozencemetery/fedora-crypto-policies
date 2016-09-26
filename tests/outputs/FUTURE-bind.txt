@@ -5,6 +5,6 @@ NSECRSASHA1;
 DSA;
 };
 disable-ds-digests "." {
-GOST;
 SHA1;
+GOST;
 };

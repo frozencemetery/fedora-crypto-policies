@@ -23,6 +23,8 @@ sub append {
 }
 
 my %cipher_not_map = (
+	'AES-256-CTR'       => '',
+	'AES-128-CTR'       => '',
 	'AES-256-GCM'  => '!AES-256-GCM',
 	'AES-128-GCM'  => '!AES-128-GCM',
 	'CHACHA20-POLY1305'  => '!CHACHA20-POLY1305',
