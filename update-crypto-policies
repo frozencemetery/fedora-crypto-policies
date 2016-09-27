@@ -2,7 +2,7 @@
 
 umask 022
 
-profile_dir=/usr/share/crypto-policies/
+profile_dir=/usr/share/crypto-policies
 base_dir=/etc/crypto-policies
 local_dir="$base_dir/local.d"
 backend_config_dir="$base_dir/back-ends"
