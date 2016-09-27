@@ -83,9 +83,18 @@ for i in "$profile_dir/$profile/"*;do
 
 	if test -z $(ls $local_dir/$basefile*.config 2>/dev/null);then
 		ln -sf $i "$backend_config_dir/$file"
+		if test $? != 0;then
+			echo "Failed updating policies, are you root?"
+			exit 1
+		fi
 	else
 		rm -f "$backend_config_dir/$file"
 		cat $i > "$backend_config_dir/$file"
+		if test $? != 0;then
+			echo "Failed updating policies, are you root?"
+			exit 1
+		fi
+
 		cat $local_dir/$basefile-*.config >> "$backend_config_dir/$file"
 	fi
 done
