@@ -68,7 +68,7 @@ Currently the supported back-ends are:
 
 * NSS library
 
-//* OpenJDK
+* OpenJDK
 
 * Libkrb5
 
@@ -124,13 +124,17 @@ utilize the system-wide policy are the following.
   to the policy the NSS_IGNORE_SYSTEM_POLICY environment variable must be set to 1
   prior to executing that application.
 
-////
 * Applications using Java: No special treatment is required. Applications using
   Java will load the crypto policies by default.
   These applications will then inherit the settings for allowed cipher suites,
   allowed TLS and DTLS protocol versions, allowed elliptic curves, and limits for
-  cryptographic keys.
-////
+  cryptographic keys. To prevent openjdk applications from adhering
+  to the policy the `<java.home>/jre/lib/security/java.security` file should
+  be edited to contain `security.useSystemPropertiesFile=false`.
+  Alternatively one can create a file containing the overridden values for
+  'jdk.tls.disabledAlgorithms', 'jdk.certpath.disabledAlgorithms' and pass
+  the location of that file to Java on the command line using the 
+  `-Djava.security.properties=<path to file>`.
 
 * Applications using libkrb5: No special treatment is required. Applications
   will follow the crypto policies by default. These applications inherit the
