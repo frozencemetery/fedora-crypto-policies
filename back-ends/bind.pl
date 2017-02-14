@@ -19,15 +19,15 @@ my %sign_not_map = (
 	'RSA-MD5'  => 'RSAMD5',
 	'DSA-SHA1' => 'DSA',
 	'ECDSA-SHA1' => '',
-	'RSA-SHA1' => "RSASHA1;\nNSECRSASHA1"
+	'RSA-SHA1' => "RSASHA1;\nNSEC3RSASHA1"
 );
 
 my %hash_not_map = (
 	'MD5'      => '',
-	'SHA1'     => 'SHA1',
+	'SHA1'     => 'SHA-1',
 	'GOST'     => 'GOST',
-	'SHA2-256' => 'SHA256',
-	'SHA2-384' => 'SHA384'
+	'SHA2-256' => 'SHA-256',
+	'SHA2-384' => 'SHA-384'
 );
 
 sub generate_temp_policy() {
