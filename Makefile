@@ -22,6 +22,10 @@ check:
 	tests/java.pl >>test-suite.log
 	tests/verify-output.pl >>test-suite.log
 
+reset-outputs:
+	@rm -rf tests/outputs
+	echo "Outputs were reset. Run make check to re-generate, and commit the output."
+
 clean:
 	rm -f update-crypto-policies.8 update-crypto-policies.8.xml
 
