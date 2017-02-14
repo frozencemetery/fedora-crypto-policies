@@ -84,7 +84,9 @@ sub test_temp_policy() {
 
 	if (-e "/usr/sbin/named-checkconf") {
 		my ( $fh, $filename ) = tempfile();
+		print $fh "options {\n";
 		print $fh $gstr;
+		print $fh "\n};\n";
 		close $fh;
 		system("/usr/sbin/named-checkconf $filename");
 		my $ret = $?;
