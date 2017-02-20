@@ -1,14 +1,18 @@
 This repository contains the crypto-policies data and scripts used in
 Fedora.
 
-=== Purpose ===
+|Release|Status|
+|:-----:|:----:|
+|F25|[![build status](https://gitlab.com/nmav/fedora-crypto-policies/badges/master/build.svg)](https://gitlab.com/nmav/fedora-crypto-policies/commits/master)|
+
+# Purpose
 
 The purpose is to unify the crypto policies used by different applications
 and libraries. That is allow setting a consistent security level for crypto
 on all applications in a Fedora system, irrespective of the crypto library
 in use.
 
-=== Description ===
+# Description
 
 The idea is to have few predefined security policies such as LEGACY, DEFAULT
 and FUTURE which are set system-wide by the administrator. Then applications
