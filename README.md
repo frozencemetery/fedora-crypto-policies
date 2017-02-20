@@ -33,9 +33,5 @@ The supported back ends in Fedora are:
  * OpenSSH (client)
  * Java via OpenJDK
 
-
-Currently OpenSSL is made to support system policies using a custom modification,
-and we have proposed that method upstream at:
-http://rt.openssl.org/Ticket/Display.html?id=3266&user=guest&pass=guest
-http://rt.openssl.org/Ticket/Display.html?id=3299&user=guest&pass=guest
+The documentation of crypto policies is at [update-crypto-policies.8.txt](update-crypto-policies.8.txt).
 
