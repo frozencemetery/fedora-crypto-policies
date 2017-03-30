@@ -75,7 +75,7 @@ my %cipher_map = (
 	'CAMELLIA-128-CBC'  => '+CAMELLIA-128-CBC',
 	'CHACHA20-POLY1305' => '+CHACHA20-POLY1305',
 	'3DES-CBC'          => '+3DES-CBC',
-	'RC4-128'	    => ''
+	'RC4-128'	    => '+ARCFOUR-128'
 );
 
 my %key_exchange_map = (
