@@ -36,3 +36,6 @@ The supported back ends in Fedora are:
 
 The documentation of crypto policies is at [update-crypto-policies.8.txt](update-crypto-policies.8.txt).
 
+# Contributing
+
+See [our contribution guide](CONTRIBUTION.md).
