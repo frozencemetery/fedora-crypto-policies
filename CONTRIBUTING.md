@@ -1,4 +1,4 @@
-# GnuTLS -- Information about our contribution rules and coding style
+# Information about our contribution rules and coding style
 
  Anyone is welcome to contribute to crypto-policies. Be prepared
 to defend and justify your enhancements, and get through few rounds
