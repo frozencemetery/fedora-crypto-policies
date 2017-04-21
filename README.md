@@ -28,6 +28,7 @@ will activate.
 The supported back ends in Fedora are:
  * GnuTLS
  * OpenSSL
+ * NSS
  * BIND
  * libkrb5
  * OpenSSH (client)
