@@ -20,6 +20,7 @@ check:
 	tests/openssl.pl >test-suite.log
 	tests/gnutls.pl >>test-suite.log
 	tests/java.pl >>test-suite.log
+	tests/krb5.py >>test-suite.log
 	tests/verify-output.pl >>test-suite.log
 
 reset-outputs:
