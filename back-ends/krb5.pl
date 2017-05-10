@@ -52,7 +52,7 @@ sub generate_temp_policy() {
 	}
 	do "$libdir/profiles/$profile.pl";
 
-	$string = '';
+	$string = "[libdefaults]\n";
 	$print_init = 0;
 
 	$string .= "permitted_enctypes = ";
