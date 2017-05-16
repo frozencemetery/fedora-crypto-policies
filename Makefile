@@ -24,7 +24,7 @@ check:
 	tests/verify-output.pl >>test-suite.log
 
 reset-outputs:
-	@rm -rf tests/outputs
+	@rm -rf tests/outputs/*
 	echo "Outputs were reset. Run make check to re-generate, and commit the output."
 
 clean:

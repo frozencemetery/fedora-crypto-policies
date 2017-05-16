@@ -15,6 +15,7 @@ foreach $mod (@modules) {
 	require "$libdir/$mod.pl";
 	my $tmp = '';
 
+	mkdir("tests/outputs");
 	foreach $profile (@profiles) {
 		$tmp = generate_temp_policy($profile, 0, $libdir, \@reloadcmds);
 		$contents = '';
