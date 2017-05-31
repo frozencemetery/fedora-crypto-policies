@@ -31,8 +31,8 @@ my %cipher_map = (
 	'AES-128-CCM'	   => '',
 	'CAMELLIA-128-GCM' => '',
 	
-	'AES-256-CBC'      => 'aes256-cts-hmac-sha1-96',
-	'AES-128-CBC'      => 'aes128-cts-hmac-sha1-96',
+	'AES-256-CBC'      => 'aes256-cts-hmac-sha1-96 aes256-cts-hmac-sha384-192',
+	'AES-128-CBC'      => 'aes128-cts-hmac-sha1-96 aes128-cts-hmac-sha256-128',
 	'CAMELLIA-256-CBC' => 'camellia256-cts-cmac',
 	'CAMELLIA-128-CBC' => 'camellia128-cts-cmac',
 	'RC4-128'          => 'arcfour-hmac-md5',
@@ -52,7 +52,7 @@ sub generate_temp_policy() {
 	}
 	do "$libdir/profiles/$profile.pl";
 
-	$string = '';
+	$string = "[libdefaults]\n";
 	$print_init = 0;
 
 	$string .= "permitted_enctypes = ";

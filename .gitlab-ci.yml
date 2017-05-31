@@ -3,6 +3,7 @@ Fedora25:
   before_script:
   - dnf install -y openssh-clients openssl git which gnutls-utils java-1.8.0-openjdk-devel bind perl asciidoc perl-generators libxslt 'perl(File::pushd)' 'perl(File::Temp)' 'perl(File::Copy)'
   script:
+  - pushd tests && git clone --depth 1 https://github.com/frozencemetery/krb5check && popd
   - make && make check
   tags:
   - shared
