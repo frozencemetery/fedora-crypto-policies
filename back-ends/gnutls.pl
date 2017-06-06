@@ -176,7 +176,10 @@ sub generate_temp_policy() {
 
 	append('+COMP-NULL');
 
-	if ( $min_dh_size <= 1024 && $min_rsa_size <= 1024 ) {
+	if ( $min_dh_size <= 768 && $min_rsa_size <= 768 ) {
+		append('%PROFILE_VERY_WEAK');
+	}
+	elsif ( $min_dh_size <= 1024 && $min_rsa_size <= 1024 ) {
 		append('%PROFILE_LOW');
 	}
 	elsif ( $min_dh_size <= 2048 && $min_rsa_size <= 2048 ) {
