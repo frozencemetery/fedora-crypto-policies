@@ -54,13 +54,22 @@ my %gss_hash_map = (
 	'GOST'     => '',
 );
 
+my %mac_map_etm = (
+	'HMAC-MD5'	=> 'hmac-md5-etm@openssh.com',
+	'UMAC-64'       => 'umac-64-etm@openssh.com',
+	'UMAC-128'      => 'umac-128-etm@openssh.com',
+	'HMAC-SHA1'     => 'hmac-sha1-etm@openssh.com',
+	'HMAC-SHA2-256' => 'hmac-sha2-256-etm@openssh.com',
+	'HMAC-SHA2-512' => 'hmac-sha2-512-etm@openssh.com'
+);
+
 my %mac_map = (
-	'HMAC-MD5'	=> 'hmac-md5,hmac-md5-etm@openssh.com',
-	'UMAC-64'       => 'umac-64-etm@openssh.com,umac-64@openssh.com',
-	'UMAC-128'      => 'umac-128-etm@openssh.com,umac-128@openssh.com',
-	'HMAC-SHA1'     => 'hmac-sha1-etm@openssh.com,hmac-sha1',
-	'HMAC-SHA2-256' => 'hmac-sha2-256-etm@openssh.com,hmac-sha2-256',
-	'HMAC-SHA2-512' => 'hmac-sha2-512-etm@openssh.com,hmac-sha2-512'
+	'HMAC-MD5'	=> 'hmac-md5',
+	'UMAC-64'       => 'umac-64@openssh.com',
+	'UMAC-128'      => 'umac-128@openssh.com',
+	'HMAC-SHA1'     => 'hmac-sha1',
+	'HMAC-SHA2-256' => 'hmac-sha2-256',
+	'HMAC-SHA2-512' => 'hmac-sha2-512'
 );
 
 my %kx_map = (
@@ -107,6 +116,15 @@ sub generate_temp_policy() {
 
 	$print_init = 0;
 	$tmp = '';
+	foreach (@mac_list) {
+		my $val = $mac_map_etm{$_};
+		if ( defined($val) ) {
+			append($val, \$tmp);
+		}
+		else {
+			print STDERR "openssh: unknown MAC: $_\n";
+		}
+	}
 	foreach (@mac_list) {
 		my $val = $mac_map{$_};
 		if ( defined($val) ) {
