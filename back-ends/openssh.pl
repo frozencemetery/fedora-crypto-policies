@@ -89,6 +89,7 @@ sub generate_temp_policy() {
 	my $profile = shift(@_);
 	my $dir     = shift(@_);
 	my $libdir  = shift(@_);
+	my $reloadcmd_ref = shift(@_);
 
 	if (!-e "$libdir/profiles/$profile.pl") {
 		print STDERR "Cannot file $profile.pl in $libdir/profiles\n";
@@ -185,6 +186,7 @@ sub generate_temp_policy() {
 		$string .= "KexAlgorithms $tmp\n";
 	}
 
+	push(@{$reloadcmd_ref}, "test -e /usr/lib/systemd/system/sshd.service && systemctl reload sshd\n");
 
 	return $string;
 }
