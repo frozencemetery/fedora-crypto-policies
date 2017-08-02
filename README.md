@@ -32,7 +32,7 @@ The supported back ends in Fedora are:
  * NSS
  * BIND
  * libkrb5
- * OpenSSH (client)
+ * OpenSSH
  * Java via OpenJDK
 
 The documentation of crypto policies is at [update-crypto-policies.8.txt](update-crypto-policies.8.txt).
