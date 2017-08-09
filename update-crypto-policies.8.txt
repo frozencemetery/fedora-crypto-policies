@@ -151,9 +151,8 @@ utilize the system-wide policy are the following.
    To opt-out from the policy for client, override the global ssh_config with a
    user-specific configuration in ~/.ssh/config. See ssh_config(5) for more
    information.
-   To opt-out from the policy for server, remove the line containing
-   {INCLUDE_CRYPTO_POLICY} substitution string from sshd_config. See
-   shd_config(5) for more information.
+   To opt-out from the policy for server, uncomment the line containing
+   CRYPTO_POLICY= in /etc/sysconfig/sshd .
 
 
 [[policyconfig]]
