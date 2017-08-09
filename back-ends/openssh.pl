@@ -186,8 +186,6 @@ sub generate_temp_policy() {
 		$string .= "KexAlgorithms $tmp\n";
 	}
 
-	push(@{$reloadcmd_ref}, "test -e /usr/lib/systemd/system/sshd.service && systemctl reload sshd\n");
-
 	return $string;
 }
 
