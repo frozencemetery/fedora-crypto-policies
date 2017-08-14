@@ -4,6 +4,9 @@ require 5.000;
 use strict;
 
 use profiles::common;
+use File::Temp qw/ tempfile tmpnam /;
+
+my $host_key_filename;
 
 # XXX copy&paste ciphers definitions from profiles/openssh.pl
 
@@ -194,18 +197,25 @@ sub generate_temp_policy() {
 	return "CRYPTO_POLICY='$string'";
 }
 
+sub test_setup() {
+	$host_key_filename = tmpnam();
+	system("/usr/bin/ssh-keygen -t rsa -b 2048 -f $host_key_filename -N '' >/dev/null");
+}
+
 sub test_temp_policy() {
 	my $profile = shift(@_);
 	my $dir     = shift(@_);
 	my $gstr = shift(@_);
 
 	if (-e "/usr/sbin/sshd") {
+		test_setup();
 		my ( $fh, $filename ) = tempfile();
 		print $fh $gstr;
 		close $fh;
-		system("/usr/bin/bash -c 'source $filename && /usr/sbin/sshd -T \$CRYPTO_POLICY' >/dev/null");
+		system("/usr/bin/bash -c 'source $filename && /usr/sbin/sshd -T \$CRYPTO_POLICY -h $host_key_filename -f /dev/null' >/dev/null");
 		my $ret = $?;
 		unlink($filename);
+		test_cleanup();
 
 		if ( $ret != 0 ) {
 			print STDERR "There is an error in openssh-server generated policy\n";
@@ -213,6 +223,10 @@ sub test_temp_policy() {
 		}
 	}
 	return;
+}
+
+sub test_cleanup() {
+	unlink($host_key_filename);
 }
 
 1;
