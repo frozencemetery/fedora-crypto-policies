@@ -6,7 +6,7 @@
 # systems that use SHA-1 as signature algorithm).
 
 # MACs: SHA1+
-# Curves: of size 256+ or better
+# Groups: of size 255+ or better + FFDHE >= 2048
 # Signature algorithms: must use SHA-256 hash or better
 # Ciphers: AES-GCM, AES-CCM, AES-CTR, AES-CBC, CAMELLIA-GCM, CAMELLIA-CBC
 # Key exchange: ECDHE, RSA, DHE
@@ -17,7 +17,8 @@
 sub update_lists {
 
     @mac_list = ('AEAD', 'UMAC-128', 'HMAC-SHA1', 'HMAC-SHA2-256', 'HMAC-SHA2-384', 'HMAC-SHA2-512');
-    @curve_list = ('X25519', 'SECP256R1', 'SECP384R1', 'SECP521R1');
+    @group_list = ('X25519', 'SECP256R1', 'SECP384R1', 'SECP521R1',
+        'FFDHE-2048', 'FFDHE-3072', 'FFDHE-4096', 'FFDHE-6144', 'FFDHE-8192');
     @hash_list = ('SHA2-256', 'SHA2-384', 'SHA2-512', 'SHA3-256', 'SHA3-384', 'SHA3-512');
     @sign_list = (
         'RSA-SHA2-224', 'DSA-SHA2-224', 'ECDSA-SHA2-224',

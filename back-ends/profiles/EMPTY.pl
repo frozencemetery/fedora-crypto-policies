@@ -3,7 +3,7 @@
 sub update_lists {
 
     @mac_list = ();
-    @curve_list = ();
+    @group_list = ();
     @hash_list = ();
     @sign_list = ();
 

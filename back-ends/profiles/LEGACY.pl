@@ -2,7 +2,7 @@
 # It should provide at least 64-bit security and include RC4 and MD5 (for HMAC).
 
 # MACs: MD5, SHA1+
-# Curves: All supported
+# Groups: All supported
 # Signature algorithms: must use SHA-1 hash or better
 # (Note: signature algorithms restrictions shouldn't apply to self-signatures)
 # Ciphers: AES-GCM, AES-CCM, AES-CTR, AES-CBC, CAMELLIA-GCM, CAMELLIA-CBC, 3DES-CBC, RC4
@@ -14,7 +14,7 @@
 sub update_lists {
 
     @mac_list = @full_mac_list;
-    @curve_list = @full_curve_list;
+    @group_list = @full_group_list;
     @hash_list = @full_hash_list;
     @sign_list = ('RSA-SHA1', 'DSA-SHA1', 'ECDSA-SHA1',
         'RSA-SHA2-224', 'DSA-SHA2-224', 'ECDSA-SHA2-224',

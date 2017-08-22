@@ -165,7 +165,7 @@ sub generate_temp_policy() {
 		foreach (@hash_list) {
 			my $hash = $_;
 			if ($kx eq 'ECDHE') {
-				foreach (@curve_list) {
+				foreach (@group_list) {
 					my $mval = $kx.'-'.$_.'-'.$hash;
 					my $val = $kx_map{$mval};
 					if ( defined($val) ) {

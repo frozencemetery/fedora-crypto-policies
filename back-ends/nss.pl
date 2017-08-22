@@ -115,7 +115,7 @@ sub generate_temp_policy() {
 			print STDERR "nss: unknown: $_\n";
 		}
 	}
-	foreach (@curve_list) {
+	foreach (@group_list) {
 		my $val = $curve_map{$_};
 		if ( defined($val) ) {
 			append($val);
