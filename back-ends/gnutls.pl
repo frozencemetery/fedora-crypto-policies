@@ -1,6 +1,8 @@
 
 #!perl
 
+# For gnutls 3.6.0 or later
+
 require 5.000;
 use strict;
 
@@ -32,13 +34,17 @@ my %mac_map = (
 	'HMAC-SHA2-512' => '+SHA512'
 );
 
-my %curve_map = (
+my %group_map = (
 	'X448'    => '',
-	'X25519'    => '',
-#	'X25519'    => '+CURVE-X25519',
-	'SECP256R1' => '+CURVE-SECP256R1',
-	'SECP384R1' => '+CURVE-SECP384R1',
-	'SECP521R1' => '+CURVE-SECP521R1',
+	'X25519'    => '+GROUP-X25519',
+	'SECP256R1' => '+GROUP-SECP256R1',
+	'SECP384R1' => '+GROUP-SECP384R1',
+	'SECP521R1' => '+GROUP-SECP521R1',
+	'FFDHE-6144' => '',
+	'FFDHE-2048' => '+GROUP-FFDHE2048',
+	'FFDHE-3072' => '+GROUP-FFDHE3072',
+	'FFDHE-4096' => '+GROUP-FFDHE4096',
+	'FFDHE-8192' => '+GROUP-FFDHE8192',
 );
 
 my %sign_not_map = (
@@ -57,7 +63,11 @@ my %sign_not_map = (
 	'ECDSA-SHA2-384' => '-SIGN-ECDSA-SHA384',
 	'RSA-SHA2-512' => '-SIGN-RSA-SHA512',
 	'DSA-SHA2-512' => '-SIGN-DSA-SHA512',
-	'ECDSA-SHA2-512' => '-SIGN-ECDSA-SHA512'
+	'ECDSA-SHA2-512' => '-SIGN-ECDSA-SHA512',
+	'RSA-PSS-SHA2-256' => '-SIGN-RSA-PSS-SHA256',
+	'RSA-PSS-SHA2-384' => '-SIGN-RSA-PSS-SHA384',
+	'RSA-PSS-SHA2-512' => '-SIGN-RSA-PSS-SHA512',
+	'EDDSA-ED25519' => '-SIGN-EDDSA-ED25519'
 	);
 
 my %cipher_map = (
@@ -122,7 +132,7 @@ sub generate_temp_policy() {
 	}
 
 	foreach (@group_list) {
-		my $val = $curve_map{$_};
+		my $val = $group_map{$_};
 		if ( defined($val) ) {
 			append($val);
 		}
