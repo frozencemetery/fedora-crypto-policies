@@ -5,6 +5,7 @@ Fedora.
 |:-----:|:----:|
 |master|[![build status](https://gitlab.com/nmav/fedora-crypto-policies/badges/master/build.svg)](https://gitlab.com/nmav/fedora-crypto-policies/commits/master)|
 |F25|[![build status](https://gitlab.com/nmav/fedora-crypto-policies/badges/fedora25/build.svg)](https://gitlab.com/nmav/fedora-crypto-policies/commits/fedora25)|
+|F26|[![build status](https://gitlab.com/nmav/fedora-crypto-policies/badges/fedora26/build.svg)](https://gitlab.com/nmav/fedora-crypto-policies/commits/fedora26)|
 
 # Purpose
 
