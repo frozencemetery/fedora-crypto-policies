@@ -8,7 +8,7 @@
 # * DEFAULT: A reasonable default for today's standards (80-bit security).
 #
 # * FUTURE: A level that will provide security on a conservative level that is
-#   believed to withstand any near-term future attacks (128-bit security).
+#   believed to withstand any near-term future attacks (112-bit security).
 #
 # After modifying this file, you need to run update-crypto-policies
 # for the changes to propagate.
