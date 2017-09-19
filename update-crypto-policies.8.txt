@@ -76,6 +76,10 @@ Currently the supported back-ends are:
 
 * OpenSSH
 
+Applications and languages which rely on any of these back-ends will follow
+the system policies as well. Examples are apache httpd, nginx, php, and
+others.
+
 [[options]]
 OPTIONS
 -------
