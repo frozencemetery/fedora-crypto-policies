@@ -41,4 +41,4 @@ The documentation of crypto policies is at [update-crypto-policies.8.txt](update
 
 # Contributing
 
-See [our contribution guide](CONTRIBUTION.md).
+See [our contribution guide](CONTRIBUTING.md).
