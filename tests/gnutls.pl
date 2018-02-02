@@ -17,8 +17,8 @@ foreach my $policy (@policies) {
 	system("gnutls-cli --priority '$tmp' -l >$TMPFILE 2>&1");
 	if ($? != 0) {
 		print "Error in gnutls policy for $policy\n";
-#		system("cat $TMPFILE");
-		print "gnutls-cli --priority '$tmp' -l >$TMPFILE 2>&1\n";
+		print "gnutls-cli --priority '$tmp' -l\n";
+		system("cat $TMPFILE");
 		exit 1;
 	}
 	unlink($TMPFILE);
