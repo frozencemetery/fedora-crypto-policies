@@ -138,10 +138,19 @@ sub test_temp_policy() {
 		close $fh;
 		system("openssl ciphers `cat $filename` >/dev/null");
 		my $ret = $?;
-		unlink($filename);
 
 		if ( $ret != 0 ) {
+			unlink($filename);
 			print STDERR "There is an error in openssl generated policy\n";
+			print STDERR "policy: $gstr\n";
+			exit 1;
+		}
+
+		my $res = qx(openssl ciphers `cat $filename`);
+		unlink($filename);
+
+		if ($res =~ /NULL|ADH/ ) {
+			print STDERR "There is NULL or ADH in openssl generated policy\n";
 			print STDERR "policy: $gstr\n";
 			exit 1;
 		}
