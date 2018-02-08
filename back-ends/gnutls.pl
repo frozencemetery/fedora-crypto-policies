@@ -155,7 +155,7 @@ sub generate_temp_policy() {
 		}
 	}
 
-	foreach (@cipher_list) {
+	foreach (@tls_cipher_list) {
 		my $val = $cipher_map{$_};
 		if ( defined($val) ) {
 			append($val);

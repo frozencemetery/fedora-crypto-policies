@@ -101,7 +101,7 @@ sub generate_temp_policy() {
 		}
 	}
 
-	foreach (@cipher_not_list) {
+	foreach (@tls_cipher_not_list) {
 		my $val = $cipher_not_map{$_};
 		if ( defined($val) ) {
 			append($val);

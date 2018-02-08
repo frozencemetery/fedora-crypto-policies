@@ -7,7 +7,7 @@ BEGIN {
     require Exporter;
     our $VERSION = 1.00;
     our @ISA = qw(Exporter);
-    our @EXPORT = qw(@full_hash_list @full_protocol_list @full_mac_list @full_group_list @full_sign_list @full_cipher_list @full_key_exchange_list $min_tls_version $min_dtls_version $min_dsa_size @hash_list @hash_not_list @protocol_list @protocol_not_list $min_dh_size $min_rsa_size @mac_list @mac_not_list @group_list @curve_not_list @sign_list @sign_not_list @cipher_list @cipher_not_list @key_exchange_list @key_exchange_not_list update_rev_lists);
+    our @EXPORT = qw(@full_hash_list @full_protocol_list @full_mac_list @full_group_list @full_sign_list @full_tls_cipher_list @full_cipher_list @full_key_exchange_list $min_tls_version $min_dtls_version $min_dsa_size @hash_list @hash_not_list @protocol_list @protocol_not_list $min_dh_size $min_rsa_size @mac_list @mac_not_list @group_list @curve_not_list @sign_list @sign_not_list @cipher_list @tls_cipher_list @cipher_not_list @tls_cipher_not_list @key_exchange_list @key_exchange_not_list update_rev_lists);
 }
 
 our @full_hash_list = ('SHA2-256', 'SHA2-384', 'SHA2-512', 'SHA3-256', 'SHA3-384', 'SHA3-512', 'SHA1', 'MD5', 'GOST');
@@ -28,11 +28,13 @@ our @full_sign_list = ('RSA-MD5', 'RSA-SHA1', 'DSA-SHA1', 'ECDSA-SHA1',
     'EDDSA-ED25519', 'EDDSA-ED448',
     'RSA-PSS-SHA1', 'RSA-PSS-SHA2-256', 'RSA-PSS-SHA2-384', 'RSA-PSS-SHA2-512');
 
-our @full_cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'AES-128-GCM', 'AES-128-CCM',
+our @full_tls_cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'AES-128-GCM', 'AES-128-CCM',
     'CHACHA20-POLY1305', 'CAMELLIA-256-GCM', 'CAMELLIA-128-GCM',
     'AES-256-CTR', 'AES-256-CBC', 'AES-128-CTR', 'AES-128-CBC', 'CAMELLIA-256-CBC', 'CAMELLIA-128-CBC',
     '3DES-CBC', 'DES-CBC', 'RC4-40', 'RC4-128', 'DES40-CBC', 'RC2-CBC',
     'IDEA-CBC', 'SEED-CBC', 'NULL');
+
+our @full_cipher_list = @full_tls_cipher_list;
 
 our @full_key_exchange_list = ('PSK', 'DHE-PSK', 'ECDHE-PSK', 'ECDHE', 'RSA', 'DHE-RSA', 'DHE-DSS', 'EXPORT', 'ANON', 'DH', 'ECDH');
 our @full_protocol_list = ('SSL2.0', 'SSL3.0', 'TLS1.0', 'TLS1.1', 'TLS1.2', 'DTLS1.0', 'DTLS1.2');
@@ -51,6 +53,9 @@ our @sign_not_list = ();
 
 our @cipher_list = ();
 our @cipher_not_list = ();
+
+our @tls_cipher_list = ();
+our @tls_cipher_not_list = ();
 
 our @key_exchange_list = ();
 our @key_exchange_not_list = ();
@@ -82,6 +87,9 @@ sub update_rev_lists {
 
     my %cipher_list=map{$_ => 1} @cipher_list;
     @cipher_not_list = grep(!defined($cipher_list{$_}), @full_cipher_list);
+
+    my %tls_cipher_list=map{$_ => 1} @tls_cipher_list;
+    @tls_cipher_not_list = grep(!defined($tls_cipher_list{$_}), @full_tls_cipher_list);
 
     my %key_exchange_list=map{$_ => 1} @key_exchange_list;
     @key_exchange_not_list = grep(!defined($key_exchange_list{$_}), @full_key_exchange_list);
