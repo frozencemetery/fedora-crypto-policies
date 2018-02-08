@@ -74,7 +74,8 @@ my %key_exchange_map = (
 	'ECDHE-PSK'   => '',
 	'RSA'   => 'RSA',
 	'ECDHE' => 'ECDHE-RSA:ECDHE-ECDSA',
-	'DHE'   => 'DHE-RSA:DHE-DSS',
+	'DHE-RSA'   => 'DHE-RSA',
+	'DHE-DSS'   => 'DHE-DSS',
 	'ECDH' => 'ECDH-RSA:ECDH-ECDSA',
 	'DH'   => 'DH-RSA:DH-DSS'
 );

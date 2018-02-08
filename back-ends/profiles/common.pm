@@ -34,7 +34,7 @@ our @full_cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'AES-128-GCM', 'AES-128-C
     '3DES-CBC', 'DES-CBC', 'RC4-40', 'RC4-128', 'DES40-CBC', 'RC2-CBC',
     'IDEA-CBC', 'SEED-CBC', 'NULL');
 
-our @full_key_exchange_list = ('PSK', 'DHE-PSK', 'ECDHE-PSK', 'ECDHE', 'RSA', 'DHE', 'EXPORT', 'ANON', 'DH', 'ECDH');
+our @full_key_exchange_list = ('PSK', 'DHE-PSK', 'ECDHE-PSK', 'ECDHE', 'RSA', 'DHE-RSA', 'DHE-DSS', 'EXPORT', 'ANON', 'DH', 'ECDH');
 our @full_protocol_list = ('SSL2.0', 'SSL3.0', 'TLS1.0', 'TLS1.1', 'TLS1.2', 'DTLS1.0', 'DTLS1.2');
 
 our @mac_list = ();

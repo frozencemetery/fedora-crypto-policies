@@ -42,7 +42,8 @@ my %cipher_not_map = (
 my %key_exchange_map = (
 	'RSA'       => 'kRSA',
 	'ECDHE'     => 'kEECDH',
-	'DHE'       => 'kEDH',
+	'DHE-RSA'       => 'kEDH',
+	'DHE-DSS'       => 'kEDH',
 	'PSK'       => 'kPSK',
 	'DHE-PSK'   => 'kDHEPSK',
 	'ECDHE-PSK' => 'kECDHEPSK'
@@ -55,7 +56,8 @@ my %key_exchange_not_map = (
 	'EXPORT' => '!EXP',
 	'RSA'       => '!kRSA',
 	'ECDHE'     => '!kEECDH',
-	'DHE'       => '!kEDH',
+	'DHE-RSA'       => '!aRSA',
+	'DHE-DSS'       => '!aDSS',
 	'PSK'       => '!kPSK',
 	'DHE-PSK'   => '!kDHEPSK',
 	'ECDHE-PSK' => '!kECDHEPSK'
@@ -120,6 +122,7 @@ sub generate_temp_policy() {
 	}
 
 	append('!SSLv2');
+	append('!ADH');
 
 	return $string;
 }
