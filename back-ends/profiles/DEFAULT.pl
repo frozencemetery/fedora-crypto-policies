@@ -9,7 +9,7 @@
 # key exchange: ECDHE, RSA, DHE (not DHE-DSS)
 # DH params size: >= 2048
 # RSA params size: >= 2048
-# TLS protocols: TLS >= 1.2
+# TLS protocols: TLS >= 1.2 (temporarily allow TLS>=1.0 as we cannot enforce TLS proto version in openssl)
 
 sub update_lists {
 
@@ -33,10 +33,14 @@ sub update_lists {
         'AES-128-GCM', 'AES-128-CCM', 'CAMELLIA-128-GCM', 'AES-128-CTR', 'AES-128-CBC', 'CAMELLIA-128-CBC');
     @cipher_list = @tls_cipher_list;
     @key_exchange_list = ('ECDHE', 'RSA', 'DHE-RSA', 'PSK', 'DHE-PSK', 'ECDHE-PSK');
-    @protocol_list = ('TLS1.2', 'DTLS1.2');
+#    @protocol_list = ('TLS1.2', 'DTLS1.2');
+#    $min_tls_version = 'TLS1.2';
+#    $min_dtls_version = 'DTLS1.2';
 
-    $min_tls_version = 'TLS1.2';
-    $min_dtls_version = 'DTLS1.2';
+    @protocol_list = ('TLS1.2', 'TLS1.1', 'TLS1.0', 'DTLS1.2', 'DTLS1.0');
+
+    $min_tls_version = 'TLS1.0';
+    $min_dtls_version = 'DTLS1.0';
 
     # Parameter sizes
     $min_dh_size = 2048;
