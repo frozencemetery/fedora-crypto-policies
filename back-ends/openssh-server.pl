@@ -210,6 +210,7 @@ sub test_temp_policy() {
 		my ( $fh, $filename ) = tempfile();
 		print $fh $gstr;
 		close $fh;
+
 		system("/usr/bin/bash -c 'source $filename && /usr/sbin/sshd -T \$CRYPTO_POLICY -h $host_key_filename -f /dev/null' >/dev/null");
 		my $ret = $?;
 		unlink($filename);
@@ -217,6 +218,13 @@ sub test_temp_policy() {
 
 		if ( $ret != 0 ) {
 			print STDERR "There is an error in openssh-server generated policy\n";
+			exit 1;
+		}
+
+		if (($gstr !~ /diffie-hellman-group18-sha512/) || ($gstr !~ /aes256-gcm\@openssh.com/) ||
+		    ($gstr !~ /hmac-sha2-256-etm\@openssh.com/)) {
+			print STDERR "Most likely we miss an openssh cipher\n";
+			print STDERR "policy: $gstr\n";
 			exit 1;
 		}
 	}
