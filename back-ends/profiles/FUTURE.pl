@@ -35,7 +35,7 @@ sub update_lists {
     @tls_cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'CHACHA20-POLY1305', 'CAMELLIA-256-GCM');
     @cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'CHACHA20-POLY1305', 'CAMELLIA-256-GCM',
 		    'AES-256-CTR', 'AES-256-CBC', 'CAMELLIA-256-CBC');
-    @key_exchange_list = ('ECDHE', 'RSA', 'DHE-RSA', 'PSK', 'DHE-PSK', 'ECDHE-PSK');
+    @key_exchange_list = ('ECDHE', 'RSA', 'DHE', 'DHE-RSA', 'PSK', 'DHE-PSK', 'ECDHE-PSK');
     @protocol_list = ('TLS1.2', 'DTLS1.2');
 
     $min_tls_version = 'TLS1.2';

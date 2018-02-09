@@ -33,7 +33,7 @@ sub update_lists {
         'AES-128-GCM', 'AES-128-CCM', 'CAMELLIA-128-GCM', 'AES-128-CTR', 'AES-128-CBC', 'CAMELLIA-128-CBC',
         '3DES-CBC', 'RC4-128');
     @cipher_list = @tls_cipher_list;
-    @key_exchange_list = ('ECDHE', 'RSA', 'DHE-RSA', 'DHE-DSS', 'PSK', 'DHE-PSK', 'ECDHE-PSK');
+    @key_exchange_list = ('ECDHE', 'RSA', 'DHE', 'DHE-RSA', 'DHE-DSS', 'PSK', 'DHE-PSK', 'ECDHE-PSK');
     @protocol_list = ('TLS1.2', 'TLS1.1', 'TLS1.0', 'DTLS1.2', 'DTLS1.0');
 
     $min_tls_version = 'TLS1.0';

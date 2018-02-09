@@ -42,10 +42,10 @@ my %cipher_not_map = (
 my %key_exchange_map = (
 	'RSA'       => 'kRSA',
 	'ECDHE'     => 'kEECDH',
-	'DHE-RSA'       => 'kEDH',
-	'DHE-DSS'       => 'kEDH',
 	'PSK'       => 'kPSK',
 	'DHE-PSK'   => 'kDHEPSK',
+	'DHE-RSA'   => 'kEDH',
+	'DHE-DSS'   => 'kEDH',
 	'ECDHE-PSK' => 'kECDHEPSK'
 );
 
@@ -56,8 +56,8 @@ my %key_exchange_not_map = (
 	'EXPORT' => '!EXP',
 	'RSA'       => '!kRSA',
 	'ECDHE'     => '!kEECDH',
-	'DHE-RSA'       => '!aRSA',
-	'DHE-DSS'       => '!aDSS',
+	'DHE-RSA'   => '!aRSA',
+	'DHE-DSS'   => '!aDSS',
 	'PSK'       => '!kPSK',
 	'DHE-PSK'   => '!kDHEPSK',
 	'ECDHE-PSK' => '!kECDHEPSK'
@@ -82,6 +82,7 @@ sub generate_temp_policy() {
 	$print_init = 0;
 
 	foreach (@key_exchange_list) {
+
 		my $val = $key_exchange_map{$_};
 		if ( defined($val) ) {
 			append($val);
