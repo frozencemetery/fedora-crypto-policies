@@ -39,6 +39,20 @@ The supported back ends in Fedora are:
 
 The documentation of crypto policies is at [update-crypto-policies.8.txt](update-crypto-policies.8.txt).
 
+# Generating the policies
+
+The policies are described in PERL at `back-ends/profiles/POLICYFILE.pl`,
+and they operate on strings defined in `back-ends/profiles/common.pm`.
+Individual application configuration generators are present in `back-ends/`.
+
+To generate the policies per application use the script `./generate-policies.pl
+DESTDIR` or `make install`.
+
+For testing purpose the generated policies per application with the current
+config are placed in `tests/outputs` and `make check` will verify whether the
+generated policies match the stored. To reset the outputs use `make
+reset-outputs` and `make check` to regenerate them.
+
 # Contributing
 
 See [our contribution guide](CONTRIBUTING.md).

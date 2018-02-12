@@ -42,9 +42,10 @@ my %cipher_not_map = (
 my %key_exchange_map = (
 	'RSA'       => 'kRSA',
 	'ECDHE'     => 'kEECDH',
-	'DHE'       => 'kEDH',
 	'PSK'       => 'kPSK',
 	'DHE-PSK'   => 'kDHEPSK',
+	'DHE-RSA'   => 'kEDH',
+	'DHE-DSS'   => 'kEDH',
 	'ECDHE-PSK' => 'kECDHEPSK'
 );
 
@@ -55,7 +56,8 @@ my %key_exchange_not_map = (
 	'EXPORT' => '!EXP',
 	'RSA'       => '!kRSA',
 	'ECDHE'     => '!kEECDH',
-	'DHE'       => '!kEDH',
+	'DHE-RSA'   => '!aRSA',
+	'DHE-DSS'   => '!aDSS',
 	'PSK'       => '!kPSK',
 	'DHE-PSK'   => '!kDHEPSK',
 	'ECDHE-PSK' => '!kECDHEPSK'
@@ -80,6 +82,7 @@ sub generate_temp_policy() {
 	$print_init = 0;
 
 	foreach (@key_exchange_list) {
+
 		my $val = $key_exchange_map{$_};
 		if ( defined($val) ) {
 			append($val);
@@ -99,7 +102,7 @@ sub generate_temp_policy() {
 		}
 	}
 
-	foreach (@cipher_not_list) {
+	foreach (@tls_cipher_not_list) {
 		my $val = $cipher_not_map{$_};
 		if ( defined($val) ) {
 			append($val);
@@ -120,6 +123,7 @@ sub generate_temp_policy() {
 	}
 
 	append('!SSLv2');
+	append('!ADH');
 
 	return $string;
 }
@@ -135,10 +139,19 @@ sub test_temp_policy() {
 		close $fh;
 		system("openssl ciphers `cat $filename` >/dev/null");
 		my $ret = $?;
-		unlink($filename);
 
 		if ( $ret != 0 ) {
+			unlink($filename);
 			print STDERR "There is an error in openssl generated policy\n";
+			print STDERR "policy: $gstr\n";
+			exit 1;
+		}
+
+		my $res = qx(openssl ciphers `cat $filename`);
+		unlink($filename);
+
+		if ($res =~ /NULL|ADH/ ) {
+			print STDERR "There is NULL or ADH in openssl generated policy\n";
 			print STDERR "policy: $gstr\n";
 			exit 1;
 		}

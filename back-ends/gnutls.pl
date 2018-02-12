@@ -91,7 +91,8 @@ my %cipher_map = (
 my %key_exchange_map = (
 	'RSA'       => '+RSA',
 	'ECDHE'     => '+ECDHE-RSA:+ECDHE-ECDSA',
-	'DHE'       => '+DHE-RSA:+DHE-DSS',
+	'DHE-RSA'   => '+DHE-RSA',
+	'DHE-DSS'   => '+DHE-DSS',
 	'PSK'       => '+PSK',
 	'DHE-PSK'   => '+DHE-PSK',
 	'ECDHE-PSK' => '+ECDHE-PSK'
@@ -154,7 +155,7 @@ sub generate_temp_policy() {
 		}
 	}
 
-	foreach (@cipher_list) {
+	foreach (@tls_cipher_list) {
 		my $val = $cipher_map{$_};
 		if ( defined($val) ) {
 			append($val);

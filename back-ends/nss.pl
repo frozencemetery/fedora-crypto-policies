@@ -73,8 +73,9 @@ my %key_exchange_map = (
 	'DHE-PSK'   => '',
 	'ECDHE-PSK'   => '',
 	'RSA'   => 'RSA',
+	'DHE-RSA'   => 'DHE-RSA',
+	'DHE-DSS'   => 'DHE-DSS',
 	'ECDHE' => 'ECDHE-RSA:ECDHE-ECDSA',
-	'DHE'   => 'DHE-RSA:DHE-DSS',
 	'ECDH' => 'ECDH-RSA:ECDH-ECDSA',
 	'DH'   => 'DH-RSA:DH-DSS'
 );
@@ -124,7 +125,7 @@ sub generate_temp_policy() {
 			print STDERR "nss: unknown: $_\n";
 		}
 	}
-	foreach (@cipher_list) {
+	foreach (@tls_cipher_list) {
 		my $val = $cipher_map{$_};
 		if ( defined($val) ) {
 			append($val);

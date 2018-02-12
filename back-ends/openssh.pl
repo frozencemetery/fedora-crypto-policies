@@ -204,6 +204,13 @@ sub test_temp_policy() {
 			print STDERR "There is an error in openssh generated policy\n";
 			exit 1;
 		}
+
+		if (($gstr !~ /diffie-hellman-group18-sha512/) || ($gstr !~ /aes256-gcm\@openssh.com/) ||
+		    ($gstr !~ /hmac-sha2-256-etm\@openssh.com/)) {
+			print STDERR "Most likely we miss an openssh cipher\n";
+			print STDERR "policy: $gstr\n";
+			exit 1;
+		}
 	}
 	return;
 }
