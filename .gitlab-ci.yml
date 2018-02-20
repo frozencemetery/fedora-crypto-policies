@@ -2,9 +2,7 @@ Fedora-rawhide:
 # When building CI for a particular system, adapt the image
   image: fedora:rawhide
   before_script:
-# we are working around a dnf install issue in f26
-  - dnf update -y libsolv
-  - dnf install --nogpgcheck -y openssh-clients openssh-server openssl git which gnutls-utils java-1.8.0-openjdk-devel bind perl asciidoc perl-generators libxslt 'perl(File::pushd)' 'perl(File::Temp)' 'perl(File::Copy)'
+  - dnf install --nogpgcheck -y openssh-clients openssh-server openssl git which gnutls-utils java-1.8.0-openjdk-devel bind perl asciidoc perl-generators libxslt 'perl(File::pushd)' 'perl(File::Temp)' 'perl(File::Copy)' libreswan
   script:
   - pushd tests && git clone --depth 1 https://github.com/frozencemetery/krb5check && popd
   - make && make check
