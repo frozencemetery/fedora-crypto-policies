@@ -187,22 +187,23 @@ sub generate_temp_policy() {
 
 	append('+COMP-NULL');
 
-	if ( $min_dh_size <= 768 && $min_rsa_size <= 768 ) {
+	#we cannot separate RSA strength from DH params
+	if ( $min_dh_size <= 768 || $min_rsa_size <= 768 ) {
 		append('%PROFILE_VERY_WEAK');
 	}
-	elsif ( $min_dh_size <= 1024 && $min_rsa_size <= 1024 ) {
+	elsif ( $min_dh_size <= 1024 || $min_rsa_size <= 1024 ) {
 		append('%PROFILE_LOW');
 	}
-	elsif ( $min_dh_size <= 2048 && $min_rsa_size <= 2048 ) {
+	elsif ( $min_dh_size <= 2048 || $min_rsa_size <= 2048 ) {
 		append('%PROFILE_MEDIUM');
 	}
-	elsif ( $min_dh_size <= 3072 && $min_rsa_size <= 3072 ) {
+	elsif ( $min_dh_size <= 3072 || $min_rsa_size <= 3072 ) {
 		append('%PROFILE_HIGH');
 	}
-	elsif ( $min_dh_size <= 8192 && $min_rsa_size <= 8192 ) {
+	elsif ( $min_dh_size <= 8192 || $min_rsa_size <= 8192 ) {
 		append('%PROFILE_ULTRA');
 	}
-	elsif ( $min_dh_size <= 15360 && $min_rsa_size <= 15360 ) {
+	elsif ( $min_dh_size <= 15360 || $min_rsa_size <= 15360 ) {
 		append('%PROFILE_FUTURE');
 	}
 	else {
