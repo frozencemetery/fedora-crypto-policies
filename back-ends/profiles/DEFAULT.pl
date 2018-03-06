@@ -7,7 +7,7 @@
 # TLS Ciphers: >= 128-bit key, >= 128-bit block (aes, camellia, chacha20, including aes-cbc)
 # non-TLS Ciphers: same
 # key exchange: ECDHE, RSA, DHE (not DHE-DSS)
-# DH params size: >= 1024
+# DH params size: >= 1023
 # RSA params size: >= 2048
 # TLS protocols: TLS >= 1.2 (temporarily allow TLS>=1.0 as we cannot enforce TLS proto version in openssl)
 
@@ -48,7 +48,7 @@ sub update_lists {
     $min_dtls_version = 'DTLS1.0';
 
     # Parameter sizes
-    $min_dh_size = 1024;
+    $min_dh_size = 1023;
     $min_dsa_size = 2048;
     $min_rsa_size = 2048;
 
