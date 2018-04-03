@@ -190,7 +190,7 @@ sub generate_temp_policy() {
 	}
 
 	# we need restart here, since systemd needs to pick up a new command line options
-	push(@{$reloadcmd_ref}, "test -e /usr/lib/systemd/system/sshd.service && systemctl restart sshd\n");
+	push(@{$reloadcmd_ref}, "systemctl is-enabled sshd && systemctl restart sshd\n");
 
 	return "CRYPTO_POLICY='$string'";
 }
