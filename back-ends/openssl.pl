@@ -42,11 +42,11 @@ my %cipher_not_map = (
 my %key_exchange_map = (
 	'RSA'       => 'kRSA',
 	'ECDHE'     => 'kEECDH',
-	'PSK'       => 'kPSK',
-	'DHE-PSK'   => 'kDHEPSK',
+	'PSK'       => '',
+	'DHE-PSK'   => '',
 	'DHE-RSA'   => 'kEDH',
 	'DHE-DSS'   => 'kEDH',
-	'ECDHE-PSK' => 'kECDHEPSK'
+	'ECDHE-PSK' => ''
 );
 
 my %key_exchange_not_map = (

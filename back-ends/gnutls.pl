@@ -93,9 +93,9 @@ my %key_exchange_map = (
 	'ECDHE'     => '+ECDHE-RSA:+ECDHE-ECDSA',
 	'DHE-RSA'   => '+DHE-RSA',
 	'DHE-DSS'   => '+DHE-DSS',
-	'PSK'       => '+PSK',
-	'DHE-PSK'   => '+DHE-PSK',
-	'ECDHE-PSK' => '+ECDHE-PSK'
+	'PSK'       => '',
+	'DHE-PSK'   => '',
+	'ECDHE-PSK' => ''
 );
 
 my %protocol_map = (
