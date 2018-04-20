@@ -49,10 +49,55 @@ my %cipher_prf_map = (
 	'3DES-CBC-HMAC-SHA1'          => '3des-sha1',
 );
 
+my %cipher_mac_map = (
+	'AES-256-CBC-HMAC-SHA2-512'       => 'aes256-sha2_512',
+	'AES-128-CBC-HMAC-SHA2-256'       => 'aes128-sha2_256',
+	'AES-256-CBC-HMAC-SHA1'       => 'aes256-sha1',
+	'AES-128-CBC-HMAC-SHA1'       => 'aes128-sha1',
+	'AES-256-GCM-AEAD'            => 'aes_gcm256',
+#	'CHACHA20-POLY1305-AEAD'      => 'chacha20_poly1305',
+	'3DES-CBC-HMAC-SHA1'          => '3des-sha1',
+);
+
 my %protocol_map = (
 	'IKEv1'  => 'ikev2=never',
 	'IKEv2'  => 'ikev2=insist',
 );
+
+my %mac_ike_prio_map = (
+	'AEAD' => 0,
+	'HMAC-SHA2-512' => 1,
+	'HMAC-SHA2-256' => 2,
+	'HMAC-SHA1' => 3,
+);
+
+my %mac_esp_prio_map = (
+	'AEAD' => 0,
+	'HMAC-SHA2-512' => 1,
+	'HMAC-SHA1' => 2,
+	'HMAC-SHA2-256' => 3,
+);
+
+my %mac_prio_map;
+
+sub compare {
+	my $aprio = $mac_prio_map{$a};
+	my $bprio = $mac_prio_map{$b};
+
+	if (!defined($aprio)) {
+		$aprio = 99;
+	}
+	if (!defined($bprio)) {
+		$bprio = 99;
+	}
+	if ($aprio < $bprio) {
+		return -1;
+	} elsif ($aprio == $bprio) {
+		return 0;
+	} else {
+		return 1;
+	}
+}
 
 sub generate_temp_policy() {
 	my $profile = shift(@_);
@@ -99,6 +144,10 @@ sub generate_temp_policy() {
 	my $group;
 	my $mac;
 	my $combo;
+
+	%mac_prio_map = %mac_ike_prio_map;
+	my @sorted_mac_list = sort compare @mac_list;
+
 	foreach (@group_list) {
 		$group = $group_map{$_};
 		if (!defined($group) || $group eq '') {
@@ -107,7 +156,7 @@ sub generate_temp_policy() {
 
 		foreach (@cipher_list) {
 			$cipher = $_;
-			foreach (@mac_list) {
+			foreach (@sorted_mac_list) {
 				$mac = $_;
 
 				my $cm=$cipher."-".$mac;
@@ -127,15 +176,18 @@ sub generate_temp_policy() {
 		$string .= "\tike=$tmp\n";
 	}
 
+	%mac_prio_map = %mac_esp_prio_map;
+	@sorted_mac_list = sort compare @mac_list;
+
 	$print_init = 0;
 	$tmp = '';
 	foreach (@cipher_list) {
 		$cipher = $_;
-		foreach (@mac_list) {
+		foreach (@sorted_mac_list) {
 			$mac = $_;
 
 			my $cm=$cipher."-".$mac;
-			$combo = $cipher_prf_map{$cm};
+			$combo = $cipher_mac_map{$cm};
 
 			if (!defined($combo)) {
 				next;
