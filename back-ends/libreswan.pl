@@ -40,21 +40,26 @@ my %group_map = (
 
 my %cipher_prf_map = (
 	'AES-256-CBC-HMAC-SHA2-512'       => 'aes256-sha2_512',
+	'AES-256-CBC-HMAC-SHA2-256'       => 'aes256-sha2_256',
 	'AES-128-CBC-HMAC-SHA2-256'       => 'aes128-sha2_256',
 	'AES-256-CBC-HMAC-SHA1'       => 'aes256-sha1',
 	'AES-128-CBC-HMAC-SHA1'       => 'aes128-sha1',
 	'AES-256-GCM-HMAC-SHA2-512'       => 'aes_gcm256-sha2_512',
 	'AES-256-GCM-HMAC-SHA2-256'       => 'aes_gcm256-sha2_256',
+	'AES-128-GCM-HMAC-SHA2-512'       => 'aes_gcm128-sha2_512',
+	'AES-128-GCM-HMAC-SHA2-256'       => 'aes_gcm128-sha2_256',
 #	'CHACHA20-POLY1305-SHA2-512' => 'chacha20_poly1305-sha2_512',
 	'3DES-CBC-HMAC-SHA1'          => '3des-sha1',
 );
 
 my %cipher_mac_map = (
 	'AES-256-CBC-HMAC-SHA2-512'       => 'aes256-sha2_512',
+	'AES-256-CBC-HMAC-SHA2-256'       => 'aes256-sha2_256',
 	'AES-128-CBC-HMAC-SHA2-256'       => 'aes128-sha2_256',
 	'AES-256-CBC-HMAC-SHA1'       => 'aes256-sha1',
 	'AES-128-CBC-HMAC-SHA1'       => 'aes128-sha1',
 	'AES-256-GCM-AEAD'            => 'aes_gcm256',
+	'AES-128-GCM-AEAD'            => 'aes_gcm128',
 #	'CHACHA20-POLY1305-AEAD'      => 'chacha20_poly1305',
 	'3DES-CBC-HMAC-SHA1'          => '3des-sha1',
 );
