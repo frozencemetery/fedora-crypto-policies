@@ -25,15 +25,15 @@ sub append {
 my %cipher_not_map = (
 	'AES-256-CTR'       => '',
 	'AES-128-CTR'       => '',
-	'AES-256-GCM'  => '!AES-256-GCM',
-	'AES-128-GCM'  => '!AES-128-GCM',
-	'CHACHA20-POLY1305'  => '!CHACHA20-POLY1305',
-	'SEED-CBC'  => '!SEED',
+	'AES-256-GCM'  => '-AES-256-GCM',
+	'AES-128-GCM'  => '-AES-128-GCM',
+	'CHACHA20-POLY1305'  => '-CHACHA20-POLY1305',
+	'SEED-CBC'  => '-SEED',
 	'IDEA-CBC'  => '!IDEA',
 	'DES-CBC'   => '!DES',
 	'RC4-40'    => '',
 	'DES40-CBC' => '',
-	'3DES-CBC'  => '!3DES',
+	'3DES-CBC'  => '-3DES',
 	'RC4-128'   => '!RC4',
 	'RC2-CBC'   => '!RC2',
 	'NULL'      => '!eNULL:!aNULL'
@@ -54,17 +54,17 @@ my %key_exchange_not_map = (
 	'DH'         => '',
 	'ECDH'       => '',
 	'EXPORT' => '!EXP',
-	'RSA'       => '!kRSA',
-	'ECDHE'     => '!kEECDH',
-	'DHE-RSA'   => '!aRSA',
-	'DHE-DSS'   => '!aDSS',
-	'PSK'       => '!kPSK',
-	'DHE-PSK'   => '!kDHEPSK',
-	'ECDHE-PSK' => '!kECDHEPSK'
+	'RSA'       => '-kRSA',
+	'ECDHE'     => '-kEECDH',
+	'DHE-RSA'   => '-aRSA',
+	'DHE-DSS'   => '-aDSS',
+	'PSK'       => '-kPSK',
+	'DHE-PSK'   => '-kDHEPSK',
+	'ECDHE-PSK' => '-kECDHEPSK'
 );
 
 my %mac_not_map = ( 'HMAC-MD5' => '!MD5',
-	'HMAC-SHA1' => '!SHA1'
+	'HMAC-SHA1' => '-SHA1'
 );
 
 sub generate_temp_policy() {
