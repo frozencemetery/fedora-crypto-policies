@@ -55,6 +55,7 @@ set_config=0
 if test -z "$profile";then
 	profile=$(cat $base_dir/config|grep -v ^#)
 else
+	profile=$(echo -n $profile|tr '[:lower:]' '[:upper:]')
 	set_config=1
 fi
 
