@@ -122,6 +122,10 @@ sub generate_temp_policy() {
 		}
 	}
 
+	# The Camellia and SHA384 are not necessary for any
+	# policy level, and only increase the attack surface.
+	append('-SHA384');
+	append('-CAMELLIA');
 	append('!SSLv2');
 	append('!ADH');
 
