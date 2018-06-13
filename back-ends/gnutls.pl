@@ -30,8 +30,12 @@ my %mac_map = (
 	'HMAC-SHA1'     => '+SHA1',
 	'HMAC-MD5'      => '+MD5',
 	'HMAC-SHA2-256' => '+SHA256',
-	'HMAC-SHA2-384' => '+SHA384',
-	'HMAC-SHA2-512' => '+SHA512'
+# intentionally leaving out; there is no particular
+# reason for a server or client to enable these hashes
+# by default, as they are compatibility hashes which
+# only apply to broken ciphersuites with CBC.
+	'HMAC-SHA2-384' => '',
+	'HMAC-SHA2-512' => ''
 );
 
 my %group_map = (
@@ -79,10 +83,14 @@ my %cipher_map = (
 	'AES-128-CCM'       => '+AES-128-CCM',
 	'AES-256-CBC'       => '+AES-256-CBC',
 	'AES-128-CBC'       => '+AES-128-CBC',
-	'CAMELLIA-256-GCM'  => '+CAMELLIA-256-GCM',
-	'CAMELLIA-128-GCM'  => '+CAMELLIA-128-GCM',
-	'CAMELLIA-256-CBC'  => '+CAMELLIA-256-CBC',
-	'CAMELLIA-128-CBC'  => '+CAMELLIA-128-CBC',
+# Intentionally leaving out Camellia as we now have
+# CHACHA20 as a back-up cipher, and these ciphersuites
+# are not available under TLS1.3, and enabling them
+# would make ciphersuite selection quite confusing.
+	'CAMELLIA-256-GCM'  => '',
+	'CAMELLIA-128-GCM'  => '',
+	'CAMELLIA-256-CBC'  => '',
+	'CAMELLIA-128-CBC'  => '',
 	'CHACHA20-POLY1305' => '+CHACHA20-POLY1305',
 	'3DES-CBC'          => '+3DES-CBC',
 	'RC4-128'	    => '+ARCFOUR-128'
