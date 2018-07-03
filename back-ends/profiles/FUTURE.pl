@@ -46,6 +46,7 @@ sub update_lists {
     $min_dh_size = 3072;
     $min_dsa_size = 3072;
     $min_rsa_size = 3072;
+    $sha1_in_certs = 0;
 
     update_rev_lists();
 }

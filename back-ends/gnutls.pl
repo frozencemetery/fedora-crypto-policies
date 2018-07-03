@@ -175,6 +175,10 @@ sub generate_temp_policy() {
 		}
 	}
 
+	if ($sha1_in_certs != 0) {
+		append('%VERIFY_ALLOW_SIGN_WITH_SHA1');
+	}
+
 	foreach (@tls_cipher_list) {
 		my $val = $cipher_map{$_};
 		if ( defined($val) ) {
