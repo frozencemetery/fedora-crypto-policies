@@ -74,6 +74,11 @@ my %sign_not_map = (
 	'EDDSA-ED25519' => '-SIGN-EDDSA-ED25519'
 	);
 
+my %legacy_sign_map = (
+	'DSA-SHA1' => '+SIGN-DSA-SHA1',
+	'RSA-SHA1' => '+SIGN-RSA-SHA1'
+	);
+
 my %cipher_map = (
 	'AES-256-CTR'       => '',
 	'AES-128-CTR'       => '',
@@ -159,6 +164,13 @@ sub generate_temp_policy() {
 			}
 			else {
 				print STDERR "gnutls: unknown: $_\n";
+			}
+		}
+
+		foreach (@sign_list) {
+			my $val = $legacy_sign_map{$_};
+			if ( defined($val) ) {
+				append($val);
 			}
 		}
 	}
