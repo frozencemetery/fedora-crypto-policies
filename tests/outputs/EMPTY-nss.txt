@@ -1,0 +1,6 @@
+library=
+name=Policy
+NSS=flags=policyOnly,moduleDB
+config="disallow=ALL allow=aes256-gcm:aes256-cbc:aes128-gcm:aes128-cbc:tls-version-min=:dtls-version-min=:DH-MIN=0:DSA-MIN=0:RSA-MIN=0"
+
+

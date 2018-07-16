@@ -6,7 +6,8 @@ use warnings;
 my $libdir = "./back-ends/";
 use lib "back-ends/";
 
-my @profiles = ("DEFAULT", "FUTURE", "LEGACY");
+use profiles::common;
+
 my @modules = ("gnutls", "openssl", "bind", "java", "krb5", "nss", "openssh", "opensshserver", "libreswan");
 my ($mod, $contents, $profile);
 my @reloadcmds = ();
@@ -16,7 +17,7 @@ foreach $mod (@modules) {
 	my $tmp = '';
 
 	mkdir("tests/outputs");
-	foreach $profile (@profiles) {
+	foreach $profile (@profiles::common::policies) {
 		$tmp = generate_temp_policy($profile, 0, $libdir, \@reloadcmds);
 		$contents = '';
 
@@ -37,7 +38,7 @@ foreach $mod (@modules) {
 			close $fh;
 		}
 
-		test_temp_policy($profile, 0, $tmp);
+		test_temp_policy($profile, 0, $tmp) if ($profile ne 'EMPTY');
 	}
 }
 

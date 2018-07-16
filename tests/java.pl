@@ -5,9 +5,9 @@ use File::pushd;
 my $TMPFILE="out-java.$$.tmp";
 my $TMPFILE2="out-java-2.$$.tmp";
 
-my @policies = ('EMPTY', 'LEGACY', 'DEFAULT', 'FUTURE');
 my $libdir = "./back-ends";
 use lib "./back-ends/";
+use profiles::common;
 
 require "$libdir/java.pl";
 
@@ -18,7 +18,7 @@ if ($? != 0) {
 	exit 77;
 }
 
-foreach my $policy (@policies) {
+foreach my $policy (@profiles::common::policies) {
 	unlink($TMPFILE);
 	unlink($TMPFILE2);
 

@@ -13,7 +13,8 @@ if (!defined ${output_dir}) {
 my $libdir = "./back-ends/";
 use lib "back-ends/";
 
-my @profiles = ("EMPTY", "DEFAULT", "FUTURE", "LEGACY");
+use profiles::common;
+
 my @modules = ("gnutls", "openssl", "bind", "java", "krb5", "nss", "openssh", "opensshserver", "libreswan");
 my ($mod, $contents, $profile);
 my @reloadcmds = ();
@@ -23,7 +24,7 @@ foreach $mod (@modules) {
 	require "$libdir/$mod.pl";
 	my $tmp = '';
 
-    foreach $profile (@profiles) {
+    foreach $profile (@profiles::common::policies) {
 
         if ($profile eq "DEFAULT") {
         	$tmp = generate_temp_policy($profile, 0, $libdir, \@reloadcmds);

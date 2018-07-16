@@ -25,7 +25,7 @@ except:
     exit(0)
 
 # Don't verify EMPTY policy
-for policy in ["LEGACY", "DEFAULT", "FUTURE"]:
+for policy in ["LEGACY", "DEFAULT", "FUTURE", "FIPS"]:
     perl = """
         use lib "./back-ends/";
         require "./back-ends/krb5.pl";

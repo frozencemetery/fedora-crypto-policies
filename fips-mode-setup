@@ -1,0 +1,88 @@
+#!/bin/sh
+
+umask 022
+
+usage=0
+enable_fips=
+check=0
+# TBD: boot configuration
+boot_config=0
+fips_install_complete=0
+
+while test $# -ge 1 ; do
+	case "$1" in
+		--enable)
+			enable_fips=1
+			;;
+		--disable)
+			enable_fips=0
+			;;
+		--check)
+			check=1
+			enable_fips=2
+			;;
+		--no-bootcfg)
+			boot_config=0
+			;;
+		*)
+			usage=1
+			;;
+	esac
+	shift
+done
+
+if test $usage = 1 -o x$enable_fips = x ; then
+	echo "usage: $0 --enable|--disable [--no-bootcfg]"
+	echo "usage: $0 --check"
+	exit 0
+fi
+
+if test -f /etc/system-fips ; then
+	fips_install_complete=1
+fi
+
+if test $check = 1 ; then
+	test fips_install_complete = 0 && echo "Installation of FIPS modules is not completed."
+	fips_enabled=$(cat /proc/sys/crypto/fips_enabled)
+	echo -n "FIPS mode is "
+	if test $fips_enabled = 1 ; then
+		echo "enabled."
+		if test $fips_install_complete = 0 ; then
+			echo "Inconsistent state detected."
+			exit 1
+		fi
+	else
+		echo "disabled."
+	fi
+	exit 0
+fi
+
+if test $enable_fips = 1 ; then
+	if test $fips_install_complete = 0 ; then
+		./fips-finish-install
+		if test $? != 0 ; then
+			echo "Installation of FIPS modules could not be completed."
+			exit 1
+		fi
+	fi
+fi
+
+update-crypto-policies --set FIPS
+
+boot_device=$(df -P /boot | tail -1 | cut -d ' ' -f 1)
+
+if test x$boot_device = x ; then
+	echo "Boot device not identified, you need to configure the bootloader manually."
+	boot_device_uuid='<your-boot-device-uuid>'
+	boot_config=0
+else
+	boot_device_uuid=$(blkid -s UUID -o value $boot_device)
+fi
+
+if test $boot_config = 0 ; then
+	echo "Now you need to configure the bootloader to add kernel options \"fips=$enable_fips boot=UUID=$boot_device_uuid\"."
+else
+:
+fi
+
+exit 0
