@@ -1,6 +1,6 @@
-Fedora-rawhide:
+Fedora-latest:
 # When building CI for a particular system, adapt the image
-  image: fedora:rawhide
+  image: fedora:latest
   before_script:
   - dnf install --nogpgcheck -y openssh-clients openssh-server openssl git which gnutls-utils java-1.8.0-openjdk-devel bind perl asciidoc perl-generators libxslt 'perl(File::pushd)' 'perl(File::Temp)' 'perl(File::Copy)' libreswan
   script:
