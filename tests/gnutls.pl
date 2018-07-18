@@ -15,7 +15,12 @@ foreach my $policy (@profiles::common::policies) {
 	chomp $tmp;
 
 	system("gnutls-cli --priority '$tmp' -l >$TMPFILE 2>&1");
-	if ($? != 0) {
+	if ($? == 0 && $policy eq 'EMPTY') {
+		print "Error in gnutls empty policy ($policy)\n";
+		print "gnutls-cli --priority '$tmp' -l\n";
+		system("cat $TMPFILE");
+		exit 1;
+	} elsif ($? != 0 && $policy ne 'EMPTY') {
 		print "Error in gnutls policy for $policy\n";
 		print "gnutls-cli --priority '$tmp' -l\n";
 		system("cat $TMPFILE");
