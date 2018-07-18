@@ -85,6 +85,7 @@ my %protocol_map = (
 	'TLS1.0'  => 'tls1.0',
 	'TLS1.1'  => 'tls1.1',
 	'TLS1.2'  => 'tls1.2',
+	'TLS1.3'  => 'tls1.3',
 	'DTLS1.0' => 'dtls1.0',
 	'DTLS1.2' => 'dtls1.2'
 );

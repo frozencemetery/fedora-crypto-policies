@@ -111,13 +111,14 @@ my %key_exchange_map = (
 	'ECDHE-PSK' => ''
 );
 
-my %protocol_map = (
-	'SSL3.0'  => '+VERS-SSL3.0',
-	'TLS1.0'  => '+VERS-TLS1.0',
-	'TLS1.1'  => '+VERS-TLS1.1',
-	'TLS1.2'  => '+VERS-TLS1.2',
-	'DTLS1.0' => '+VERS-DTLS1.0',
-	'DTLS1.2' => '+VERS-DTLS1.2',
+my %protocol_not_map = (
+	'SSL3.0'  => '-VERS-SSL3.0',
+	'TLS1.0'  => '-VERS-TLS1.0',
+	'TLS1.1'  => '-VERS-TLS1.1',
+	'TLS1.2'  => '-VERS-TLS1.2',
+	'TLS1.3'  => '-VERS-TLS1.3',
+	'DTLS1.0' => '-VERS-DTLS1.0',
+	'DTLS1.2' => '-VERS-DTLS1.2',
 );
 
 sub generate_temp_policy() {
@@ -199,13 +200,17 @@ sub generate_temp_policy() {
 		}
 	}
 
-	foreach (@protocol_list) {
-		my $val = $protocol_map{$_};
-		if ( defined($val) ) {
-			append($val);
-		}
-		else {
-			print STDERR "gnutls: unknown: $_\n";
+	# append the versions in NORMAL level
+	if (@protocol_list) {
+		append("+VERS-ALL:-VERS-DTLS0.9");
+		foreach (@protocol_not_list) {
+			my $val = $protocol_not_map{$_};
+			if ( defined($val) ) {
+				append($val);
+			}
+			else {
+				print STDERR "gnutls: unknown: $_\n";
+			}
 		}
 	}
 

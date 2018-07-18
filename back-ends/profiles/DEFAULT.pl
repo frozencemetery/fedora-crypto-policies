@@ -41,7 +41,7 @@ sub update_lists {
 #    $min_tls_version = 'TLS1.2';
 #    $min_dtls_version = 'DTLS1.2';
 
-    @protocol_list = ('TLS1.2', 'TLS1.1', 'TLS1.0', 'DTLS1.2', 'DTLS1.0');
+    @protocol_list = ('TLS1.3', 'TLS1.2', 'TLS1.1', 'TLS1.0', 'DTLS1.2', 'DTLS1.0');
     @ike_protocol_list = ('IKEv2');
 
     $min_tls_version = 'TLS1.0';
