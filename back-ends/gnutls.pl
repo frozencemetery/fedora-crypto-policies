@@ -79,26 +79,26 @@ my %legacy_sign_map = (
 	'RSA-SHA1' => '+SIGN-RSA-SHA1'
 	);
 
-my %cipher_map = (
+my %cipher_not_map = (
 	'AES-256-CTR'       => '',
 	'AES-128-CTR'       => '',
-	'AES-256-GCM'       => '+AES-256-GCM',
-	'AES-128-GCM'       => '+AES-128-GCM',
-	'AES-256-CCM'       => '+AES-256-CCM',
-	'AES-128-CCM'       => '+AES-128-CCM',
-	'AES-256-CBC'       => '+AES-256-CBC',
-	'AES-128-CBC'       => '+AES-128-CBC',
+	'AES-256-GCM'       => '-AES-256-GCM',
+	'AES-128-GCM'       => '-AES-128-GCM',
+	'AES-256-CCM'       => '-AES-256-CCM',
+	'AES-128-CCM'       => '-AES-128-CCM',
+	'AES-256-CBC'       => '-AES-256-CBC',
+	'AES-128-CBC'       => '-AES-128-CBC',
 # Intentionally leaving out Camellia as we now have
 # CHACHA20 as a back-up cipher, and these ciphersuites
 # are not available under TLS1.3, and enabling them
 # would make ciphersuite selection quite confusing.
-	'CAMELLIA-256-GCM'  => '',
-	'CAMELLIA-128-GCM'  => '',
-	'CAMELLIA-256-CBC'  => '',
-	'CAMELLIA-128-CBC'  => '',
-	'CHACHA20-POLY1305' => '+CHACHA20-POLY1305',
-	'3DES-CBC'          => '+3DES-CBC',
-	'RC4-128'	    => '+ARCFOUR-128'
+	'CAMELLIA-256-GCM'  => '-CAMELLIA-256-GCM',
+	'CAMELLIA-128-GCM'  => '-CAMELLIA-128-GCM',
+	'CAMELLIA-256-CBC'  => '-CAMELLIA-256-CBC',
+	'CAMELLIA-128-CBC'  => '-CAMELLIA-128-CBC',
+	'CHACHA20-POLY1305' => '-CHACHA20-POLY1305',
+	'3DES-CBC'          => '-3DES-CBC',
+	'RC4-128'	    => '-ARCFOUR-128'
 );
 
 my %key_exchange_map = (
@@ -180,13 +180,16 @@ sub generate_temp_policy() {
 		append('%VERIFY_ALLOW_SIGN_WITH_SHA1');
 	}
 
-	foreach (@tls_cipher_list) {
-		my $val = $cipher_map{$_};
-		if ( defined($val) ) {
-			append($val);
-		}
-		else {
-			print STDERR "gnutls: unknown: $_\n";
+	if (@tls_cipher_list) {
+		append("+CIPHER-ALL"); # enables ciphers in NORMAL level
+		foreach (@tls_cipher_not_list) {
+			my $val = $cipher_not_map{$_};
+			if ( defined($val) ) {
+				append($val);
+			}
+			else {
+				print STDERR "gnutls: unknown: $_\n";
+			}
 		}
 	}
 
