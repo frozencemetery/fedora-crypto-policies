@@ -25,30 +25,26 @@ sub append {
 	$print_init = 1;
 }
 
-my %mac_map = (
-	'AEAD'          => '+AEAD',
-	'HMAC-SHA1'     => '+SHA1',
-	'HMAC-MD5'      => '+MD5',
-	'HMAC-SHA2-256' => '+SHA256',
-# intentionally leaving out; there is no particular
-# reason for a server or client to enable these hashes
-# by default, as they are compatibility hashes which
-# only apply to broken ciphersuites with CBC.
-	'HMAC-SHA2-384' => '',
-	'HMAC-SHA2-512' => ''
+my %mac_not_map = (
+	'AEAD'          => '-AEAD',
+	'HMAC-SHA1'     => '-SHA1',
+	'HMAC-MD5'      => '-MD5',
+	'HMAC-SHA2-256' => '-SHA256',
+	'HMAC-SHA2-384' => '-SHA384',
+	'HMAC-SHA2-512' => '-SHA512'
 );
 
-my %group_map = (
+my %group_not_map = (
 	'X448'    => '',
-	'X25519'    => '+GROUP-X25519',
-	'SECP256R1' => '+GROUP-SECP256R1',
-	'SECP384R1' => '+GROUP-SECP384R1',
-	'SECP521R1' => '+GROUP-SECP521R1',
+	'X25519'    => '-GROUP-X25519',
+	'SECP256R1' => '-GROUP-SECP256R1',
+	'SECP384R1' => '-GROUP-SECP384R1',
+	'SECP521R1' => '-GROUP-SECP521R1',
 	'FFDHE-6144' => '',
-	'FFDHE-2048' => '+GROUP-FFDHE2048',
-	'FFDHE-3072' => '+GROUP-FFDHE3072',
-	'FFDHE-4096' => '+GROUP-FFDHE4096',
-	'FFDHE-8192' => '+GROUP-FFDHE8192',
+	'FFDHE-2048' => '-GROUP-FFDHE2048',
+	'FFDHE-3072' => '-GROUP-FFDHE3072',
+	'FFDHE-4096' => '-GROUP-FFDHE4096',
+	'FFDHE-8192' => '-GROUP-FFDHE8192',
 );
 
 my %sign_not_map = (
@@ -136,23 +132,29 @@ sub generate_temp_policy() {
 	$print_init = 0;
 	append('SYSTEM=NONE');
 
-	foreach (@mac_list) {
-		my $val = $mac_map{$_};
-		if ( defined($val) ) {
-			append($val);
-		}
-		else {
-			print STDERR "gnutls: unknown: $_\n";
+	if (@mac_list) {
+		append("+MAC-ALL");
+		foreach (@mac_not_list) {
+		my $val = $mac_not_map{$_};
+			if ( defined($val) ) {
+				append($val);
+			}
+			else {
+				print STDERR "gnutls: unknown: $_\n";
+			}
 		}
 	}
 
-	foreach (@group_list) {
-		my $val = $group_map{$_};
-		if ( defined($val) ) {
-			append($val);
-		}
-		else {
-			print STDERR "gnutls: unknown: $_\n";
+	if (@group_list) {
+		append("+GROUP-ALL");
+		foreach (@group_not_list) {
+			my $val = $group_not_map{$_};
+			if ( defined($val) ) {
+				append($val);
+			}
+			else {
+				print STDERR "gnutls: unknown: $_\n";
+			}
 		}
 	}
 
