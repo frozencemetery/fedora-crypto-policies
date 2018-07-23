@@ -187,6 +187,10 @@ FILES
 	the gnutls, bind, java (openjdk) and krb5 back-ends.
 
 
+SEE ALSO
+--------
+fips-mode-setup(8)
+
 AUTHOR
 ------
 Written by Nikos Mavrogiannopoulos.

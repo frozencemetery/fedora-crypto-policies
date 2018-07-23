@@ -1,0 +1,76 @@
+////
+Copyright (C)2018 Red Hat, Inc.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation; either version 2.1 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+////
+
+
+fips-mode-setup(8)
+==================
+:doctype: manpage
+:man source: fips-mode-setup
+
+
+NAME
+----
+fips-mode-setup - Check, enable, or disable the system FIPS mode.
+
+
+SYNOPSIS
+--------
+*fips-mode-setup* ['COMMAND']
+
+
+DESCRIPTION
+-----------
+fips-mode-setup(8) is used to check and control the system FIPS mode.
+
+When enabling the system FIPS mode the command completes the installation
+of FIPS modules if needed by calling 'fips-finish-install' and changes the
+system crypto policy to FIPS.
+
+Then the command modifies the boot loader configuration to add
+'fips=1' and 'boot=<boot-device>' options to the kernel command line.
+
+When disabling the system FIPS mode the system crypto policy is switched
+to DEFAULT and the kernel command line option 'fips=0' is set. 
+
+
+[[options]]
+OPTIONS
+-------
+
+The following options are available in fips-mode-setup tool.
+
+* --enable:     Enables the system FIPS mode.
+
+* --disable:    Disables the system FIPS mode.
+
+* --check:      Checks the system FIPS mode status.
+
+* --no-bootcfg: The tool will not attempt to change the boot loader
+                configuration and it just prints the options that need
+                to be added to the kernel command line.
+
+
+FILES
+-----
+/proc/sys/crypto/fips_enabled::
+	The kernel FIPS mode flag.
+
+
+SEE ALSO
+--------
+update-crypto-policies(8), fips-finish-install(8)
+
+AUTHOR
+------
+Written by Tomáš Mráz.

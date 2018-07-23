@@ -32,12 +32,13 @@ while test $# -ge 1 ; do
 done
 
 if test $usage = 1 -o x$enable_fips = x ; then
+	echo "Check, enable, or disable the system FIPS mode."
 	echo "usage: $0 --enable|--disable [--no-bootcfg]"
 	echo "usage: $0 --check"
 	exit 0
 fi
 
-if test -f /etc/system-fips ; then
+if test -f /etc/system-fips && x"$(lsinitrd -f etc/system-fips)" != x ; then
 	fips_install_complete=1
 fi
 
@@ -59,15 +60,16 @@ fi
 
 if test $enable_fips = 1 ; then
 	if test $fips_install_complete = 0 ; then
-		./fips-finish-install
+		fips-finish-install --complete
 		if test $? != 0 ; then
 			echo "Installation of FIPS modules could not be completed."
 			exit 1
 		fi
 	fi
+	update-crypto-policies --set FIPS
+else
+	update-crypto-policies --set DEFAULT
 fi
-
-update-crypto-policies --set FIPS
 
 boot_device=$(df -P /boot | tail -1 | cut -d ' ' -f 1)
 

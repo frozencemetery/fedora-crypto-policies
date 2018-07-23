@@ -5,6 +5,12 @@ system_fips=/etc/system-fips
 dracut_cfg_d=/etc/dracut.conf.d
 dracut_cfg=$dracut_cfg_d/40-fips.conf
 
+if test x"$1" !=  x--complete ; then
+	echo "Complete the instalation of FIPS modules."
+	echo "usage: $0 --complete"
+	exit 0
+fi
+
 umask 022
 
 trap "rm -f $system_fips $dracut_cfg" ERR
