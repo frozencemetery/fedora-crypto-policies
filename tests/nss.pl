@@ -6,14 +6,16 @@ my $RESULTFILE="result-nss.tmp";
 my $libdir = "./back-ends";
 use lib "./back-ends/";
 use profiles::common;
+use File::Which qw(which);
 
 require "$libdir/nss.pl";
 
 foreach my $policy (@profiles::common::policies) {
 
 	my $tmp = generate_temp_policy($policy, "", $libdir);
+	my $tool = which "nss-policy-check";
 
-	if ($policy ne 'EMPTY') {
+	if ($policy ne 'EMPTY' and $tool ne undef) {
 		open my $file, '>', $TMPFILE or die $!;
 		print $file $tmp;
 		close $file;
