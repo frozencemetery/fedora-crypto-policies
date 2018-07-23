@@ -5,6 +5,9 @@ use strict;
 
 use profiles::common;
 
+use File::Temp qw/ tempfile /;
+use File::Which qw(which);
+
 my $print_init = 0;
 my $string     = '';
 
@@ -166,6 +169,33 @@ sub generate_temp_policy() {
 }
 
 sub test_temp_policy() {
+	my $profile = shift(@_);
+	my $dir     = shift(@_);
+	my $gstr    = shift(@_);
+
+	my $tool = which "nss-policy-check";
+	if ($tool ne undef) {
+		my ( $fh, $filename ) = tempfile();
+		my $resultfile = $filename . ".tmp.result";
+		print $fh $gstr;
+		close $fh;
+		system("nss-policy-check $filename >$resultfile 2>&1") ;
+		my $ret = $?;
+		unlink($filename);
+		unlink($resultfile);
+
+		# We treat all warnings and errors as a failure.
+		# Exit code for warnings is 1, exit code for failures is 2.
+		# Note for potential future changes:
+		# If some warnings should be ignored, then ignore the exit code,
+		# and inspect the contents of resultfile.
+		if ($ret != 0) {
+			print STDERR "There is an error in NSS generated policy\n";
+			print STDERR "policy: $gstr\n";
+			exit 1;
+		}
+
+	}
 	return;
 }
 

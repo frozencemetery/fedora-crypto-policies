@@ -19,6 +19,7 @@ check:
 	@-rm -f test-suite.log
 	tests/openssl.pl >test-suite.log
 	tests/gnutls.pl >>test-suite.log
+	tests/nss.pl >>test-suite.log
 	tests/java.pl >>test-suite.log
 	tests/krb5.py >>test-suite.log
 	tests/verify-output.pl >>test-suite.log
