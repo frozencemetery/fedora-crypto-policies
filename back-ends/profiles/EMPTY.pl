@@ -6,8 +6,9 @@ sub update_lists {
     @group_list = ();
     @hash_list = ();
     @sign_list = ();
-
     @cipher_list = ();
+
+    @tls_cipher_list = ();
     @key_exchange_list = ();
     @protocol_list = ();
 
