@@ -38,7 +38,7 @@ sub update_lists {
     @ike_protocol_list = ('IKEv1');
 
     $min_tls_version = 'TLS1.0';
-    $min_dtls_version = 'TLS1.0';
+    $min_dtls_version = 'DTLS1.0';
 
     # Parameter sizes
     $min_dh_size = 1023;
