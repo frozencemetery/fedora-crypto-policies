@@ -18,9 +18,13 @@ my %protocol_map = (
 sub generate_temp_policy() {
 	my $confstr = '';
 
-	$confstr .= 'Ciphers = ';
+	$confstr .= 'CipherString = ';
 	# This includes the profile
 	$confstr .= generate_ciphers(@_);
+	$confstr .= "\n";
+
+	$confstr .= 'Ciphersuites = ';
+	$confstr .= generate_ciphersuites(@_);
 	$confstr .= "\n";
 
 	# Unfortunately there is no practical way to set minimum DTLS version

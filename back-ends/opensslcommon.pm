@@ -7,7 +7,7 @@ BEGIN {
     require Exporter;
     our $VERSION = 1.00;
     our @ISA = qw(Exporter);
-    our @EXPORT = qw(generate_ciphers);
+    our @EXPORT = qw(generate_ciphers generate_ciphersuites);
 }
 
 use profiles::common;
@@ -149,6 +149,39 @@ sub generate_ciphers(@) {
 	append('-CAMELLIA');
 	append('!SSLv2');
 	append('!ADH');
+
+	return $string;
+}
+
+my %ciphersuite_map = (
+	'AES-256-GCM'  => 'TLS_AES_256_GCM_SHA384',
+	'AES-128-GCM'  => 'TLS_AES_128_GCM_SHA256',
+	'CHACHA20-POLY1305'  => 'TLS_CHACHA20_POLY1305_SHA256',
+	'AES-128-CCM'  => 'TLS_AES_128_CCM_SHA256',
+	'AES-128-CCM8'  => 'TLS_AES_128_CCM_8_SHA256',
+);
+
+
+sub generate_ciphersuites(@) {
+	my $profile = shift(@_);
+	my $dir     = shift(@_);
+	my $libdir  = shift(@_);
+
+	if (!-e "$libdir/profiles/$profile.pl") {
+		print STDERR "Cannot file $profile.pl in $libdir/profiles\n";
+		exit 1;
+	}
+	do "$libdir/profiles/$profile.pl";
+
+	$string = '';
+	$print_init = 0;
+
+	foreach (@tls_cipher_list) {
+		my $val = $ciphersuite_map{$_};
+		if ( defined($val) ) {
+			append($val);
+		}
+	}
 
 	return $string;
 }
