@@ -8,7 +8,8 @@ use lib "back-ends/";
 
 use profiles::common;
 
-my @modules = ("gnutls", "openssl", "bind", "java", "krb5", "nss", "openssh", "opensshserver", "libreswan");
+my @modules = ("gnutls", "openssl", "opensslcnf", "bind", "java", "krb5", "nss",
+	       "openssh", "opensshserver", "libreswan");
 my ($mod, $contents, $profile);
 my @reloadcmds = ();
 
