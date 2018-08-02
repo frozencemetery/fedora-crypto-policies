@@ -1,9 +1,10 @@
 # A level that will provide security on a conservative level that is
-# believed to withstand any near-term future attacks. That will be
-# an 112-bit security level, without including protocols with known
-# attacks available (e.g. SSL 3.0). This level may prevent communication
-# with many used systems that provide weaker security levels (e.g.,
-# systems that use SHA-1 as signature algorithm).
+# believed to withstand any near-term future attacks. And also provide
+# some (not complete) preparation for post quantum encryption support
+# in form of 256 bit symmetric crypto requirement.
+# It provides at least an 128-bit security. This level may prevent
+# communication with many used systems that provide weaker security levels
+# (e.g., systems that use SHA-1 as signature algorithm).
 
 # MACs: All HMAC with SHA256 or better + all modern MACs (poly1305 etc)
 # Curves: all prime >= 384 bits (including bernstein curves)
@@ -34,7 +35,7 @@ sub update_lists {
 
     @tls_cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'CHACHA20-POLY1305', 'CAMELLIA-256-GCM');
     @cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'CHACHA20-POLY1305', 'CAMELLIA-256-GCM',
-		    'AES-256-CTR', 'AES-256-CBC', 'CAMELLIA-256-CBC');
+                    'AES-256-CTR', 'AES-256-CBC', 'CAMELLIA-256-CBC');
     @key_exchange_list = ('ECDHE', 'RSA', 'DHE', 'DHE-RSA', 'PSK', 'DHE-PSK', 'ECDHE-PSK');
     @protocol_list = ('TLS1.3', 'TLS1.2', 'DTLS1.2');
     @ike_protocol_list = ('IKEv2');
