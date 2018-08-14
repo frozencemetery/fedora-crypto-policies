@@ -83,6 +83,17 @@ my %kx_map = (
 	'DHE-SHA2-512' => 'diffie-hellman-group16-sha512,diffie-hellman-group18-sha512'
 );
 
+my %sign_map = (
+	'RSA-SHA1'		=> 'ssh-rsa,ssh-rsa-cert-v01@openssh.com',
+	'DSA-SHA1'		=> 'ssh-dss,ssh-dss-cert-v01@openssh.com',
+	'RSA-SHA2-256'		=> 'rsa-sha2-256',
+	'RSA-SHA2-512'		=> 'rsa-sha2-512',
+	'ECDSA-SHA2-256'	=> 'ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com',
+	'ECDSA-SHA2-384'	=> 'ecdsa-sha2-nistp384,ecdsa-sha2-nistp384-cert-v01@openssh.com',
+	'ECDSA-SHA2-512'	=> 'ecdsa-sha2-nistp521,ecdsa-sha2-nistp521-cert-v01@openssh.com',
+	'EDDSA-ED25519'		=> 'ssh-ed25519,ssh-ed25519-cert-v01@openssh.com',
+);
+
 sub generate_temp_policy() {
 	my $profile = shift(@_);
 	my $dir     = shift(@_);
@@ -182,6 +193,23 @@ sub generate_temp_policy() {
 
 	if ($tmp ne '') {
 		$string .= "KexAlgorithms $tmp\n";
+	}
+
+	$print_init = 0;
+	$tmp = '';
+	foreach (@sign_list) {
+		my $val = $sign_map{$_};
+		if ( defined($val) ) {
+			append($val, \$tmp);
+		}
+		else {
+			print STDERR "openssh: unknown signature algorithm: $_\n";
+		}
+	}
+
+	if ($tmp ne '') {
+		$string .= "HostKeyAlgorithms $tmp\n";
+		$string .= "PubkeyAcceptedKeyTypes $tmp\n";
 	}
 
 	return $string;
