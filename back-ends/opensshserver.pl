@@ -110,7 +110,7 @@ sub generate_temp_policy() {
 			append($val, \$tmp);
 		}
 		else {
-			print STDERR "openssh-server: unknown: $_\n";
+			print STDERR "opensshserver: unknown: $_\n";
 		}
 	}
 
@@ -126,7 +126,7 @@ sub generate_temp_policy() {
 			append($val, \$tmp);
 		}
 		else {
-			print STDERR "openssh-server: unknown MAC: $_\n";
+			print STDERR "opensshserver: unknown MAC: $_\n";
 		}
 	}
 	foreach (@mac_list) {
@@ -135,7 +135,7 @@ sub generate_temp_policy() {
 			append($val, \$tmp);
 		}
 		else {
-			print STDERR "openssh-server: unknown MAC: $_\n";
+			print STDERR "opensshserver: unknown MAC: $_\n";
 		}
 	}
 
@@ -151,7 +151,7 @@ sub generate_temp_policy() {
 			append($val, \$tmp);
 		}
 		else {
-			print STDERR "openssh-server: unknown: $_\n";
+			print STDERR "opensshserver: unknown: $_\n";
 		}
 	}
 
