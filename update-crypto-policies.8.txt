@@ -125,6 +125,12 @@ utilize the system-wide policy are the following.
   ciphersuite string, the special cipher string "PROFILE=SYSTEM" should replace any other cipher string.
   Applications which use the default library settings automatically adhere to the policy.
   Applications following the policy inherit the settings for cipher suite preference.
+  By default the OpenSSL library reads a configuration file when it is initialized. If
+  the applicaton does not override loading of the configuration file, the policy also
+  sets the minimum TLS protocol version and default cipher suite preference via this
+  file. If the application is long-running such as the httpd server it has to be restarted
+  to reload the configuration file after policy is changed. Otherwise the changed policy
+  cannot take effect.
 
 * Applications using NSS: Applications using NSS will load the crypto policies by
   default. They inherit the settings for cipher suite preference, TLS
