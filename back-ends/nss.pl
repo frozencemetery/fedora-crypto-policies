@@ -157,8 +157,8 @@ sub generate_temp_policy() {
 		}
 	}
 
-	append( "tls-version-min=" . $protocol_map{$min_tls_version} );
-	append( "dtls-version-min=" . $protocol_map{$min_dtls_version} );
+	append("tls-version-min=" . ($protocol_map{$min_tls_version} || '0'));
+	append("dtls-version-min=" . ($protocol_map{$min_dtls_version} || '0'));
 
 	append("DH-MIN=$min_dh_size");
 	append("DSA-MIN=$min_dsa_size");
