@@ -38,7 +38,7 @@ if test $usage = 1 -o x$enable_fips = x ; then
 	exit 0
 fi
 
-if test -f /etc/system-fips && x"$(lsinitrd -f etc/system-fips)" != x ; then
+if test -f /etc/system-fips && test x"$(lsinitrd -f etc/system-fips)" != x ; then
 	fips_install_complete=1
 fi
 
