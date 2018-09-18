@@ -1,14 +1,17 @@
-# A level that will ensure maximum compatibility with legacy systems.
-# It should provide at least 64-bit security and include RC4 and MD5 (for HMAC).
+# Provides settings for ensuring maximum compatibility with legacy systems.
+# This policy is less secure and intended to be a easy way to switch system
+# to be compatible with older systems.
+# It should provide at least 64-bit security and include RC4 and 3DES.
 
-# MACs: All HMAC with SHA1 or better + all modern MACs (poly1305 etc)
-# Curves: all prime >= 255 bits (including bernstein curves)
-# Signature algorithms: SHA-1 hash or better (not RIPEMD)
-# TLS Ciphers: all available > 112-bit key, >= 128-bit block (no rc4, but with 3DES)
-# non-TLS Ciphers: all available > 112-bit key, >= 128-bit block (no rc4, but with 3DES)
+# MACs: all HMAC with SHA1 or better + all modern MACs (poly1305 etc)
+# Curves: all prime >= 255 bits (including Bernstein curves)
+# Signature algorithms: SHA-1 hash or better (DSA allowed)
+# TLS Ciphers: all available > 112-bit key, >= 128-bit block (including RC4 and 3DES)
+# non-TLS Ciphers: same as TLS ciphers with added Camellia
 # key exchange: ECDHE, RSA, DHE
-# DH params size: >=1023
-# RSA params size: >=1023
+# DH params size: >= 1023
+# RSA params size: >= 1023
+# DSA params size: >= 1023
 # TLS protocols: TLS >= 1.0
 
 sub update_lists {
@@ -28,14 +31,16 @@ sub update_lists {
         'EDDSA-ED25519', 'EDDSA-ED448',
         'RSA-PSS-SHA1', 'RSA-PSS-SHA2-256', 'RSA-PSS-SHA2-384', 'RSA-PSS-SHA2-512');
 
-    @tls_cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'CHACHA20-POLY1305', 'CAMELLIA-256-GCM',
+    @tls_cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'CHACHA20-POLY1305', 'AES-256-CTR', 'AES-256-CBC',
+        'AES-128-GCM', 'AES-128-CCM', 'AES-128-CTR', 'AES-128-CBC',
+        '3DES-CBC', 'RC4-128');
+    @cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'CHACHA20-POLY1305', 'CAMELLIA-256-GCM',
         'AES-256-CTR', 'AES-256-CBC', 'CAMELLIA-256-CBC', 
         'AES-128-GCM', 'AES-128-CCM', 'CAMELLIA-128-GCM', 'AES-128-CTR', 'AES-128-CBC', 'CAMELLIA-128-CBC',
         '3DES-CBC', 'RC4-128');
-    @cipher_list = @tls_cipher_list;
     @key_exchange_list = ('ECDHE', 'RSA', 'DHE', 'DHE-RSA', 'DHE-DSS', 'PSK', 'DHE-PSK', 'ECDHE-PSK');
     @protocol_list = ('TLS1.3', 'TLS1.2', 'TLS1.1', 'TLS1.0', 'DTLS1.2', 'DTLS1.0');
-    @ike_protocol_list = ('IKEv1');
+    @ike_protocol_list = ('IKEv1', 'IKEv2');
 
     $min_tls_version = 'TLS1.0';
     $min_dtls_version = 'DTLS1.0';
