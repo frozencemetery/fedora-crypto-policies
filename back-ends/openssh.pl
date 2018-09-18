@@ -44,6 +44,7 @@ my %cipher_map = (
 
 my %gss_hash_map = (
 	'SHA1'     => 'gss-gex-sha1-,gss-group14-sha1-',
+# Newer algorithms not enabled due to RFC not final yet
 	'SHA2-256'     => '',
 	'SHA2-384'     => '',
 	'SHA2-512'     => '',
@@ -79,7 +80,6 @@ my %kx_map = (
 	'ECDHE-X25519-SHA2-256' => 'curve25519-sha256@libssh.org',
 	'DHE-SHA1'   => 'diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1',
 	'DHE-SHA2-256' => 'diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256',
-	'DHE-SHA2-256' => 'diffie-hellman-group-exchange-sha256',
 	'DHE-SHA2-512' => 'diffie-hellman-group16-sha512,diffie-hellman-group18-sha512'
 );
 
@@ -108,6 +108,18 @@ sub generate_temp_policy() {
 
 	$string = '';
 	$print_init = 0;
+
+	my %local_gss_hash_map = %gss_hash_map;
+	my %local_kx_map = %kx_map;
+	if ($min_dh_size <= 1024) {
+		$local_gss_hash_map{'SHA1'} = $local_gss_hash_map{'SHA1'} . ',gss-group1-sha1-';
+		$local_kx_map{'DHE-SHA1'} = $local_kx_map{'DHE-SHA1'} . ',diffie-hellman-group1-sha1';
+	}
+	elsif ($min_dh_size > 2048) {
+		$local_gss_hash_map{'SHA1'} = '';
+		$local_kx_map{'DHE-SHA1'} = 'diffie-hellman-group-exchange-sha1';
+		$local_kx_map{'DHE-SHA2-256'} = 'diffie-hellman-group-exchange-sha256';
+	}
 
 	my $tmp = '';
 	foreach (@cipher_list) {
@@ -152,7 +164,7 @@ sub generate_temp_policy() {
 	$print_init = 0;
 	$tmp='';
 	foreach (@hash_list) {
-		my $val = $gss_hash_map{$_};
+		my $val = $local_gss_hash_map{$_};
 		if ( defined($val) ) {
 			append($val, \$tmp);
 		}
@@ -183,7 +195,7 @@ sub generate_temp_policy() {
 				}
 			} else {
 				my $mval = $kx.'-'.$hash;
-				my $val = $kx_map{$mval};
+				my $val = $local_kx_map{$mval};
 				if ( defined($val) ) {
 					append($val, \$tmp);
 				}
