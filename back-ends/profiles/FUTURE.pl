@@ -7,7 +7,7 @@
 # (e.g., systems that use SHA-1 as signature algorithm).
 
 # MACs: all HMAC with SHA256 or better + all modern MACs (Poly1305 etc)
-# Curves: all prime >= 384 bits (including Bernstein curves)
+# Curves: all prime >= 255 bits (including Bernstein curves)
 # Signature algorithms: SHA-256 hash or better (not DSA)
 # TLS Ciphers: >= 256-bit key, >= 128-bit block, only Authenticated Encryption (AE) ciphers
 # non-TLS Ciphers: same as TLS with added non AE ciphers and Camellia
@@ -19,7 +19,7 @@
 sub update_lists {
 
     @mac_list = ('AEAD', 'UMAC-128', 'HMAC-SHA2-256', 'HMAC-SHA2-384', 'HMAC-SHA2-512');
-    @group_list = ('X448', 'SECP384R1', 'SECP521R1',
+    @group_list = ('X25519', 'X448', 'SECP256R1', 'SECP384R1', 'SECP521R1',
         'FFDHE-3072', 'FFDHE-4096', 'FFDHE-6144', 'FFDHE-8192');
     @hash_list = ('SHA2-256', 'SHA2-384', 'SHA2-512', 'SHA3-256', 'SHA3-384', 'SHA3-512');
     @sign_list = (
