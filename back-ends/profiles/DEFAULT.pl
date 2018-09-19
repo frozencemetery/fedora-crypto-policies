@@ -17,7 +17,7 @@ sub update_lists {
     @mac_list = ('AEAD', 'HMAC-SHA2-256', 'HMAC-SHA1', 'UMAC-128', 'HMAC-SHA2-384', 'HMAC-SHA2-512');
     @group_list = ('X25519', 'X448', 'SECP256R1', 'SECP384R1', 'SECP521R1',
         'FFDHE-2048', 'FFDHE-3072', 'FFDHE-4096', 'FFDHE-6144', 'FFDHE-8192');
-    @hash_list = ('SHA2-256', 'SHA2-384', 'SHA2-512', 'SHA3-256', 'SHA3-384', 'SHA3-512', 'SHA1');
+    @hash_list = ('SHA2-256', 'SHA2-384', 'SHA2-512', 'SHA3-256', 'SHA3-384', 'SHA3-512', 'SHA2-224', 'SHA1');
     @sign_list = (
         'RSA-SHA2-256', 'ECDSA-SHA2-256',
         'RSA-SHA2-384', 'ECDSA-SHA2-384',
