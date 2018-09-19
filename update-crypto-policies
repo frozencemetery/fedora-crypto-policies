@@ -57,6 +57,11 @@ if test -z "$profile";then
 else
 	profile=$(echo -n $profile|tr '[:lower:]' '[:upper:]')
 	set_config=1
+	# FIPS profile is a special case
+	if test "$profile" = "FIPS" ; then
+		echo "Warning: Using 'update-crypto-policies --set FIPS' is not sufficient for FIPS compliance." 1>&2
+		echo "         Use 'fips-mode-setup --enable' command instead." 1>&2
+	fi
 fi
 
 # remove any legacy profile options

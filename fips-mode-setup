@@ -66,9 +66,9 @@ if test $enable_fips = 1 ; then
 			exit 1
 		fi
 	fi
-	update-crypto-policies --set FIPS
+	update-crypto-policies --set FIPS 2>/dev/null
 else
-	update-crypto-policies --set DEFAULT
+	update-crypto-policies --set DEFAULT 2>/dev/null
 fi
 
 boot_device=$(df -P /boot | tail -1 | cut -d ' ' -f 1)
