@@ -49,18 +49,17 @@ my %cipher_not_map = (
 my %key_exchange_map = (
 	'RSA'       => 'kRSA',
 	'ECDHE'     => 'kEECDH',
-	'PSK'       => '',
-	'DHE-PSK'   => '',
+	'PSK'       => 'kPSK',
+	'DHE-PSK'   => 'kDHEPSK',
 	'DHE-RSA'   => 'kEDH',
-	'DHE-DSS'   => 'kEDH',
-	'ECDHE-PSK' => ''
+	'DHE-DSS'   => '',
+	'ECDHE-PSK' => 'kECDHEPSK'
 );
 
 my %key_exchange_not_map = (
 	'ANON'       => '',
 	'DH'         => '',
 	'ECDH'       => '',
-	'EXPORT' => '!EXP',
 	'RSA'       => '-kRSA',
 	'ECDHE'     => '-kEECDH',
 	'DHE-RSA'   => '-aRSA',
@@ -143,12 +142,12 @@ sub generate_ciphers(@) {
 		}
 	}
 
-	# The Camellia and SHA384 are not necessary for any
+	# These ciphers are not necessary for any
 	# policy level, and only increase the attack surface.
 	append('-SHA384');
 	append('-CAMELLIA');
-	append('!SSLv2');
-	append('!ADH');
+	append('-ARIA');
+	append('-AESCCM8');
 
 	return $string;
 }
