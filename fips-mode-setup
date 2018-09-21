@@ -5,9 +5,19 @@ umask 022
 usage=0
 enable_fips=
 check=0
-# TBD: boot configuration
-boot_config=0
+boot_config=1
 fips_install_complete=0
+
+function enable2txt () {
+	case "$1" in
+		0)
+			echo "disabled"
+			;;
+		1)
+			echo "enabled"
+			;;
+	esac
+}
 
 while test $# -ge 1 ; do
 	case "$1" in
@@ -43,17 +53,12 @@ if test -f /etc/system-fips && test x"$(lsinitrd -f etc/system-fips)" != x ; the
 fi
 
 if test $check = 1 ; then
-	test fips_install_complete = 0 && echo "Installation of FIPS modules is not completed."
+	test $fips_install_complete = 0 && echo "Installation of FIPS modules is not completed."
 	fips_enabled=$(cat /proc/sys/crypto/fips_enabled)
-	echo -n "FIPS mode is "
-	if test $fips_enabled = 1 ; then
-		echo "enabled."
-		if test $fips_install_complete = 0 ; then
-			echo "Inconsistent state detected."
-			exit 1
-		fi
-	else
-		echo "disabled."
+	echo "FIPS mode is $(enable2txt $fips_enabled)."
+	if test $fips_enabled = 1 && test $fips_install_complete = 0 ; then
+		echo "Inconsistent state detected."
+		exit 1
 	fi
 	exit 0
 fi
@@ -74,17 +79,25 @@ fi
 boot_device=$(df -P /boot | tail -1 | cut -d ' ' -f 1)
 
 if test x$boot_device = x ; then
-	echo "Boot device not identified, you need to configure the bootloader manually."
+	echo "Boot device not identified, you have to configure the bootloader manually."
 	boot_device_uuid='<your-boot-device-uuid>'
 	boot_config=0
 else
 	boot_device_uuid=$(blkid -s UUID -o value $boot_device)
 fi
 
+echo "FIPS mode will be $(enable2txt $enable_fips)."
+
 if test $boot_config = 0 ; then
-	echo "Now you need to configure the bootloader to add kernel options \"fips=$enable_fips boot=UUID=$boot_device_uuid\"."
+	echo "Now you need to configure the bootloader to add kernel options \"fips=$enable_fips boot=UUID=$boot_device_uuid\""
+	echo "and reboot the system for the setting to take effect."
 else
-:
+	default_kernel="$(grubby --default-kernel)"
+	grubby --update-kernel=$default_kernel --args="fips=$enable_fips boot=UUID=$boot_device_uuid"
+	if test x$(uname -m) = xs390x ; then
+		zipl >/dev/null 2>&1
+	fi
+	echo "Please reboot the system for the setting to take effect."
 fi
 
 exit 0
