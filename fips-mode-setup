@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 umask 022
 
@@ -8,7 +8,7 @@ check=0
 boot_config=1
 fips_install_complete=0
 
-function enable2txt () {
+enable2txt () {
 	case "$1" in
 		0)
 			echo "disabled"
@@ -78,7 +78,7 @@ fi
 
 boot_device=$(df -P /boot | tail -1 | cut -d ' ' -f 1)
 
-if test x$boot_device = x ; then
+if test x"$boot_device" = x ; then
 	echo "Boot device not identified, you have to configure the bootloader manually."
 	boot_device_uuid='<your-boot-device-uuid>'
 	boot_config=0
@@ -94,7 +94,7 @@ if test $boot_config = 0 ; then
 else
 	default_kernel="$(grubby --default-kernel)"
 	grubby --update-kernel=$default_kernel --args="fips=$enable_fips boot=UUID=$boot_device_uuid"
-	if test x$(uname -m) = xs390x ; then
+	if test x"$(uname -m)" = xs390x ; then
 		zipl >/dev/null 2>&1
 	fi
 	echo "Please reboot the system for the setting to take effect."
