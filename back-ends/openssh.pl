@@ -220,7 +220,9 @@ sub generate_temp_policy() {
 	}
 
 	if ($tmp ne '') {
-		$string .= "HostKeyAlgorithms $tmp\n";
+#		As OpenSSH currently ignores existing known host entries with
+#		this setting we cannot use it otherwise we can break existing users.
+#		$string .= "HostKeyAlgorithms $tmp\n";
 		$string .= "PubkeyAcceptedKeyTypes $tmp\n";
 	}
 
