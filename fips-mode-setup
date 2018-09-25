@@ -86,6 +86,11 @@ else
 	boot_device_uuid=$(blkid -s UUID -o value $boot_device)
 fi
 
+if test $boot_config=1 && test ! -x "$(command -v grubby)" ; then
+	echo "The grubby command is missing, please configure the bootloader manually."
+	boot_config=0
+fi
+
 echo "FIPS mode will be $(enable2txt $enable_fips)."
 
 if test $boot_config = 0 ; then
