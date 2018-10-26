@@ -25,6 +25,7 @@ check:
 	tests/nss.pl >>test-suite.log
 	tests/java.pl >>test-suite.log
 	tests/krb5.py >>test-suite.log
+	top_srcdir=. tests/update-crypto-policies.sh >>test-suite.log
 
 reset-outputs:
 	@rm -rf tests/outputs/*
