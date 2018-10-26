@@ -157,6 +157,15 @@ sub generate_temp_policy() {
 			print STDERR "nss: unknown: $_\n";
 		}
 	}
+	my $dsa = 0;
+	foreach (@sign_list) {
+		if ( index($_, 'DSA-') == 0 ) {
+			$dsa = 1;
+		}
+	}
+	if ($dsa != 0) {
+		append("DSA");
+	}
 
 	append("tls-version-min=" . ($protocol_map{$min_tls_version} || '0'));
 	append("dtls-version-min=" . ($protocol_map{$min_dtls_version} || '0'));
@@ -184,6 +193,10 @@ sub test_temp_policy() {
 		my $ret = $?;
 		unlink($filename);
 		unlink($resultfile);
+		if (index($gstr, ":DSA:") != -1) {
+			# Temporarily ignore errors if DSA keyword present
+			return;
+		}
 
 		# We treat all warnings and errors as a failure.
 		# Exit code for warnings is 1, exit code for failures is 2.
