@@ -95,7 +95,12 @@ my %cipher_not_map = (
 	'CAMELLIA-128-CBC'  => '-CAMELLIA-128-CBC',
 	'CHACHA20-POLY1305' => '-CHACHA20-POLY1305',
 	'3DES-CBC'          => '-3DES-CBC',
-	'RC4-128'	    => '-ARCFOUR-128'
+	'RC4-128'           => '-ARCFOUR-128'
+);
+
+my %cipher_force_map = (
+	'3DES-CBC'          => '+3DES-CBC',
+	'RC4-128'           => '+ARCFOUR-128'
 );
 
 my %key_exchange_map = (
@@ -192,6 +197,12 @@ sub generate_temp_policy() {
 			}
 			else {
 				print STDERR "gnutls: unknown: $_\n";
+			}
+		}
+		foreach (@tls_cipher_list) {
+			my $val = $cipher_force_map{$_};
+			if ( defined($val) ) {
+				append($val);
 			}
 		}
 	}
