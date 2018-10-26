@@ -101,8 +101,9 @@ for i in "$profile_dir/$profile/"*;do
 	basefile=$(basename "$i")
 	file=$(echo -n "$basefile"|sed 's/\.txt/\.config/')
 	basefile=$(echo -n "$basefile"|sed 's/\.txt//')
+	matches=$(ls "$local_dir/$basefile"-*.config 2>/dev/null)
 
-	if test -z $(ls "$local_dir/$basefile"-*.config 2>/dev/null);then
+	if test -z "$matches"; then
 		rm -f "$backend_config_dir/$file"
 		ln -sf $i "$backend_config_dir/$file"
 		if test $? != 0;then
