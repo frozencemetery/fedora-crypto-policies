@@ -89,20 +89,25 @@ the system policies as well. Examples are apache httpd, nginx, php, and
 others.
 
 [[options]]
-OPTIONS
+COMMANDS
 -------
 
-The following options are available in update-crypto-policies tool.
+The following commands are available in update-crypto-policies tool.
 
 * --show:       Shows the currently applied crypto policy
 
 * --is-applied: Returns success if the currently configured policy is
                 already applied.
 
+* --set:        Sets the current policy and overwrites the config file.
+
+OPTIONS
+-------
+
+The following options are available in update-crypto-policies tool.
+
 * --no-check:   By default this tool does a sanity check on whether the configured policy
                 is accepted by the supported tools. This option disables those checks.
-
-* --set:        Sets the current policy and overwrites the config file.
 
 
 [[appsupport]]

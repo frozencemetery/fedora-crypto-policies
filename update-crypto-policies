@@ -11,13 +11,15 @@ errcode=0
 nocheck=0
 profile=''
 
-if test $# -ge 1;then
+while test $# -ge 1; do
 	case "$1" in
 		--set)
 			profile="$2"
+			shift 2
 			;;
 		--no-check)
 			nocheck=1
+			shift
 			;;
 		--show)
 			cat $base_dir/config|grep -v "^#"|sed '/^$/d'
@@ -40,13 +42,12 @@ if test $# -ge 1;then
 		*)
 			echo "usage: $0 --set [POLICY]"
 			echo "usage: $0 --show"
-			echo "usage: $0 --no-check"
 			echo "usage: $0 --is-applied"
 			echo "usage: $0"
 			exit 0
 			;;
 	esac
-fi
+done
 
 mkdir -p $backend_config_dir >/dev/null 2>&1
 mkdir -p $state_dir >/dev/null 2>&1
