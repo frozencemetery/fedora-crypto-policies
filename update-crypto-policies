@@ -59,8 +59,17 @@ else
 	set_config=1
 	# FIPS profile is a special case
 	if test "$profile" = "FIPS" ; then
-		echo "Warning: Using 'update-crypto-policies --set FIPS' is not sufficient for FIPS compliance." 1>&2
+		echo "Warning: Using 'update-crypto-policies --set FIPS' is not sufficient for" 1>&2
+		echo "         FIPS compliance." 1>&2
 		echo "         Use 'fips-mode-setup --enable' command instead." 1>&2
+	else
+		fips_enabled=$(cat /proc/sys/crypto/fips_enabled)
+		if test "$fips_enabled" = 1 ; then
+			echo "Warning: Using 'update-crypto-policies --set' in FIPS mode will make the system" 1>&2
+			echo "         non-compliant with FIPS." 1>&2
+			echo "         It can also break the ssh access to the system." 1>&2
+			echo "         Use 'fips-mode-setup --disable' to disable the system FIPS mode." 1>&2
+		fi
 	fi
 fi
 

@@ -56,7 +56,7 @@ if test $check = 1 ; then
 	test $fips_install_complete = 0 && echo "Installation of FIPS modules is not completed."
 	fips_enabled=$(cat /proc/sys/crypto/fips_enabled)
 	echo "FIPS mode is $(enable2txt $fips_enabled)."
-	if test $fips_enabled = 1 && test $fips_install_complete = 0 ; then
+	if test "$fips_enabled" = 1 && test $fips_install_complete = 0 ; then
 		echo "Inconsistent state detected."
 		exit 1
 	fi
