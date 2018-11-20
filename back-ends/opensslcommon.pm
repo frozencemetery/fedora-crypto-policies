@@ -29,11 +29,21 @@ sub append {
 	$print_init = 1;
 }
 
+# This limits policy definitions with following expectations:
+# * disabling AES-256-GCM implies disabling all 256 bit AES
+# * disabling AES-128-GCM implies disabling all 128 bit AES
+# * disabling AES-256-CBC implies disabling all SHA256 HMAC ciphersuites
+# * policy which disables CBC ciphersuites disables also SHA1 HMAC
+# * disabling AES-128-CBC cannot be done separately from the above
+# * SHA384 HMAC in TLS is always disabled
+
 my %cipher_not_map = (
 	'AES-256-CTR'       => '',
 	'AES-128-CTR'       => '',
-	'AES-256-GCM'  => '-AES-256-GCM',
-	'AES-128-GCM'  => '-AES-128-GCM',
+	'AES-256-GCM'  => '-AES256',
+	'AES-128-GCM'  => '-AES128',
+	'AES-256-CBC'  => '-SHA256',
+	'AES-128-CBC'  => '',
 	'CHACHA20-POLY1305'  => '-CHACHA20-POLY1305',
 	'SEED-CBC'  => '-SEED',
 	'IDEA-CBC'  => '!IDEA',
@@ -87,7 +97,7 @@ sub generate_ciphers(@) {
 	$string = '';
 	$print_init = 0;
 
-	#we cannot separate RSA strength from DH params
+	# We cannot separate RSA strength from DH params.
 	if ( $min_dh_size < 1023 || $min_rsa_size < 1023 ) {
 		append('@SECLEVEL=0');
 	}
