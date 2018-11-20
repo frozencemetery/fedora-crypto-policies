@@ -63,6 +63,11 @@ my %cipher_not_map = (
 	'NULL'      => ''
 );
 
+my %cipher_legacy_map = (
+	'RC4-128'   => 'RC4_128',
+	'3DES-CBC'  => '3DES_EDE_CBC',
+);
+
 my %key_exchange_not_map = (
 	'EXPORT' => 'RSA_EXPORT, DHE_DSS_EXPORT, DHE_RSA_EXPORT, DH_DSS_EXPORT, DH_RSA_EXPORT',
 	'DH'         => 'DH_RSA, DH_DSS',
@@ -189,7 +194,17 @@ sub generate_temp_policy() {
 		}
 	}
 
-	$string .= "\njdk.tls.legacyAlgorithms=\n";
+	append_reset();
+	$string .= "jdk.tls.legacyAlgorithms=";
+
+	foreach (@cipher_list) {
+		my $val = $cipher_legacy_map{$_};
+		if ( defined($val) ) {
+			append($val);
+		}
+	}
+
+	$string .= "\n";
 	return $string;
 }
 
