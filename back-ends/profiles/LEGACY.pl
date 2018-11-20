@@ -40,7 +40,7 @@ sub update_lists {
         '3DES-CBC', 'RC4-128');
     @key_exchange_list = ('ECDHE', 'RSA', 'DHE', 'DHE-RSA', 'DHE-DSS', 'PSK', 'DHE-PSK', 'ECDHE-PSK');
     @protocol_list = ('TLS1.3', 'TLS1.2', 'TLS1.1', 'TLS1.0', 'DTLS1.2', 'DTLS1.0');
-    @ike_protocol_list = ('IKEv1', 'IKEv2');
+    @ike_protocol_list = ('IKEv2');
 
     $min_tls_version = 'TLS1.0';
     $min_dtls_version = 'DTLS1.0';
