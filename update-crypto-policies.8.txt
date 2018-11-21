@@ -82,6 +82,8 @@ Currently the supported back-ends are:
 
 * OpenSSH
 
+* Libreswan
+
 Applications and languages which rely on any of these back-ends will follow
 the system policies as well. Examples are apache httpd, nginx, php, and
 others.
@@ -169,6 +171,12 @@ utilize the system-wide policy are the following.
    information.
    To opt-out from the policy for server, uncomment the line containing
    CRYPTO_POLICY= in /etc/sysconfig/sshd .
+
+ * Libreswan: Both servers and clients inherit the ESP and IKE preferences,
+   if they are not overriden in the connection configuration file. Note that
+   due to limitations of libreswan, crypto policies is restricted to supporting IKEv2.
+   To opt-out from the policy, comment the line including `/etc/crypto-policies/back-ends/libreswan.config`
+   from `/etc/ipsec.conf`.
 
 
 [[policyconfig]]
