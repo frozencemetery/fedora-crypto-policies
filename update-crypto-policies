@@ -9,6 +9,7 @@ backend_config_dir="$base_dir/back-ends"
 state_dir="$base_dir/state"
 errcode=0
 nocheck=0
+noreload=0
 profile=''
 
 while test $# -ge 1; do
@@ -19,6 +20,10 @@ while test $# -ge 1; do
 			;;
 		--no-check)
 			nocheck=1
+			shift
+			;;
+		--no-reload)
+			noreload=1
 			shift
 			;;
 		--show)
@@ -122,7 +127,9 @@ if test $set_config = 1;then
 	echo $profile > $base_dir/config
 fi
 
-. $profile_dir/reload-cmds.sh
+if ! test $noreload = 1; then
+	. $profile_dir/reload-cmds.sh
+fi
 
 # Old versions seemed to install that file. We no longer use it
 rm -f $base_dir/current
