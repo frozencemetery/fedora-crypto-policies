@@ -19,13 +19,13 @@ install: $(MANPAGES)
 
 check:
 	@-rm -f test-suite.log
-	tests/verify-output.pl >>test-suite.log
-	tests/openssl.pl >test-suite.log
-	tests/gnutls.pl >>test-suite.log
-	tests/nss.pl >>test-suite.log
-	tests/java.pl >>test-suite.log
-	tests/krb5.py >>test-suite.log
-	top_srcdir=. tests/update-crypto-policies.sh >>test-suite.log
+	tests/verify-output.pl 2>>test-suite.log
+	tests/openssl.pl 2>>test-suite.log
+	tests/gnutls.pl 2>>test-suite.log
+	tests/nss.pl 2>>test-suite.log
+	tests/java.pl 2>>test-suite.log
+	tests/krb5.py 2>>test-suite.log
+	top_srcdir=. tests/update-crypto-policies.sh | tee -a test-suite.log
 
 reset-outputs:
 	@rm -rf tests/outputs/*

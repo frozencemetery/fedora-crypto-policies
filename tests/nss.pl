@@ -8,6 +8,8 @@ use lib "./back-ends/";
 use profiles::common;
 use File::Which qw(which);
 
+print "Checking the NSS configuration\n";
+
 require "$libdir/nss.pl";
 
 foreach my $policy (@profiles::common::policies) {
@@ -28,8 +30,8 @@ foreach my $policy (@profiles::common::policies) {
 		system("nss-policy-check $TMPFILE >$RESULTFILE 2>&1") ;
 		if ($? != 0) {
 			print "Error in NSS policy for $policy\n";
-			system("cat $TMPFILE");
-			system("cat $RESULTFILE");
+			system("cat $TMPFILE 1>&2");
+			system("cat $RESULTFILE 1>&2");
 			exit 1;
 		}
 		unlink($TMPFILE);

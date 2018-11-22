@@ -6,6 +6,8 @@ my $libdir = "./back-ends";
 use lib "./back-ends/";
 use profiles::common;
 
+print "Checking the OpenSSL configuration\n";
+
 require "$libdir/openssl.pl";
 
 foreach my $policy (@profiles::common::policies) {
@@ -14,9 +16,9 @@ foreach my $policy (@profiles::common::policies) {
 
 	system("openssl ciphers $tmp >$TMPFILE 2>&1") if $policy ne 'EMPTY';
 	if ($? != 0) {
-		print "Error in openssl policy for $policy\n";
-		system("cat $TMPFILE");
-		print "ciphers: $tmp\n";
+		print "Error in OpenSSL policy for $policy\n";
+		system("cat $TMPFILE 1>&2");
+		print STDERR "ciphers: $tmp\n";
 		exit 1;
 	}
 	unlink($TMPFILE);

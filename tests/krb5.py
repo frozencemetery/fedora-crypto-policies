@@ -21,8 +21,10 @@ try:
     from krb5check.krb5_conf import parse, check
     pass
 except:
-    print("Skipping krb5 test; checker not found!", file=sys.stderr)
+    print("Skipping krb5 test; checker not found!")
     exit(0)
+
+print("Checking the Krb5 configuration")
 
 # Don't verify EMPTY policy
 for policy in ["LEGACY", "DEFAULT", "FUTURE", "FIPS"]:
@@ -40,7 +42,7 @@ for policy in ["LEGACY", "DEFAULT", "FUTURE", "FIPS"]:
         f.write(data.encode("utf-8"))
         path = f.name
         pass
-    
+
     sections = parse(path)
     check(sections)
 

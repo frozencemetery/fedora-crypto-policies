@@ -11,9 +11,11 @@ use profiles::common;
 
 require "$libdir/java.pl";
 
-print "Java ciphersuites per policy\n";
+print "Checking the Java configuration\n";
 
-system("javac tests/java/CipherList.java");
+print STDERR "Java ciphersuites per policy\n";
+
+system("javac tests/java/CipherList.java 1>&2");
 if ($? != 0) {
 	exit 77;
 }
@@ -22,7 +24,7 @@ foreach my $policy (@profiles::common::policies) {
 	unlink($TMPFILE);
 	unlink($TMPFILE2);
 
-	print "\nPolicy: $policy\n";
+	print STDERR "\nPolicy: $policy\n";
 
 	my $tmp = generate_temp_policy($policy, "", $libdir);
 
@@ -65,7 +67,7 @@ foreach my $policy (@profiles::common::policies) {
 			exit 1;
 		}
 	}
-	system("cat $TMPFILE2");
+	system("cat $TMPFILE2 1>&2");
 }
 
 unlink("$TMPFILE");

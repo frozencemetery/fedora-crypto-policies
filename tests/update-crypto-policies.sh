@@ -18,7 +18,7 @@ base_dir="$testdir/base"
 mkdir "$base_dir"
 mkdir "$base_dir/local.d"
 
-"$top_srcdir/generate-policies.pl" "$profile_dir"
+"$top_srcdir/generate-policies.pl" "$profile_dir" 2>/dev/null
 echo DEFAULT > "$profile_dir/default-config"
 echo DEFAULT > "$base_dir/config"
 
