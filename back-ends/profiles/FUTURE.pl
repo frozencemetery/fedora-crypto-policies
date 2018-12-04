@@ -29,7 +29,8 @@ sub update_lists {
         'RSA-SHA3-256', 'ECDSA-SHA3-256',
         'RSA-SHA3-384', 'ECDSA-SHA3-384',
         'RSA-SHA3-512', 'ECDSA-SHA3-512',
-        'EDDSA-ED448', 'RSA-PSS-SHA2-256',
+        'EDDSA-ED25519', 'EDDSA-ED448',
+        'RSA-PSS-SHA2-256',
         'RSA-PSS-SHA2-384', 'RSA-PSS-SHA2-512');
 
     @tls_cipher_list = ('AES-256-GCM', 'AES-256-CCM', 'CHACHA20-POLY1305');
