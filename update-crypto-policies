@@ -17,6 +17,7 @@ while test $# -ge 1; do
 		--set)
 			profile="$2"
 			shift
+			# If there is no argument to --set, this shift will be ignored
 			shift
 			;;
 		--no-check)
