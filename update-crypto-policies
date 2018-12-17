@@ -133,6 +133,10 @@ if ! test $noreload = 1; then
 	. $profile_dir/reload-cmds.sh
 fi
 
+echo "Note: System-wide crypto policies are applied on application start-up."
+echo "It is recommended to restart the system for the change of policies"
+echo "to fully take place."
+
 # Old versions seemed to install that file. We no longer use it
 rm -f $base_dir/current
 
