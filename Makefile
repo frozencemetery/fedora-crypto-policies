@@ -1,17 +1,21 @@
 VERSION=$(shell git log -1|grep commit|cut -f 2 -d ' '|head -c 7)
 DIR?=/usr/share/crypto-policies
 BINDIR?=/usr/bin
-MANDIR?=/usr/share/man/man8
+MANDIR?=/usr/share/man
 DESTDIR?=
-MANPAGES=update-crypto-policies.8 fips-finish-install.8 fips-mode-setup.8
+MAN7PAGES=crypto-policies.7
+MAN8PAGES=update-crypto-policies.8 fips-finish-install.8 fips-mode-setup.8
 SCRIPTS=update-crypto-policies fips-finish-install fips-mode-setup
 
-all: $(MANPAGES)
+all: $(MAN7PAGES) $(MAN8PAGES)
 
 install: $(MANPAGES)
 	mkdir -p $(DESTDIR)/$(MANDIR)
+	mkdir -p $(DESTDIR)/$(MANDIR)/man7
+	mkdir -p $(DESTDIR)/$(MANDIR)/man8
 	mkdir -p $(DESTDIR)/$(BINDIR)
-	install -p -m 644 $(MANPAGES) $(DESTDIR)/$(MANDIR)
+	install -p -m 644 $(MAN7PAGES) $(DESTDIR)/$(MANDIR)/man7
+	install -p -m 644 $(MAN8PAGES) $(DESTDIR)/$(MANDIR)/man8
 	install -p -m 755 $(SCRIPTS) $(DESTDIR)/$(BINDIR)
 	mkdir -p $(DESTDIR)/$(DIR)/
 	install -p -m 644 default-config $(DESTDIR)/$(DIR)
@@ -32,9 +36,9 @@ reset-outputs:
 	echo "Outputs were reset. Run make check to re-generate, and commit the output."
 
 clean:
-	rm -f $(MANPAGES) *.8.xml
+	rm -f $(MAN7PAGES) $(MAN8PAGES) *.?.xml
 
-%.8: %.8.txt
+%: %.txt
 	asciidoc.py -v -d manpage -b docbook $<
 	xsltproc --nonet -o $@ /usr/share/asciidoc/docbook-xsl/manpage.xsl $@.xml
 

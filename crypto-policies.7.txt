@@ -1,0 +1,250 @@
+////
+Copyright (C) 2019 Red Hat, Inc.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation; either version 2.1 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+////
+
+
+crypto-policies(7)
+==================
+:doctype: manpage
+:man source: crypto-policies
+
+
+NAME
+----
+crypto-policies - system-wide crypto policies overview
+
+
+DESCRIPTION
+-----------
+The operating system includes several cryptographic components whose
+security doesn't remain constant over time. Algorithms such as
+(cryptographic) hashing and encryption typically have a lifetime
+after which they are considered either too risky to use or plain insecure.
+That means we need to phase out such algorithms from the default
+settings, or completely disable them if they could cause irreparable issue.
+
+While in the past the algorithms were not disabled in a consistent way
+(different applications applied different policies), the system-wide
+crypto-policies followed by the crypto core components allow consistently
+deprecating and disabling algorithms system-wide.
+
+The individual policy levels (*DEFAULT*, *LEGACY*, *FUTURE*, and *FIPS*)
+are included in the *crypto-policies(7)* package. In future there will
+be also mechanism for easy creation and deployment of policies defined
+by the system administrator or a third party vendor.
+
+For rationale see *RFC 7457* for a list of attacks taking advantage of
+legacy crypto algorithms.
+
+COVERED APPLICATIONS
+--------------------
+
+Crypto-policies apply to configuration of the core cryptographic subsystems,
+covering *TLS*, *IKE*, *IPSec*, *DNSSec*, and *Kerberos* protocols; i.e., our
+supported secure communications protocols on the base operating system.
+
+Once an application runs in the operating system it will follow the default
+or selected policy and refuse to fall back to algorithms and protocols not
+within the policy, unless the user has explicitly requested the application
+to do so. That is, the policy applies to the default behavior of applications
+when running with the system-provided configuration, but can be overridden by
+the user if required so on an application-specific basis.
+
+The policies currently provide settings for these applications and libraries:
+
+* *BIND* DNS name server daemon
+* *GnuTLS* TLS library
+* *OpenJDK* runtime environment
+* *Kerberos 5* library
+* *Libreswan* IPsec and IKE protocol implementation
+* *NSS* TLS library
+* *OpenSSH* SSH2 protocol implementation
+* *OpenSSL* TLS library
+
+Applications using the above libraries and tools are covered by the
+cryptographic policies unless they are explicitly configured not to be so.
+
+PROVIDED POLICY LEVELS
+----------------------
+
+*LEGACY*::
+  This policy ensures maximum compatibility with legacy systems; it is
+  less secure and it includes support for *TLS 1.0*, *TLS 1.1*, and *SSH2*
+  protocols or later. The algorithms *DSA*, *3DES*, and *RC4* are allowed,
+  while *RSA* and *Diffie-Hellman* parameters are accepted if larger
+  than 1023-bits. It provides at least 64 bit security.
+
+  * MACs: all *HMAC* with *SHA1* or better + all modern MACs (*Poly1305*
+    etc.)
+  * Curves: all prime >= 255 bits (including Bernstein curves)
+  * Signature algorithms: with *SHA1* hash or better (*DSA* allowed)
+  * *TLS* Ciphers: all available >= 112-bit key, >= 128-bit block (including
+    *RC4* and *3DES*)
+  * Non-TLS Ciphers: same as *TLS* ciphers with added *Camellia*
+  * Key exchange: *ECDHE*, *RSA*, *DHE*
+  * *DH* params size: >= 1023
+  * *RSA* keys size: >= 1023
+  * *DSA* params size: >= 1023
+  * *TLS* protocols: *TLS* >= 1.0, *DTLS* >= 1.0
+
+*DEFAULT*::
+  The *DEFAULT* policy is a reasonable default policy for today's standards,
+  compatible with *PCI-DSS* requirements. It allows the *TLS 1.2* and
+  *TLS 1.3* protocols, as well as *IKEv2* and *SSH2*. The *RSA* and
+  *Diffie-Hellman* parameters are accepted if larger than 2047-bits.
+  It provides at least 112 bit security with the exception of *SHA1*
+  signatures needed for *DNSSec* and other still prevalent legacy use of
+  *SHA1* signatures.
+
+  * MACs: all *HMAC* with *SHA1* or better + all modern MACs (*Poly1305*
+    etc.)
+  * Curves: all prime >= 255 bits (including Bernstein curves)
+  * Signature algorithms: with *SHA1* hash or better (no *DSA*)
+  * *TLS* Ciphers: >= 128-bit key, >= 128-bit block (*AES*, *ChaCha20*,
+    including *AES-CBC*)
+  * non-TLS Ciphers: as *TLS* Ciphers with added *Camellia*
+  * key exchange: *ECDHE*, *RSA*, *DHE* (no *DHE-DSS*)
+  * *DH* params size: >= 2048
+  * *RSA* keys size: >= 2048
+  * *TLS* protocols: *TLS* >= 1.2, *DTLS* >= 1.2
+
+*FUTURE*::
+  A conservative security level that is believed to withstand any near-term
+  future attacks. This level does not allow the use of *SHA1* in signature
+  algorithms. The level also provides some (not complete) preparation for
+  post quantum encryption support in form of 256 bit symmetric encryption
+  requirement. The *RSA* and *Diffie-Hellman* parameters are accepted if
+  larger than 3071-bits. It provides at least 128 bit security.
+
+  * MACs: all *HMAC* with *SHA-256* or better + all modern MACs (*Poly1305*
+    etc.)
+  * Curves: all prime >= 255 bits (including Bernstein curves)
+  * Signature algorithms: with *SHA-256* hash or better (no *DSA*)
+  * *TLS* Ciphers: >= 256-bit key, >= 128-bit block, only Authenticated
+    Encryption (AE) ciphers
+  * non-TLS Ciphers: same as *TLS* ciphers with added non AE ciphers and
+    *Camellia*
+  * key exchange: *ECDHE*, *DHE* (no *DHE-DSS*, no *RSA*)
+  * *DH* params size: >= 3072
+  * *RSA* keys size: >= 3072
+  * *TLS* protocols: *TLS* >= 1.2, *DTLS* >= 1.2
+
+
+*FIPS*::
+  A level that conforms to the *FIPS 140-2* requirements. This policy is used
+  internally by the *fips-mode-setup(8)* tool which can switch the system
+  into the *FIPS 140-2* compliance mode.
+
+  * MACs: all *HMAC* with *SHA1* or better
+  * Curves: all prime >= 256 bits
+  * Signature algorithms: with *SHA-256* hash or better (no *DSA*)
+  * *TLS* Ciphers: >= 128-bit key, >= 128-bit block (*AES*,
+    including *AES-CBC*)
+  * non-TLS Ciphers: same as *TLS* Ciphers
+  * key exchange: *ECDHE*, *DHE* (no *DHE-DSS*, no *RSA*)
+  * *DH* params size: >= 2048
+  * *RSA* params size: >= 2048
+  * *TLS* protocols: *TLS* >= 1.2, *DTLS* >= 1.2
+
+
+COMMANDS
+--------
+
+*update-crypto-policies(8)*::
+  This command manages the policies available to the various cryptographic
+  back-ends and allows the system administrator to change the active
+  cryptographic policy level.
+
+*fips-mode-setup(8)*::
+  This command allows the system administrator to enable, or disable the
+  system FIPS mode and also apply the *FIPS* cryptographic policy level
+  which limits the allowed algorithms and protocols to these allowed by
+  the FIPS 140-2 requirements.
+
+
+NOTES
+-----
+
+*Exceptions:*
+
+* *Go-language* applications do not yet follow the system-wide policy
+* *libssh* applications do not yet follow the system-wide policy
+* *GnuPG-2* application does not follow the system-wide policy
+
+In general only the data-in-transit is currently covered by the system-wide
+policy.
+
+If the system administrator changes the system-wide policy level with
+the *update-crypto-policies(8)* command it is advisable to restart the
+system as the individual back-end libraries read the configuration files
+usually during their initialization. The changes in the policy level
+thus take place in most cases only when the applications using the back-end
+libraries are restarted.
+
+*Removed ciphersuites and protocols*
+
+The following ciphersuites and protocols are completely removed from the
+core cryptographic libraries listed above:
+
+* *DES*
+* All export grade ciphersuites
+* *MD5* in signatures
+* *SSLv2*
+* *SSLv3*
+* All *ECC* curves smaller than 224 bits
+* All binary field *ECC* curves
+
+*Ciphersuites and protocols disabled in all policy levels*
+
+The following ciphersuites and protocols are available but disabled in all
+crypto policy levels. They can be enabled only by explicit configuration
+of individual applications:
+
+* *DH* with parameters < 1024 bits
+* *RSA* with key size < 1024 bits
+* *Camellia*
+* *ARIA*
+* *SEED*
+* *IDEA*
+* Integrity only ciphersuites
+* *TLS* Ciphersuites using *SHA-384* HMAC
+* *AES-CCM8*
+* all *ECC* curves incompatible with *TLS 1.3*, including secp256k1
+* *IKEv1*
+
+
+FILES
+-----
+/etc/crypto-policies/back-ends::
+	The individual cryptographical back-end configuration files.
+	Usually linked to the configuration shipped in the crypto-policies
+	package unless a configuration from *local.d* is added.
+
+/etc/crypto-policies/config::
+	The active crypto-policies level set on the system.
+
+/etc/crypto-policies/local.d::
+	Additional configuration shipped by other packages or created by
+	the system administrator. The contents of the *<back-end>-file.config*
+	is appended to the configuration from the policy backend as
+	shipped in the crypto-policies package.
+
+
+SEE ALSO
+--------
+update-crypto-policies(8), fips-mode-setup(8)
+
+
+AUTHOR
+------
+Written by Tomáš Mráz.
