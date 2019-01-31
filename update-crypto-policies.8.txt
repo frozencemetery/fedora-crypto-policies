@@ -32,28 +32,13 @@ SYNOPSIS
 
 DESCRIPTION
 -----------
-update-crypto-policies(8) is used to set the policy applicable for the
+*update-crypto-policies(8)* is used to set the policy applicable for the
 various cryptographic back-ends, such as SSL/TLS libraries. That will
 be the default policy used by these back-ends unless the application user
 configures them otherwise.
 
-The available policies are restricted to the following profiles.
-
-* LEGACY: Ensures maximum compatibility with legacy systems (64-bit
-  security)
-
-* DEFAULT: A reasonable default for today's standards (80-bit security).
-
-* NEXT: Policy which will become DEFAULT in some upcoming release of the
-  operating system (112-bit security plus restriction of TLS to version 1.2
-  and newer).
-
-* FUTURE: A level that will provide security on a conservative level that is
-  believed to withstand any near-term future attacks (128-bit security).
-
-* FIPS: Policy that enables only FIPS 140-2 approved or allowed algorithms.
-
-* EMPTY: All cryptographic algorithms are disabled (used for debugging only)
+The available policies are described in the *crypto-policies(7)* manual
+page.
 
 The desired system policy is selected in /etc/crypto-policies/config
 and this tool will generate the individual policy requirements for
@@ -205,10 +190,11 @@ In case of a parsing error no policies will be updated.
 FILES
 -----
 /etc/crypto-policies/config::
-	The file contains the current system policy. It should contain a string of one of the profiles listed above (e.g., DEFAULT).
+	The file contains the current system policy. It should contain a string of one of the
+	profiles listed in the *crypto-policies(7)* page (e.g., DEFAULT).
 
 /etc/crypto-policies/back-ends::
-	Contains the generated policies in separated files, and in a format readable by the supported back-ends.
+	Contains the generated policies in separated files, and in a format readable by the supported back ends.
 
 /etc/crypto-policies/local.d::
 	Contains additional files to be appended to the generated policy
@@ -222,7 +208,7 @@ FILES
 
 SEE ALSO
 --------
-fips-mode-setup(8)
+crypto-policies(7), fips-mode-setup(8)
 
 AUTHOR
 ------
