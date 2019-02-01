@@ -45,7 +45,7 @@ if test $usage = 1 -o x$enable_fips = x ; then
 	echo "Check, enable, or disable the system FIPS mode."
 	echo "usage: $0 --enable|--disable [--no-bootcfg]"
 	echo "usage: $0 --check"
-	exit 0
+	exit 2
 fi
 
 if test -f /etc/system-fips && test x"$(lsinitrd -f etc/system-fips)" != x ; then
