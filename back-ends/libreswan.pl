@@ -26,7 +26,9 @@ sub append {
 
 my %group_map = (
 	'X448'    => '',
-	'X25519'    => '', #dh31 - not in f28
+	'X25519'    => '',
+# Disabled for now as it cannot be prioritized over others
+#	'X25519'    => 'dh31',
 	'SECP256R1' => 'dh19',
 	'SECP384R1' => 'dh20',
 	'SECP521R1' => 'dh21',
@@ -38,31 +40,42 @@ my %group_map = (
 	'FFDHE-8192' => 'dh18'
 );
 
+my %cipher_map = (
+	'AES-256-CBC'       => 'aes256',
+	'AES-128-CBC'       => 'aes128',
+	'AES-256-GCM'       => 'aes_gcm256',
+	'AES-128-GCM'       => 'aes_gcm128',
+	'CHACHA20-POLY1305' => 'chacha20_poly1305',
+# Unused for IKEv2
+#	'3DES-CBC'          => '3des',
+);
+
 my %cipher_prf_map = (
-	'AES-256-CBC-HMAC-SHA2-512'       => 'aes256-sha2_512',
-	'AES-256-CBC-HMAC-SHA2-256'       => 'aes256-sha2_256',
-	'AES-128-CBC-HMAC-SHA2-256'       => 'aes128-sha2_256',
-	'AES-256-CBC-HMAC-SHA1'       => 'aes256-sha1',
-	'AES-128-CBC-HMAC-SHA1'       => 'aes128-sha1',
-	'AES-256-GCM-HMAC-SHA2-512'       => 'aes_gcm256-sha2_512',
-	'AES-256-GCM-HMAC-SHA2-256'       => 'aes_gcm256-sha2_256',
-	'AES-128-GCM-HMAC-SHA2-512'       => 'aes_gcm128-sha2_512',
-	'AES-128-GCM-HMAC-SHA2-256'       => 'aes_gcm128-sha2_256',
-	'CHACHA20-POLY1305-HMAC-SHA2-512' => 'chacha20_poly1305-sha2_512',
-	'CHACHA20-POLY1305-HMAC-SHA2-256' => 'chacha20_poly1305-sha2_256',
-	'3DES-CBC-HMAC-SHA1'          => '3des-sha1',
+	'AES-256-CBC-HMAC-SHA2-512'       => 'sha2_512',
+	'AES-256-CBC-HMAC-SHA2-256'       => 'sha2_256',
+	'AES-128-CBC-HMAC-SHA2-256'       => 'sha2_256',
+# Not needed for IKEv2
+#	'AES-256-CBC-HMAC-SHA1'           => 'sha1',
+#	'AES-128-CBC-HMAC-SHA1'           => 'sha1',
+	'AES-256-GCM-HMAC-SHA2-512'       => 'sha2_512',
+	'AES-256-GCM-HMAC-SHA2-256'       => 'sha2_256',
+	'AES-128-GCM-HMAC-SHA2-512'       => 'sha2_512',
+	'AES-128-GCM-HMAC-SHA2-256'       => 'sha2_256',
+	'CHACHA20-POLY1305-HMAC-SHA2-512' => 'sha2_512',
+	'CHACHA20-POLY1305-HMAC-SHA2-256' => 'sha2_256',
+#	'3DES-CBC-HMAC-SHA1'              => 'sha1',
 );
 
 my %cipher_mac_map = (
-	'AES-256-CBC-HMAC-SHA2-512'       => 'aes256-sha2_512',
-	'AES-256-CBC-HMAC-SHA2-256'       => 'aes256-sha2_256',
-	'AES-128-CBC-HMAC-SHA2-256'       => 'aes128-sha2_256',
-	'AES-256-CBC-HMAC-SHA1'       => 'aes256-sha1',
-	'AES-128-CBC-HMAC-SHA1'       => 'aes128-sha1',
-	'AES-256-GCM-AEAD'            => 'aes_gcm256',
-	'AES-128-GCM-AEAD'            => 'aes_gcm128',
-	'CHACHA20-POLY1305-AEAD'      => 'chacha20_poly1305',
-	'3DES-CBC-HMAC-SHA1'          => '3des-sha1',
+	'AES-256-CBC-HMAC-SHA2-512'       => 'sha2_512',
+	'AES-256-CBC-HMAC-SHA2-256'       => 'sha2_256',
+	'AES-128-CBC-HMAC-SHA2-256'       => 'sha2_256',
+	'AES-256-CBC-HMAC-SHA1'       => 'sha1',
+	'AES-128-CBC-HMAC-SHA1'       => 'sha1',
+	'AES-256-GCM-AEAD'            => '',
+	'AES-128-GCM-AEAD'            => '',
+	'CHACHA20-POLY1305-AEAD'      => '',
+#	'3DES-CBC-HMAC-SHA1'          => '3des-sha1',
 );
 
 my %protocol_map = (
@@ -147,35 +160,52 @@ sub generate_temp_policy() {
 	$tmp = '';
 
 	my $cipher;
+	my $cm;
 	my $group;
 	my $mac;
+	my $mm;
 	my $combo;
 
 	%mac_prio_map = %mac_ike_prio_map;
 	my @sorted_mac_list = sort compare @mac_list;
 
-	foreach (@group_list) {
-		$group = $group_map{$_};
-		if (!defined($group) || $group eq '') {
+
+	foreach (@cipher_list) {
+		$cipher = $_;
+		$cm = $cipher_map{$cipher};
+		if (!defined($cm)) {
+#			print STDERR "libreswan: unknown cipher: $cipher\n";
 			next;
 		}
+		$combo = $cm."-";
+		foreach (@sorted_mac_list) {
+			$mac = $_;
 
-		foreach (@cipher_list) {
-			$cipher = $_;
-			foreach (@sorted_mac_list) {
-				$mac = $_;
+			$mm = $cipher_prf_map{$cipher."-".$mac};
 
-				my $cm=$cipher."-".$mac;
-				$combo = $cipher_prf_map{$cm};
-
-				if (!defined($combo)) {
-#					print STDERR "libreswan: unknown combo: $cipher-$mac\n";
-					next;
-				}
-
-				append("${combo};${group}", \$tmp);
+			if (!defined($mm)) {
+#				print STDERR "libreswan: unknown combo: $cipher-$mac\n";
+				next;
 			}
+
+			$combo = $combo.$mm."+";
 		}
+
+		my $lastc = substr($combo, -1);
+		if ($lastc eq "-") {
+			next;
+		}
+		# Replace the last + with -
+		substr($combo, -1) = "-";
+		foreach (@group_list) {
+			$group = $group_map{$_};
+			if (!defined($group) || $group eq '') {
+				next;
+			}
+			$combo = $combo.$group."+";
+		}
+		substr($combo, -1) = '';
+		append("${combo}", \$tmp);
 	}
 
 	if ($tmp ne '') {
@@ -189,20 +219,35 @@ sub generate_temp_policy() {
 	$tmp = '';
 	foreach (@cipher_list) {
 		$cipher = $_;
+		$cm = $cipher_map{$cipher};
+		if (!defined($cm)) {
+#			print STDERR "libreswan: unknown cipher: $cipher\n";
+			next;
+		}
+		$combo = $cm."-";
 		foreach (@sorted_mac_list) {
 			$mac = $_;
 
-			my $cm=$cipher."-".$mac;
-			$combo = $cipher_mac_map{$cm};
+			$mm = $cipher_mac_map{$cipher."-".$mac};
 
-			if (!defined($combo)) {
+			if (!defined($mm)) {
 				next;
 			}
 
-			if ($tmp !~ $combo) {
-				append("${combo}", \$tmp);
+			if ($mm eq '') {
+				# Special handling for AEAD
+				substr($combo, -1) = '+';
+			} else {
+				$combo = $combo.$mm."+";
 			}
 		}
+
+		my $lastc = substr($combo, -1);
+		if ($lastc eq "-") {
+			next;
+		}
+		substr($combo, -1) = '';
+		append("${combo}", \$tmp);
 	}
 
 	if ($tmp ne '') {
