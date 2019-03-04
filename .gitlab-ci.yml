@@ -6,6 +6,7 @@ Fedora-latest:
   script:
   - pushd tests && git clone --depth 1 https://github.com/frozencemetery/krb5check && popd
   - make && make check
+  - make install && make test-install
   tags:
   - shared
   except:
