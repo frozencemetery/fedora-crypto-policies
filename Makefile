@@ -60,3 +60,20 @@ test-install:
 	ls -l $(CONFDIR)/back-ends/ | grep -q $$test_policy && exit 3 ; \
 	ls -l $(CONFDIR)/back-ends/ | grep -q $$current_policy || exit $$? ; \
 	update-crypto-policies --is-applied | grep -q "is applied" || exit $$?
+
+test-fips-setup:
+	current_policy="$$(update-crypto-policies --show)" ; \
+	if [ -z "$$current_policy" ] ; then exit 1 ; fi ; \
+	action1=--enable ; \
+	action2=--disable ; \
+	if fips-mode-setup --check | grep --q enabled ; then action1=--disable ; action2=--enable ; fi ; \
+	fips-mode-setup --no-bootcfg $$action1 || exit $$? ; \
+	if [ $$action1 = --enable ] ; then [ -f /etc/system-fips ] || exit 2 ; \
+	  [ ! -d /etc/dracut.conf.d ] || [ -f /etc/dracut.conf.d/40-fips.conf ] || exit 3 ; \
+	  grep -q FIPS $(CONFDIR)/config || exit $$? ; fi ; \
+	fips-mode-setup --no-bootcfg $$action2 || exit $$? ; \
+	if [ $$action2 = --enable ] ; then [ -f /etc/system-fips ] || exit 2 ; \
+	  [ ! -d /etc/dracut.conf.d ] || [ -f /etc/dracut.conf.d/40-fips.conf ] || exit 3 ; \
+	  grep -q FIPS $(CONFDIR)/config || exit $$? ; fi ; \
+	if [ $$current_policy != FIPS ] ; then \
+	  update-crypto-policies --set $$current_policy || exit $$? ; fi
