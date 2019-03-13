@@ -118,9 +118,8 @@ PROVIDED POLICY LEVELS
 
 *NEXT*::
   The *NEXT* policy is a policy prepared for the upcoming release
-  of the operating system so it can be easily tested. It is
-  compatible with *PCI-DSS* requirements. It allows the *TLS 1.2* and
-  *TLS 1.3* protocols, as well as *IKEv2* and *SSH2*. The *RSA* and
+  of the operating system so it can be easily tested. It allows the *TLS 1.2*
+  and *TLS 1.3* protocols, as well as *IKEv2* and *SSH2*. The *RSA* and
   *Diffie-Hellman* parameters are accepted if larger than 2047 bits.
   The level provides at least 112-bit security with the exception of *SHA-1*
   signatures needed for *DNSSec* and other still prevalent legacy use of
