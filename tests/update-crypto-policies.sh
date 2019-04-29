@@ -4,7 +4,7 @@ set -e
 
 umask 022
 
-: ${top_srcdir=.}
+: ${top_srcdir=..}
 
 progname="$0"
 script="$top_srcdir/update-crypto-policies"
@@ -18,7 +18,7 @@ base_dir="$testdir/base"
 mkdir "$base_dir"
 mkdir "$base_dir/local.d"
 
-"$top_srcdir/generate-policies.pl" "$profile_dir" 2>/dev/null
+(cd "$top_srcdir" ; ./generate-policies.pl "$profile_dir" 2>/dev/null)
 echo DEFAULT > "$profile_dir/default-config"
 echo DEFAULT > "$base_dir/config"
 
