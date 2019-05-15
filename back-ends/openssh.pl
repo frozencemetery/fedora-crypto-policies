@@ -84,14 +84,25 @@ my %kx_map = (
 );
 
 my %sign_map = (
-	'RSA-SHA1'		=> 'ssh-rsa,ssh-rsa-cert-v01@openssh.com',
-	'DSA-SHA1'		=> 'ssh-dss,ssh-dss-cert-v01@openssh.com',
-	'RSA-SHA2-256'		=> 'rsa-sha2-256,rsa-sha2-256-cert-v01@openssh.com',
-	'RSA-SHA2-512'		=> 'rsa-sha2-512,rsa-sha2-512-cert-v01@openssh.com',
-	'ECDSA-SHA2-256'	=> 'ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com',
-	'ECDSA-SHA2-384'	=> 'ecdsa-sha2-nistp384,ecdsa-sha2-nistp384-cert-v01@openssh.com',
-	'ECDSA-SHA2-512'	=> 'ecdsa-sha2-nistp521,ecdsa-sha2-nistp521-cert-v01@openssh.com',
-	'EDDSA-ED25519'		=> 'ssh-ed25519,ssh-ed25519-cert-v01@openssh.com',
+	'RSA-SHA1'		=> 'ssh-rsa',
+	'DSA-SHA1'		=> 'ssh-dss',
+	'RSA-SHA2-256'		=> 'rsa-sha2-256',
+	'RSA-SHA2-512'		=> 'rsa-sha2-512',
+	'ECDSA-SHA2-256'	=> 'ecdsa-sha2-nistp256',
+	'ECDSA-SHA2-384'	=> 'ecdsa-sha2-nistp384',
+	'ECDSA-SHA2-512'	=> 'ecdsa-sha2-nistp521',
+	'EDDSA-ED25519'		=> 'ssh-ed25519',
+);
+
+my %sign_map_certs = (
+	'RSA-SHA1'		=> 'ssh-rsa-cert-v01@openssh.com',
+	'DSA-SHA1'		=> 'ssh-dss-cert-v01@openssh.com',
+	'RSA-SHA2-256'		=> 'rsa-sha2-256-cert-v01@openssh.com',
+	'RSA-SHA2-512'		=> 'rsa-sha2-512-cert-v01@openssh.com',
+	'ECDSA-SHA2-256'	=> 'ecdsa-sha2-nistp256-cert-v01@openssh.com',
+	'ECDSA-SHA2-384'	=> 'ecdsa-sha2-nistp384-cert-v01@openssh.com',
+	'ECDSA-SHA2-512'	=> 'ecdsa-sha2-nistp521-cert-v01@openssh.com',
+	'EDDSA-ED25519'		=> 'ssh-ed25519-cert-v01@openssh.com',
 );
 
 sub generate_temp_policy() {
@@ -211,6 +222,13 @@ sub generate_temp_policy() {
 	$tmp = '';
 	foreach (@sign_list) {
 		my $val = $sign_map{$_};
+		if ( defined($val) ) {
+			append($val, \$tmp);
+		}
+		else {
+			print STDERR "openssh: unknown signature algorithm: $_\n";
+		}
+		$val = $sign_map_certs{$_};
 		if ( defined($val) ) {
 			append($val, \$tmp);
 		}
