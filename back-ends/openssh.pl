@@ -244,6 +244,22 @@ sub generate_temp_policy() {
 		$string .= "PubkeyAcceptedKeyTypes $tmp\n";
 	}
 
+	$print_init = 0;
+	$tmp = '';
+	foreach (@sign_list) {
+		my $val = $sign_map{$_};
+		if ( defined($val) ) {
+			append($val, \$tmp);
+		}
+		else {
+			print STDERR "openssh: unknown signature algorithm: $_\n";
+		}
+	}
+
+	if ($tmp ne '') {
+		$string .= "CASignatureAlgorithms $tmp\n";
+	}
+
 	return $string;
 }
 

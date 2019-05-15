@@ -241,7 +241,23 @@ sub generate_temp_policy() {
 
 	if ($tmp ne '') {
 		$string .= "-oHostKeyAlgorithms=$tmp ";
-		$string .= "-oPubkeyAcceptedKeyTypes=$tmp";
+		$string .= "-oPubkeyAcceptedKeyTypes=$tmp ";
+	}
+
+	$print_init = 0;
+	$tmp = '';
+	foreach (@sign_list) {
+		my $val = $sign_map{$_};
+		if ( defined($val) ) {
+			append($val, \$tmp);
+		}
+		else {
+			print STDERR "opensshserver: unknown signature algorithm: $_\n";
+		}
+	}
+
+	if ($tmp ne '') {
+		$string .= "-oCASignatureAlgorithms=$tmp";
 	}
 
 	# we need restart here, since systemd needs to pick up a new command line options
