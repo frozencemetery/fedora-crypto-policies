@@ -69,6 +69,8 @@ Currently the supported back-ends are:
 
 * Libreswan
 
+* libssh
+
 Applications and languages which rely on any of these back-ends will follow
 the system policies as well. Examples are apache httpd, nginx, php, and
 others.
@@ -178,6 +180,9 @@ utilize the system-wide policy are the following.
    To opt-out from the policy, comment the line including `/etc/crypto-policies/back-ends/libreswan.config`
    from `/etc/ipsec.conf`.
 
+ * Applications using libssh: Both client and server applications using libssh
+   will load the crypto policies by default. They inherit the ciphers, key
+   exchange, message authentication, and signature algorithms preferences.
 
 [[policyconfig]]
 POLICY CONFIGURATION

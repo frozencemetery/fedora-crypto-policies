@@ -70,6 +70,7 @@ The policies currently provide settings for these applications and libraries:
 * *NSS* TLS library
 * *OpenSSH* SSH2 protocol implementation
 * *OpenSSL* TLS library
+* *libssh* SSH2 protocol implementation
 
 Applications using the above libraries and tools are covered by the
 cryptographic policies unless they are explicitly configured not to be so.
@@ -201,7 +202,6 @@ NOTES
 *Exceptions:*
 
 * *Go-language* applications do not yet follow the system-wide policy.
-* *Libssh* applications do not yet follow the system-wide policy.
 * *GnuPG-2* application does not follow the system-wide policy.
 
 In general only the data-in-transit is currently covered by the system-wide
