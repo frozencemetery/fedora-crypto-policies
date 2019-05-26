@@ -45,7 +45,7 @@ my %hash_map = (
 );
 
 my %curve_map = (
-	'X25519' => '',
+	'X25519' => 'CURVE25519',
 	'X448' => '',
 	'SECP256R1' => 'SECP256R1',
 	'SECP384R1' => 'SECP384R1',
