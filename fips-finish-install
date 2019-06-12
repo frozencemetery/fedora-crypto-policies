@@ -29,4 +29,6 @@ cat >$dracut_cfg <<EOF
 add_dracutmodules+=" fips "
 EOF
 
-dracut -f
+echo "Kernel initramdisks are being regenerated. This might take some time."
+
+dracut -f --regenerate-all
