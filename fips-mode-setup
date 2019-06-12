@@ -76,14 +76,19 @@ else
 	update-crypto-policies --set DEFAULT 2>/dev/null
 fi
 
-boot_device=$(df -P /boot | tail -1 | cut -d ' ' -f 1)
+boot_device="$(df -P /boot | tail -1)"
+echo "$boot_device" | grep -q ' /$' && boot_device='/' || boot_device=$(echo "$boot_device" | cut -d ' ' -f 1)
 
 if test x"$boot_device" = x ; then
 	echo "Boot device not identified, you have to configure the bootloader manually."
-	boot_device_uuid='<your-boot-device-uuid>'
+	boot_device_opt=" boot=UUID=<your-boot-device-uuid>"
 	boot_config=0
 else
-	boot_device_uuid=$(blkid -s UUID -o value $boot_device)
+        if test "$boot_device" = / ; then
+            boot_device_opt=""
+        else
+            boot_device_opt=" boot=UUID=$(blkid -s UUID -o value $boot_device)"
+        fi
 fi
 
 if test $boot_config=1 && test ! -x "$(command -v grubby)" ; then
@@ -93,7 +98,7 @@ fi
 
 echo "FIPS mode will be $(enable2txt $enable_fips)."
 
-fipsopts="fips=$enable_fips boot=UUID=$boot_device_uuid"
+fipsopts="fips=$enable_fips$boot_device_opt"
 
 if test $boot_config = 0 ; then
 	echo "Now you need to configure the bootloader to add kernel options \"$fipsopts\""
@@ -107,7 +112,7 @@ else
 		if test ! -x "$(command -v grub2-editenv)" ; then
 			echo "The grub2-editenv command is missing, please check your bootloader configuration."
 		else
-			kernelopts=$(grub2-editenv list | grep kernelopts | sed 's/^kernelopts=//;s/fips=[^ ]*//;s/boot=[^ ]*//')
+			kernelopts=$(grub2-editenv list | grep kernelopts | sed 's/^kernelopts=//;s/[ ]*fips=[^ ]*//;s/[ ]*boot=[^ ]*//')
 			if test -z "$kernelopts" ; then
 				echo "No kernelopts in grub2 environment, please check your bootloader configuration."
 			else
