@@ -19,7 +19,9 @@ sub append {
 	$print_init = 1;
 }
 
-#Note that CTS mode is simply CBC with ciphertext stealing
+# Note that CTS mode is simply CBC with ciphertext stealing.
+# DES support was removed upstream starting in 1.18.
+# DES and 3DES support were removed downstream starting in krb5-1.17-31.fc31.
 my %cipher_map = (
 	'AES-256-CTR'       => '',
 	'AES-128-CTR'       => '',
@@ -36,9 +38,9 @@ my %cipher_map = (
 	'CAMELLIA-256-CBC' => 'camellia256-cts-cmac',
 	'CAMELLIA-128-CBC' => 'camellia128-cts-cmac',
 	'RC4-128'          => 'arcfour-hmac-md5',
-	'DES-CBC'          => 'des-cbc-crc des-cbc-md5 des-cbc-md4',
+	'DES-CBC'          => '',
 	'CAMELLIA-128-CTS' => 'camellia128-cts-cmac',
-	'3DES-CBC'         => 'des3-cbc-sha1'
+	'3DES-CBC'         => '',
 );
 
 sub generate_temp_policy() {
